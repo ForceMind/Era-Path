@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时代之路 | Era Path —— 单人卡牌策略游戏</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Mobile Resource Summary Bar -->
+        <div class="mobile-summary-bar mobile-resource-summary" id="mobile-resource-bar">
+            <div class="mobile-summary-content">
+                <span id="mobile-resource-text">资源状况</span>
+                <span class="mobile-summary-toggle" id="resource-toggle">▼</span>
+            </div>
+        </div>
+        <div class="mobile-panel-content" id="mobile-resource-content">
+            <div id="mobile-resource-display"></div>
+            <div id="mobile-stage-display"></div>
+            <div id="mobile-turn-display"></div>
+            <button id="mobile-reset-btn">重新开始</button>
+            <button id="mobile-help-btn">游戏帮助</button>
+        </div>
+
+        <!-- Desktop Left Panel -->
+        <div id="left-panel">
+            <h2>资源</h2>
+            <div id="resource-display"></div>
+            <h3>文明阶段</h3>
+            <div id="stage-display"></div>
+            <h3>年数</h3>
+            <div id="turn-display"></div>
+            <button id="reset-btn">重新开始</button>
+            <button id="help-btn">游戏帮助</button>
+        </div>
+
+        <!-- Mobile Event Log Summary Bar -->
+        <div class="mobile-summary-bar mobile-log-summary" id="mobile-log-bar">
+            <div class="mobile-summary-content">
+                <span id="mobile-log-text">事件日志</span>
+                <span class="mobile-summary-toggle" id="log-toggle">▼</span>
+            </div>
+        </div>
+        <div class="mobile-panel-content" id="mobile-log-content">
+            <div id="mobile-event-log"></div>
+        </div>
+
+        <div id="center-panel">
+            <h2>请选择一个事件</h2>
+            <div id="event-cards"></div>
+            <button id="choose-event-btn" disabled>选择事件</button>
+            <div id="action-panel" style="display:none;">
+                <h2>请选择一个行动</h2>
+                <div id="action-options"></div>
+                <button id="do-action-btn" disabled>进行行动</button>
+            </div>
+            <button id="next-turn-btn" style="display:none;">下一年</button>
+        </div>
+
+        <!-- Desktop Right Panel -->
+        <div id="right-panel">
+            <h2>事件日志</h2>
+            <div id="event-log"></div>
+        </div>
+    </div>
+    <script src="events.js"></script>
+    <script src="actions.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
