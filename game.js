@@ -531,32 +531,51 @@ function nextTurn() {
 
 // Add turn-based consumption to create survival pressure with escalating difficulty
 function applyTurnConsumption() {
-    const baseConsumption = {
-        // Base consumption increases with civilization complexity and time pressure
-        food: Math.max(8, Math.floor(gameState.resources.population / 12) + gameState.stageIdx * 3 + Math.floor(gameState.turn / 10)),
-        environment: Math.max(2, gameState.stageIdx + 1 + Math.floor(gameState.turn / 15)), // Environmental degradation accelerates
-        culture: Math.max(1, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 20)), // Cultural decay without maintenance
-    };
+    // Get available resources for current stage
+    const availableResources = getResourcesForStage(gameState.stageIdx);
+    const availableResourceKeys = availableResources.map(r => r.key);
     
-    // Additional pressure for higher stages
-    if (gameState.stageIdx >= 3) {
-        baseConsumption.military = Math.max(2, Math.floor(gameState.stageIdx / 2)); // Military maintenance costs
+    const baseConsumption = {};
+    
+    // Only consume resources that are available at current stage
+    // Food consumption - always available
+    if (availableResourceKeys.includes('food')) {
+        baseConsumption.food = Math.max(8, Math.floor(gameState.resources.population / 12) + gameState.stageIdx * 3 + Math.floor(gameState.turn / 10));
     }
     
-    // Apply consumption
+    // Environment consumption - always available  
+    if (availableResourceKeys.includes('environment')) {
+        baseConsumption.environment = Math.max(2, gameState.stageIdx + 1 + Math.floor(gameState.turn / 15));
+    }
+    
+    // Culture consumption - only from city stage (2) onwards
+    if (availableResourceKeys.includes('culture') && gameState.stageIdx >= 2) {
+        baseConsumption.culture = Math.max(1, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 20));
+    }
+    
+    // Military consumption - only from city stage (2) onwards  
+    if (availableResourceKeys.includes('military') && gameState.stageIdx >= 2) {
+        baseConsumption.military = Math.max(2, Math.floor(gameState.stageIdx / 2));
+    }
+    
+    // Apply consumption only for resources we actually have
     for (let resource in baseConsumption) {
-        gameState.resources[resource] -= baseConsumption[resource];
-        // Prevent negative values except for debugging
-        gameState.resources[resource] = Math.max(0, gameState.resources[resource]);
+        if (gameState.resources[resource] !== undefined) {
+            gameState.resources[resource] -= baseConsumption[resource];
+            // Prevent negative values except for debugging
+            gameState.resources[resource] = Math.max(0, gameState.resources[resource]);
+        }
     }
     
-    // Create consumption report
+    // Create consumption report only for consumed resources
     let consumptionReport = [];
     for (let resource in baseConsumption) {
         consumptionReport.push(`${getResourceDisplayName(resource)}-${baseConsumption[resource]}`);
     }
     
-    logEvent(`年度消耗: ${consumptionReport.join(', ')}`);
+    if (consumptionReport.length > 0) {
+        logEvent(`年度消耗: ${consumptionReport.join(', ')}`);
+    }
 }
 function showEventCards(events) {
     let selectedIdx = null;

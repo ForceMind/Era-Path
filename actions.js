@@ -1,9 +1,196 @@
-// actions.js - Action definitions for Civilization Card Roguelike Game
+// actions.js - Dynamic Action System for Civilization Card Roguelike Game
+// Actions are now contextual and respond to events and current game state
 // All UI text and game content in Simplified Chinese
 // All code comments and variable names in English
 
-// Stage-specific actions with logical costs and strategic depth - NO contradictory effects
-const actions = [
+// Action categories for strategic depth
+const ACTION_TYPES = {
+    AMPLIFY: 'amplify',      // 强化事件效果
+    COUNTER: 'counter',      // 抵消负面效果
+    CONVERT: 'convert',      // 资源转化
+    INVEST: 'invest',        // 长期投资
+    EMERGENCY: 'emergency',  // 应急响应
+    SYNERGY: 'synergy'       // 组合效应
+};
+
+// Base actions pool organized by stage and type
+const actionPool = {
+    // === 部落文明阶段 (0) ===
+    0: {
+        [ACTION_TYPES.AMPLIFY]: [
+            {
+                key: 'expand_hunt', name: '扩大狩猎', desc: '趁势扩大狩猎规模，获得更多食物',
+                costs: { population: 8 }, effects: { food: 25, environment: -5 },
+                triggers: ['opportunity'], amplifies: ['food']
+            },
+            {
+                key: 'gather_knowledge', name: '收集知识', desc: '记录和传承新发现的知识',
+                costs: { population: 4 }, effects: { tech: 15, population: 2 },
+                triggers: ['opportunity'], amplifies: ['tech']
+            }
+        ],
+        [ACTION_TYPES.COUNTER]: [
+            {
+                key: 'emergency_shelter', name: '紧急庇护', desc: '快速建造临时庇护所应对危机',
+                costs: { population: 6, food: 5 }, effects: { environment: 15, population: 3 },
+                triggers: ['crisis'], counters: ['environment', 'population']
+            },
+            {
+                key: 'rationing', name: '配给制度', desc: '严格控制食物分配，度过难关',
+                costs: { population: 3 }, effects: { food: 8, environment: 3 },
+                triggers: ['crisis'], counters: ['food']
+            },
+            {
+                key: 'tribal_unity', name: '部落团结', desc: '加强部落内部团结，共同应对困难',
+                costs: { food: 8 }, effects: { population: 12, tech: 5 },
+                triggers: ['crisis'], counters: ['population']
+            }
+        ],
+        [ACTION_TYPES.CONVERT]: [
+            {
+                key: 'population_to_food', name: '全力觅食', desc: '派遣更多人手寻找食物',
+                costs: { population: 10 }, effects: { food: 20, tech: 3 },
+                converts: { from: 'population', to: 'food', ratio: 2 }
+            },
+            {
+                key: 'food_to_tech', name: '专心研究', desc: '减少觅食，专注技术发展',
+                costs: { food: 12 }, effects: { tech: 18, population: 2 },
+                converts: { from: 'food', to: 'tech', ratio: 1.5 }
+            },
+            {
+                key: 'environment_to_population', name: '开发领地', desc: '开发更多栖息地，支持人口增长',
+                costs: { environment: 10 }, effects: { population: 15, food: 5 },
+                converts: { from: 'environment', to: 'population', ratio: 1.5 }
+            }
+        ],
+        [ACTION_TYPES.INVEST]: [
+            {
+                key: 'tool_workshop', name: '工具作坊', desc: '建立工具制作场所，长期提升效率',
+                costs: { population: 6, food: 8 }, effects: { tech: 12 },
+                investment: { turns: 3, returns: { tech: 5, food: 3 } }
+            },
+            {
+                key: 'seed_storage', name: '种子储备', desc: '收集各种植物种子，为农业做准备',
+                costs: { food: 10, population: 4 }, effects: { tech: 8 },
+                investment: { turns: 2, returns: { food: 12 } }
+            }
+        ]
+    },
+
+    // === 农业文明阶段 (1) ===
+    1: {
+        [ACTION_TYPES.AMPLIFY]: [
+            {
+                key: 'expand_farming', name: '扩大农业', desc: '趁势扩大农业规模',
+                costs: { population: 12, tech: 5 }, effects: { food: 35, environment: -8 },
+                triggers: ['opportunity'], amplifies: ['food']
+            },
+            {
+                key: 'livestock_boom', name: '畜牧繁荣', desc: '大力发展畜牧业',
+                costs: { food: 15, military: 5 }, effects: { food: 30, military: 8, population: 8 },
+                triggers: ['opportunity'], amplifies: ['food', 'military']
+            }
+        ],
+        [ACTION_TYPES.COUNTER]: [
+            {
+                key: 'crop_diversification', name: '作物多样化', desc: '种植多种作物降低风险',
+                costs: { population: 8, tech: 6 }, effects: { food: 18, environment: 5 },
+                triggers: ['crisis'], counters: ['food']
+            },
+            {
+                key: 'defensive_stockade', name: '防御栅栏', desc: '建造防御工事保护村庄',
+                costs: { population: 10, food: 8 }, effects: { military: 15, population: 5 },
+                triggers: ['crisis'], counters: ['military', 'population']
+            }
+        ],
+        [ACTION_TYPES.CONVERT]: [
+            {
+                key: 'food_to_military', name: '训练民兵', desc: '用充足粮食供养军事训练',
+                costs: { food: 20 }, effects: { military: 15, population: -3 },
+                converts: { from: 'food', to: 'military', ratio: 0.75 }
+            },
+            {
+                key: 'population_to_tech', name: '工匠专业化', desc: '让部分人专门从事技术工作',
+                costs: { population: 12, food: 10 }, effects: { tech: 20 },
+                converts: { from: 'population', to: 'tech', ratio: 1.67 }
+            },
+            {
+                key: 'tech_to_food', name: '农业改良', desc: '运用技术提升农业产量',
+                costs: { tech: 10, population: 8 }, effects: { food: 25, environment: -5 },
+                converts: { from: 'tech', to: 'food', ratio: 2.5 }
+            }
+        ],
+        [ACTION_TYPES.INVEST]: [
+            {
+                key: 'irrigation_project', name: '灌溉工程', desc: '大型水利建设项目',
+                costs: { population: 15, tech: 8, food: 12 }, effects: { tech: 5 },
+                investment: { turns: 4, returns: { food: 15, environment: -2 } }
+            },
+            {
+                key: 'pottery_industry', name: '陶器产业', desc: '发展陶器制作产业链',
+                costs: { population: 10, tech: 6 }, effects: { food: 8 },
+                investment: { turns: 3, returns: { tech: 8, food: 5 } }
+            }
+        ]
+    },
+
+    // === 城邦文明阶段 (2) ===
+    2: {
+        [ACTION_TYPES.AMPLIFY]: [
+            {
+                key: 'trade_expansion', name: '贸易扩张', desc: '大力发展对外贸易',
+                costs: { military: 8, culture: 12 }, effects: { culture: 25, food: 20, tech: 10 },
+                triggers: ['opportunity'], amplifies: ['culture', 'tech']
+            },
+            {
+                key: 'cultural_festival', name: '文化庆典', desc: '举办盛大的文化活动',
+                costs: { food: 15, culture: 10 }, effects: { culture: 30, population: 12 },
+                triggers: ['opportunity'], amplifies: ['culture']
+            }
+        ],
+        [ACTION_TYPES.COUNTER]: [
+            {
+                key: 'fortify_city', name: '加固城防', desc: '强化城市防御设施',
+                costs: { population: 15, food: 12, tech: 8 }, effects: { military: 25, culture: 5 },
+                triggers: ['crisis'], counters: ['military']
+            },
+            {
+                key: 'diplomatic_mission', name: '外交使团', desc: '派遣使者缓解外部压力',
+                costs: { culture: 15, food: 10 }, effects: { military: 8, culture: 12 },
+                triggers: ['crisis'], counters: ['military']
+            }
+        ],
+        [ACTION_TYPES.CONVERT]: [
+            {
+                key: 'culture_to_tech', name: '学术研究', desc: '将文化资源投入技术研究',
+                costs: { culture: 15, food: 8 }, effects: { tech: 25, population: 3 },
+                converts: { from: 'culture', to: 'tech', ratio: 1.67 }
+            },
+            {
+                key: 'military_to_culture', name: '和平发展', desc: '削减军费发展文化',
+                costs: { military: 12 }, effects: { culture: 20, tech: 8 },
+                converts: { from: 'military', to: 'culture', ratio: 1.67 }
+            },
+            {
+                key: 'tech_to_military', name: '军事革新', desc: '用技术优势强化军力',
+                costs: { tech: 12, food: 10 }, effects: { military: 18, culture: 5 },
+                converts: { from: 'tech', to: 'military', ratio: 1.5 }
+            }
+        ],
+        [ACTION_TYPES.INVEST]: [
+            {
+                key: 'academy_foundation', name: '学院建设', desc: '建立高等学府',
+                costs: { culture: 20, food: 15, tech: 10 }, effects: { population: 5 },
+                investment: { turns: 5, returns: { tech: 12, culture: 8 } }
+            },
+            {
+                key: 'trade_routes', name: '贸易路线', desc: '建立长期贸易网络',
+                costs: { military: 10, culture: 15, food: 12 }, effects: { tech: 5 },
+                investment: { turns: 4, returns: { culture: 10, food: 8 } }
+            }
+        ]
+    }
+};
     // === 部落文明阶段 (0) ===
     { 
         key: 'hunt', name: '狩猎采集', desc: '派遣部落成员狩猎野兽和采集食物', 
