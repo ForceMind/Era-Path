@@ -16,6 +16,8 @@ const eventPool = [
     { type: 'crisis', name: '食物腐败', desc: '储存的食物在潮湿环境中腐败。', effects: { food: -20, environment: -5 }, stage: 0, minTurn: 3, maxTurn: 25 },
     { type: 'crisis', name: '山体滑坡', desc: '暴雨引发山体滑坡，破坏栖息地。', effects: { environment: -12, population: -5, food: -8 }, stage: 0, minTurn: 1, maxTurn: 20 },
     { type: 'crisis', name: '传染疾病', desc: '未知疾病在部落中传播。', effects: { population: -15, food: -5 }, stage: 0, minTurn: 4, maxTurn: 30 },
+    { type: 'crisis', name: '部落争执', desc: '部落内部因分配问题发生激烈争执。', effects: { order: -8, population: -3, food: -5 }, stage: 0, minTurn: 2, maxTurn: 15 },
+    { type: 'crisis', name: '权威挑战', desc: '年轻一代挑战长者的权威和决策。', effects: { order: -12, population: -5 }, stage: 0, minTurn: 3, maxTurn: 20 },
     
     // 早期机遇 (1-5回合)
     { type: 'opportunity', name: '发现火种', desc: '掌握用火技术，改善生活条件。', effects: { tech: 8, environment: 5 }, stage: 0, minTurn: 1, maxTurn: 8 },
@@ -28,6 +30,8 @@ const eventPool = [
     { type: 'opportunity', name: '蜂蜜发现', desc: '找到野生蜂巢，获得甜美蜂蜜。', effects: { food: 12, population: 3 }, stage: 0, minTurn: 1, maxTurn: 15 },
     { type: 'opportunity', name: '羚羊群', desc: '发现庞大的羚羊群经过。', effects: { food: 25, environment: -5 }, stage: 0, minTurn: 2, maxTurn: 18 },
     { type: 'opportunity', name: '药用植物', desc: '识别出具有治疗效果的植物。', effects: { population: 8, tech: 3 }, stage: 0, minTurn: 4, maxTurn: 30 },
+    { type: 'opportunity', name: '长者智慧', desc: '德高望重的长者建立了部落规则。', effects: { order: 10, population: 5, tech: 3 }, stage: 0, minTurn: 3, maxTurn: 20 },
+    { type: 'opportunity', name: '团结仪式', desc: '举行增进团结的部落仪式。', effects: { order: 8, population: 3 }, stage: 0, minTurn: 2, maxTurn: 18 },
     
     // 早期抉择 (1-5回合)
     { type: 'decision', name: '迁徙抉择', desc: '是否迁移到新的栖息地？', effects: { environment: 12, food: 8, population: -3 }, stage: 0, minTurn: 3, maxTurn: 30 },
@@ -35,6 +39,7 @@ const eventPool = [
     { type: 'decision', name: '领地扩张', desc: '是否向更远的地区扩展活动范围？', effects: { food: 12, tech: 3, environment: -5 }, stage: 0, minTurn: 4, maxTurn: 35 },
     { type: 'decision', name: '食物分配', desc: '如何分配稀少的食物资源？', effects: { population: 5, food: -10, environment: 3 }, stage: 0, minTurn: 1, maxTurn: 20 },
     { type: 'decision', name: '庇护建设', desc: '是否花费时间建造更好的庇护所？', effects: { environment: 15, food: -12, tech: 5 }, stage: 0, minTurn: 3, maxTurn: 28 },
+    { type: 'decision', name: '规则制定', desc: '是否建立部落内部的行为规范？', effects: { order: 12, tech: 5, food: -8 }, stage: 0, minTurn: 4, maxTurn: 25 },
     
     // 中期事件 (6-15回合)
     { type: 'crisis', name: '猛兽袭击', desc: '凶猛的野兽威胁着部落安全。', effects: { population: -12, tech: 2 }, stage: 0, minTurn: 6, maxTurn: 20 },
@@ -47,6 +52,8 @@ const eventPool = [
     { type: 'crisis', name: '掠食者', desc: '大型掠食动物威胁部落栖息地。', effects: { population: -8, food: -6, environment: -5 }, stage: 0, minTurn: 10, maxTurn: 35 },
     { type: 'crisis', name: '资源争夺', desc: '其他部落侵占传统觅食区域。', effects: { food: -20, population: -5 }, stage: 0, minTurn: 12, maxTurn: 50 },
     { type: 'crisis', name: '老幼病弱', desc: '部落中老人和儿童比例过高。', effects: { population: -10, food: -15, tech: -2 }, stage: 0, minTurn: 8, maxTurn: 40 },
+    { type: 'crisis', name: '分裂危机', desc: '部落内部出现严重分歧，面临分裂。', effects: { order: -15, population: -8, food: -10 }, stage: 0, minTurn: 10, maxTurn: 35 },
+    { type: 'crisis', name: '等级纷争', desc: '关于社会等级划分的激烈争论。', effects: { order: -10, population: -5, tech: -3 }, stage: 0, minTurn: 8, maxTurn: 30 },
     
     // 中期机遇 (6-15回合)
     { type: 'opportunity', name: '石器制作', desc: '掌握更好的石器制作技术。', effects: { tech: 10, food: 8 }, stage: 0, minTurn: 6, maxTurn: 25 },
@@ -59,6 +66,9 @@ const eventPool = [
     { type: 'opportunity', name: '工具创新', desc: '发明新的狩猎和采集工具。', effects: { tech: 15, food: 12 }, stage: 0, minTurn: 12, maxTurn: 40 },
     { type: 'opportunity', name: '友好相遇', desc: '与友好的游牧部落相遇。', effects: { population: 8, food: 10, tech: 5 }, stage: 0, minTurn: 8, maxTurn: 35 },
     { type: 'opportunity', name: '季节丰收', desc: '多种自然资源同时迎来丰收期。', effects: { food: 30, environment: 10 }, stage: 0, minTurn: 10, maxTurn: 45 },
+    { type: 'opportunity', name: '和平协议', desc: '与邻近部落达成和平共处协议。', effects: { order: 12, population: 8, food: 5 }, stage: 0, minTurn: 10, maxTurn: 35 },
+    { type: 'opportunity', name: '领袖诞生', desc: '部落中出现了天生的领导者。', effects: { order: 15, tech: 5, population: 6 }, stage: 0, minTurn: 8, maxTurn: 40 },
+    { type: 'opportunity', name: '传统建立', desc: '形成了稳定的部落传统和习俗。', effects: { order: 10, tech: 8, population: 4 }, stage: 0, minTurn: 12, maxTurn: 45 },
     
     // 中期抉择 (6-15回合)
     { type: 'decision', name: '储备策略', desc: '是否花费更多时间储备过冬食物？', effects: { food: 30, population: -8, tech: 3 }, stage: 0, minTurn: 10, maxTurn: 40 },
@@ -99,6 +109,8 @@ const eventPool = [
     { type: 'opportunity', name: '贸易起始', desc: '与其他定居点开始简单贸易。', effects: { food: 12, tech: 8, military: 3 }, stage: 1, minTurn: 10, maxTurn: 35 },
     { type: 'opportunity', name: '储存技术', desc: '发展粮食储存和保鲜技术。', effects: { food: 20, tech: 12 }, stage: 1, minTurn: 7, maxTurn: 28 },
     { type: 'opportunity', name: '牧场建设', desc: '建立专门的牲畜牧场。', effects: { food: 18, tech: 6, culture: 4 }, stage: 1, minTurn: 9, maxTurn: 22 },
+    { type: 'opportunity', name: '村庄议事', desc: '建立村庄决策议事制度。', effects: { order: 15, culture: 8, tech: 5 }, stage: 1, minTurn: 8, maxTurn: 25 },
+    { type: 'opportunity', name: '土地分配', desc: '制定公平的土地分配制度。', effects: { order: 12, food: 15, population: 6 }, stage: 1, minTurn: 6, maxTurn: 20 },
     
     // 农业发展期事件 (5-20回合)
     { type: 'opportunity', name: '轮作发现', desc: '发现轮作能保持土壤肥力。', effects: { food: 35, tech: 10, environment: 12 }, stage: 1, minTurn: 12, maxTurn: 30 },
@@ -111,6 +123,13 @@ const eventPool = [
     { type: 'opportunity', name: '陶器改进', desc: '改进陶器制作，提升储存能力。', effects: { tech: 16, food: 18, culture: 8 }, stage: 1, minTurn: 13, maxTurn: 30 },
     { type: 'opportunity', name: '畜力利用', desc: '学会利用牲畜的力量耕作。', effects: { tech: 20, food: 28, military: 6 }, stage: 1, minTurn: 19, maxTurn: 42 },
     { type: 'opportunity', name: '发酵技术', desc: '掌握食物发酵保存技术。', effects: { food: 25, tech: 12, culture: 6 }, stage: 1, minTurn: 11, maxTurn: 28 },
+    { type: 'opportunity', name: '祭司制度', desc: '建立掌管农业仪式的祭司制度。', effects: { order: 18, culture: 15, tech: 8 }, stage: 1, minTurn: 15, maxTurn: 35 },
+    { type: 'opportunity', name: '法典雏形', desc: '制定管理农业生产的简单法规。', effects: { order: 20, culture: 12, tech: 10 }, stage: 1, minTurn: 18, maxTurn: 40 },
+    
+    // 农业危机事件
+    { type: 'crisis', name: '土地纠纷', desc: '村民之间因土地边界发生激烈争执。', effects: { order: -12, population: -5, food: -8 }, stage: 1, minTurn: 10, maxTurn: 30 },
+    { type: 'crisis', name: '收成分配', desc: '收获季节的分配方式引发不满。', effects: { order: -15, food: -10, population: -3 }, stage: 1, minTurn: 8, maxTurn: 25 },
+    { type: 'crisis', name: '权力争夺', desc: '村庄中出现多个权力争夺者。', effects: { order: -18, culture: -8, military: 5 }, stage: 1, minTurn: 12, maxTurn: 35 },
     
     // 中期农业事件 (15-35回合)
     { type: 'opportunity', name: '大型工程', desc: '完成大型灌溉工程项目。', effects: { tech: 30, food: 45, culture: 20 }, stage: 1, minTurn: 25, maxTurn: 50 },
@@ -118,6 +137,8 @@ const eventPool = [
     { type: 'opportunity', name: '文字雏形', desc: '发展记录农业的简单文字。', effects: { tech: 35, culture: 30, food: 10 }, stage: 1, minTurn: 30, maxTurn: 60 },
     { type: 'opportunity', name: '金属工具', desc: '开始使用金属制作农具。', effects: { tech: 40, military: 15, food: 25 }, stage: 1, minTurn: 32, maxTurn: 65 },
     { type: 'opportunity', name: '集约农业', desc: '发展集约化农业生产模式。', effects: { food: 50, tech: 20, environment: -10 }, stage: 1, minTurn: 27, maxTurn: 52 },
+    { type: 'opportunity', name: '社会等级', desc: '形成基于财富的社会等级制度。', effects: { order: 25, culture: 20, military: 10, food: -8 }, stage: 1, minTurn: 25, maxTurn: 50 },
+    { type: 'opportunity', name: '专业分工', desc: '出现专门的工匠和商人阶层。', effects: { order: 22, tech: 18, culture: 15, food: -12 }, stage: 1, minTurn: 28, maxTurn: 55 },
     { type: 'opportunity', name: '宗教仪式', desc: '建立与农业相关的宗教仪式。', effects: { culture: 28, population: 15, food: 12 }, stage: 1, minTurn: 24, maxTurn: 48 },
     { type: 'opportunity', name: '专业分工', desc: '社会开始出现明确的专业分工。', effects: { tech: 25, culture: 20, military: 10 }, stage: 1, minTurn: 26, maxTurn: 50 },
     { type: 'opportunity', name: '道路网络', desc: '建设连接各定居点的道路。', effects: { culture: 18, military: 12, tech: 15 }, stage: 1, minTurn: 29, maxTurn: 55 },
@@ -151,16 +172,18 @@ const eventPool = [
     // === 城市文明阶段 (2) - 120个事件 ===
     
     // 早期城市事件 (1-15回合)
-    { type: 'opportunity', name: '城墙建设', desc: '建造坚固的城市防御工事。', effects: { military: 25, culture: 10, tech: 8 }, stage: 2, minTurn: 1, maxTurn: 15 },
-    { type: 'opportunity', name: '手工业区', desc: '建立专门的手工业生产区域。', effects: { tech: 20, culture: 15, food: 5 }, stage: 2, minTurn: 3, maxTurn: 18 },
-    { type: 'opportunity', name: '下水道系统', desc: '建设城市排水和卫生系统。', effects: { tech: 18, population: 20, environment: 12 }, stage: 2, minTurn: 5, maxTurn: 25 },
-    { type: 'opportunity', name: '大型市场', desc: '建立中央大型贸易市场。', effects: { culture: 25, tech: 10, military: 5 }, stage: 2, minTurn: 8, maxTurn: 30 },
-    { type: 'opportunity', name: '城市规划', desc: '制定系统性的城市建设规划。', effects: { tech: 22, culture: 18, population: 15 }, stage: 2, minTurn: 10, maxTurn: 35 },
-    { type: 'opportunity', name: '公共浴场', desc: '建设公共浴场和娱乐设施。', effects: { culture: 20, population: 12, tech: 8 }, stage: 2, minTurn: 12, maxTurn: 40 },
-    { type: 'opportunity', name: '青铜技术', desc: '掌握青铜冶炼和加工技术。', effects: { tech: 30, military: 20, culture: 10 }, stage: 2, minTurn: 6, maxTurn: 28 },
-    { type: 'opportunity', name: '文字系统', desc: '发展完整的文字书写系统。', effects: { tech: 35, culture: 30, military: 8 }, stage: 2, minTurn: 15, maxTurn: 50 },
-    { type: 'opportunity', name: '法律制度', desc: '建立成文的法律和司法制度。', effects: { culture: 28, military: 15, tech: 12 }, stage: 2, minTurn: 20, maxTurn: 60 },
-    { type: 'opportunity', name: '货币系统', desc: '建立标准化的货币交易系统。', effects: { culture: 25, tech: 15, military: 10 }, stage: 2, minTurn: 18, maxTurn: 55 },
+    { type: 'opportunity', name: '城墙建设', desc: '建造坚固的城市防御工事。', effects: { military: 25, culture: 10, tech: 8, order: 15 }, stage: 2, minTurn: 1, maxTurn: 15 },
+    { type: 'opportunity', name: '手工业区', desc: '建立专门的手工业生产区域。', effects: { tech: 20, culture: 15, food: 5, order: 8 }, stage: 2, minTurn: 3, maxTurn: 18 },
+    { type: 'opportunity', name: '下水道系统', desc: '建设城市排水和卫生系统。', effects: { tech: 18, population: 20, environment: 12, order: 12 }, stage: 2, minTurn: 5, maxTurn: 25 },
+    { type: 'opportunity', name: '大型市场', desc: '建立中央大型贸易市场。', effects: { culture: 25, tech: 10, military: 5, order: 10 }, stage: 2, minTurn: 8, maxTurn: 30 },
+    { type: 'opportunity', name: '城市规划', desc: '制定系统性的城市建设规划。', effects: { tech: 22, culture: 18, population: 15, order: 20 }, stage: 2, minTurn: 10, maxTurn: 35 },
+    { type: 'opportunity', name: '公共浴场', desc: '建设公共浴场和娱乐设施。', effects: { culture: 20, population: 12, tech: 8, order: 8 }, stage: 2, minTurn: 12, maxTurn: 40 },
+    { type: 'opportunity', name: '青铜技术', desc: '掌握青铜冶炼和加工技术。', effects: { tech: 30, military: 20, culture: 10, order: 5 }, stage: 2, minTurn: 6, maxTurn: 28 },
+    { type: 'opportunity', name: '文字系统', desc: '发展完整的文字书写系统。', effects: { tech: 35, culture: 30, military: 8, order: 25 }, stage: 2, minTurn: 15, maxTurn: 50 },
+    { type: 'opportunity', name: '法律制度', desc: '建立成文的法律和司法制度。', effects: { culture: 28, military: 15, tech: 12, order: 35 }, stage: 2, minTurn: 20, maxTurn: 60 },
+    { type: 'opportunity', name: '货币系统', desc: '建立标准化的货币交易系统。', effects: { culture: 25, tech: 15, military: 10, order: 18 }, stage: 2, minTurn: 18, maxTurn: 55 },
+    { type: 'opportunity', name: '城邦议会', desc: '建立公民参与的议事制度。', effects: { culture: 22, order: 30, population: 15 }, stage: 2, minTurn: 12, maxTurn: 45 },
+    { type: 'opportunity', name: '公民制度', desc: '确立公民权利和义务体系。', effects: { order: 25, culture: 20, military: 10 }, stage: 2, minTurn: 18, maxTurn: 55 },
     
     // 中期城市事件 (10-40回合)
     { type: 'opportunity', name: '图书馆建设', desc: '建立收藏知识的大型图书馆。', effects: { tech: 40, culture: 35, military: 5 }, stage: 2, minTurn: 25, maxTurn: 70 },
@@ -182,16 +205,18 @@ const eventPool = [
     { type: 'opportunity', name: '宗教统一', desc: '建立统一的宗教信仰体系。', effects: { culture: 40, population: 30, military: 10 }, stage: 2, minTurn: 35, maxTurn: 90 },
     
     // 城市危机事件
-    { type: 'crisis', name: '瘟疫爆发', desc: '致命瘟疫在城市中蔓延。', effects: { population: -40, culture: -20, tech: -15 }, stage: 2, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '围城战争', desc: '敌军围困城市，断绝补给。', effects: { military: -35, food: -25, population: -20 }, stage: 2, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '经济崩溃', desc: '贸易中断导致经济体系崩溃。', effects: { culture: -30, tech: -20, military: -15 }, stage: 2, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '自然灾害', desc: '大地震摧毁城市基础设施。', effects: { tech: -25, population: -30, culture: -20 }, stage: 2, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '内乱暴动', desc: '社会不公引发大规模暴动。', effects: { culture: -25, military: -20, population: -18 }, stage: 2, minTurn: 20, maxTurn: 999 },
-    { type: 'crisis', name: '技术失落', desc: '关键技术因战乱而失传。', effects: { tech: -35, military: -15, culture: -20 }, stage: 2, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '资源枯竭', desc: '重要矿物资源已经枯竭。', effects: { tech: -20, military: -25, culture: -15 }, stage: 2, minTurn: 30, maxTurn: 999 },
-    { type: 'crisis', name: '腐败蔓延', desc: '官僚体系腐败严重影响治理。', effects: { culture: -22, military: -18, tech: -12 }, stage: 2, minTurn: 25, maxTurn: 999 },
-    { type: 'crisis', name: '外敌入侵', desc: '强大的外敌军队入侵领土。', effects: { military: -30, population: -25, culture: -20 }, stage: 2, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '文化冲突', desc: '不同文化群体之间发生冲突。', effects: { culture: -28, population: -15, military: -12 }, stage: 2, minTurn: 15, maxTurn: 999 },
+    { type: 'crisis', name: '瘟疫爆发', desc: '致命瘟疫在城市中蔓延。', effects: { population: -40, culture: -20, tech: -15, order: -25 }, stage: 2, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '围城战争', desc: '敌军围困城市，断绝补给。', effects: { military: -35, food: -25, population: -20, order: -15 }, stage: 2, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '经济崩溃', desc: '贸易中断导致经济体系崩溃。', effects: { culture: -30, tech: -20, military: -15, order: -20 }, stage: 2, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '自然灾害', desc: '大地震摧毁城市基础设施。', effects: { tech: -25, population: -30, culture: -20, order: -18 }, stage: 2, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '内乱暴动', desc: '社会不公引发大规模暴动。', effects: { culture: -25, military: -20, population: -18, order: -35 }, stage: 2, minTurn: 20, maxTurn: 999 },
+    { type: 'crisis', name: '技术失落', desc: '关键技术因战乱而失传。', effects: { tech: -35, military: -15, culture: -20, order: -12 }, stage: 2, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '资源枯竭', desc: '重要矿物资源已经枯竭。', effects: { tech: -20, military: -25, culture: -15, order: -10 }, stage: 2, minTurn: 30, maxTurn: 999 },
+    { type: 'crisis', name: '腐败蔓延', desc: '官僚体系腐败严重影响治理。', effects: { culture: -22, military: -18, tech: -12, order: -30 }, stage: 2, minTurn: 25, maxTurn: 999 },
+    { type: 'crisis', name: '外敌入侵', desc: '强大的外敌军队入侵领土。', effects: { military: -30, population: -25, culture: -20, order: -22 }, stage: 2, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '文化冲突', desc: '不同文化群体之间发生冲突。', effects: { culture: -28, population: -15, military: -12, order: -25 }, stage: 2, minTurn: 15, maxTurn: 999 },
+    { type: 'crisis', name: '司法危机', desc: '法律体系崩坏，司法公正丧失。', effects: { order: -40, culture: -20, population: -15 }, stage: 2, minTurn: 25, maxTurn: 999 },
+    { type: 'crisis', name: '政治动荡', desc: '统治阶层内部爆发严重冲突。', effects: { order: -30, military: -20, culture: -18 }, stage: 2, minTurn: 30, maxTurn: 999 },
     
     // 城市决策事件
     { type: 'decision', name: '军事扩张', desc: '是否投入大量资源扩张军事力量？', effects: { military: 40, culture: 15, population: -20 }, stage: 2, minTurn: 1, maxTurn: 999 },
@@ -208,31 +233,36 @@ const eventPool = [
     // === 帝国文明阶段 (3) - 100个事件 ===
     
     // 早期帝国事件 (1-20回合)
-    { type: 'opportunity', name: '行政体系', desc: '建立完善的帝国行政管理体系。', effects: { culture: 30, military: 20, tech: 15 }, stage: 3, minTurn: 1, maxTurn: 25 },
-    { type: 'opportunity', name: '疆域扩张', desc: '成功征服并整合新的领土。', effects: { military: 35, culture: 20, population: 25 }, stage: 3, minTurn: 5, maxTurn: 30 },
-    { type: 'opportunity', name: '贸易网络', desc: '建立横跨大陆的贸易网络。', effects: { culture: 40, tech: 25, military: 15 }, stage: 3, minTurn: 8, maxTurn: 35 },
-    { type: 'opportunity', name: '官僚制度', desc: '发展高效的官僚管理体系。', effects: { culture: 25, tech: 20, population: 15 }, stage: 3, minTurn: 12, maxTurn: 40 },
-    { type: 'opportunity', name: '道路系统', desc: '建设覆盖帝国的道路网络。', effects: { military: 20, culture: 30, tech: 25 }, stage: 3, minTurn: 10, maxTurn: 45 },
+    { type: 'opportunity', name: '行政体系', desc: '建立完善的帝国行政管理体系。', effects: { culture: 30, military: 20, tech: 15, order: 35 }, stage: 3, minTurn: 1, maxTurn: 25 },
+    { type: 'opportunity', name: '疆域扩张', desc: '成功征服并整合新的领土。', effects: { military: 35, culture: 20, population: 25, order: -10 }, stage: 3, minTurn: 5, maxTurn: 30 },
+    { type: 'opportunity', name: '贸易网络', desc: '建立横跨大陆的贸易网络。', effects: { culture: 40, tech: 25, military: 15, order: 20 }, stage: 3, minTurn: 8, maxTurn: 35 },
+    { type: 'opportunity', name: '官僚制度', desc: '发展高效的官僚管理体系。', effects: { culture: 25, tech: 20, population: 15, order: 30 }, stage: 3, minTurn: 12, maxTurn: 40 },
+    { type: 'opportunity', name: '道路系统', desc: '建设覆盖帝国的道路网络。', effects: { military: 20, culture: 30, tech: 25, order: 25 }, stage: 3, minTurn: 10, maxTurn: 45 },
+    { type: 'opportunity', name: '法律统一', desc: '制定统一的帝国法律体系。', effects: { order: 40, culture: 25, tech: 15 }, stage: 3, minTurn: 15, maxTurn: 50 },
+    { type: 'opportunity', name: '行省制度', desc: '建立完善的行省管理制度。', effects: { order: 35, military: 20, culture: 18 }, stage: 3, minTurn: 18, maxTurn: 55 },
     
     // 中期帝国事件 (15-50回合)
-    { type: 'opportunity', name: '文化统一', desc: '成功统一帝国内的多元文化。', effects: { culture: 50, population: 30, military: 20 }, stage: 3, minTurn: 20, maxTurn: 70 },
-    { type: 'opportunity', name: '科学院建立', desc: '建立帝国科学研究院。', effects: { tech: 45, culture: 25, military: 15 }, stage: 3, minTurn: 25, maxTurn: 80 },
-    { type: 'opportunity', name: '海军发展', desc: '建立强大的帝国海军舰队。', effects: { military: 40, culture: 20, tech: 25 }, stage: 3, minTurn: 30, maxTurn: 90 },
-    { type: 'opportunity', name: '建筑奇迹', desc: '完成震撼世界的建筑工程。', effects: { culture: 60, tech: 30, military: 20 }, stage: 3, minTurn: 35, maxTurn: 100 },
-    { type: 'opportunity', name: '殖民成功', desc: '在遥远大陆建立成功殖民地。', effects: { military: 30, culture: 35, tech: 20 }, stage: 3, minTurn: 40, maxTurn: 120 },
+    { type: 'opportunity', name: '文化统一', desc: '成功统一帝国内的多元文化。', effects: { culture: 50, population: 30, military: 20, order: 30 }, stage: 3, minTurn: 20, maxTurn: 70 },
+    { type: 'opportunity', name: '科学院建立', desc: '建立帝国科学研究院。', effects: { tech: 45, culture: 25, military: 15, order: 20 }, stage: 3, minTurn: 25, maxTurn: 80 },
+    { type: 'opportunity', name: '海军发展', desc: '建立强大的帝国海军舰队。', effects: { military: 40, culture: 20, tech: 25, order: 15 }, stage: 3, minTurn: 30, maxTurn: 90 },
+    { type: 'opportunity', name: '建筑奇迹', desc: '完成震撼世界的建筑工程。', effects: { culture: 60, tech: 30, military: 20, order: 25 }, stage: 3, minTurn: 35, maxTurn: 100 },
+    { type: 'opportunity', name: '殖民成功', desc: '在遥远大陆建立成功殖民地。', effects: { military: 30, culture: 35, tech: 20, order: -8 }, stage: 3, minTurn: 40, maxTurn: 120 },
     
     // 帝国危机事件
-    { type: 'crisis', name: '帝国分裂', desc: '各地总督宣布独立，帝国面临分裂。', effects: { military: -40, culture: -30, population: -25 }, stage: 3, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '野蛮人入侵', desc: '大规模野蛮人部落入侵边境。', effects: { military: -35, population: -30, culture: -20 }, stage: 3, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '经济危机', desc: '帝国财政体系崩溃。', effects: { culture: -25, military: -20, tech: -15 }, stage: 3, minTurn: 20, maxTurn: 999 },
-    { type: 'crisis', name: '瘟疫大流行', desc: '致命瘟疫在帝国境内大规模传播。', effects: { population: -50, culture: -25, military: -20 }, stage: 3, minTurn: 1, maxTurn: 999 },
-    { type: 'crisis', name: '宗教冲突', desc: '不同宗教信仰引发激烈冲突。', effects: { culture: -30, population: -20, military: -15 }, stage: 3, minTurn: 15, maxTurn: 999 },
+    { type: 'crisis', name: '帝国分裂', desc: '各地总督宣布独立，帝国面临分裂。', effects: { military: -40, culture: -30, population: -25, order: -45 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '野蛮人入侵', desc: '大规模野蛮人部落入侵边境。', effects: { military: -35, population: -30, culture: -20, order: -25 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '经济危机', desc: '帝国财政体系崩溃。', effects: { culture: -25, military: -20, tech: -15, order: -20 }, stage: 3, minTurn: 20, maxTurn: 999 },
+    { type: 'crisis', name: '瘟疫大流行', desc: '致命瘟疫在帝国境内大规模传播。', effects: { population: -50, culture: -25, military: -20, order: -30 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'crisis', name: '宗教冲突', desc: '不同宗教信仰引发激烈冲突。', effects: { culture: -30, population: -20, military: -15, order: -35 }, stage: 3, minTurn: 15, maxTurn: 999 },
+    { type: 'crisis', name: '官僚腐败', desc: '帝国官僚体系腐败严重，政令不通。', effects: { order: -40, culture: -25, military: -18 }, stage: 3, minTurn: 25, maxTurn: 999 },
+    { type: 'crisis', name: '地方叛乱', desc: '多个行省同时爆发大规模叛乱。', effects: { order: -35, military: -30, culture: -20 }, stage: 3, minTurn: 30, maxTurn: 999 },
     
     // 帝国决策事件
-    { type: 'decision', name: '军事改革', desc: '是否进行全面军事制度改革？', effects: { military: 45, tech: 20, culture: -20 }, stage: 3, minTurn: 1, maxTurn: 999 },
-    { type: 'decision', name: '文化包容', desc: '是否采用文化包容政策？', effects: { culture: 35, population: 25, military: -15 }, stage: 3, minTurn: 1, maxTurn: 999 },
-    { type: 'decision', name: '技术投资', desc: '是否大力投资科技发展？', effects: { tech: 40, culture: 20, military: -10 }, stage: 3, minTurn: 1, maxTurn: 999 },
-    { type: 'decision', name: '边境加强', desc: '是否加强边境防务？', effects: { military: 30, culture: 15, population: -20 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'decision', name: '军事改革', desc: '是否进行全面军事制度改革？', effects: { military: 45, tech: 20, culture: -20, order: 15 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'decision', name: '文化包容', desc: '是否采用文化包容政策？', effects: { culture: 35, population: 25, military: -15, order: 20 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'decision', name: '技术投资', desc: '是否大力投资科技发展？', effects: { tech: 40, culture: 20, military: -10, order: 10 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'decision', name: '边境加强', desc: '是否加强边境防务？', effects: { military: 30, culture: 15, population: -20, order: 12 }, stage: 3, minTurn: 1, maxTurn: 999 },
+    { type: 'decision', name: '中央集权', desc: '是否加强中央政府权力？', effects: { order: 35, military: 20, culture: -15, population: -10 }, stage: 3, minTurn: 15, maxTurn: 999 },
     { type: 'decision', name: '贸易自由化', desc: '是否开放自由贸易政策？', effects: { culture: 30, tech: 25, military: -15 }, stage: 3, minTurn: 20, maxTurn: 999 },
 
     // === 工业文明阶段 (4) - 100个事件 ===

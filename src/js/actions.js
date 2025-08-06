@@ -37,6 +37,16 @@ const actionPool = {
                 key: 'nature_harmony', name: '自然和谐', desc: '与自然环境建立更深层次的联系',
                 costs: { population: 5, food: 8 }, effects: { environment: 20, tech: 8 },
                 triggers: ['opportunity'], amplifies: ['environment']
+            },
+            {
+                key: 'leadership_establishment', name: '建立领导', desc: '确立部落权威领导结构',
+                costs: { food: 12, population: 5 }, effects: { order: 18, tech: 8, population: 6 },
+                triggers: ['opportunity'], amplifies: ['order']
+            },
+            {
+                key: 'ritual_order', name: '仪式秩序', desc: '通过宗教仪式强化社会秩序',
+                costs: { food: 15 }, effects: { order: 20, population: 10, tech: 5 },
+                triggers: ['opportunity'], amplifies: ['order', 'population']
             }
         ],
         [ACTION_TYPES.COUNTER]: [
@@ -69,6 +79,16 @@ const actionPool = {
                 key: 'elder_wisdom', name: '长者智慧', desc: '依靠部落长者的经验渡过危机',
                 costs: { food: 5 }, effects: { tech: 12, population: 5, environment: 5 },
                 triggers: ['crisis'], counters: ['tech', 'population']
+            },
+            {
+                key: 'conflict_resolution', name: '冲突调解', desc: '通过长者调解化解部落内部冲突',
+                costs: { food: 6, population: 3 }, effects: { order: 15, population: 8 },
+                triggers: ['crisis'], counters: ['order']
+            },
+            {
+                key: 'tradition_reinforcement', name: '传统强化', desc: '重申部落传统规范来维持秩序',
+                costs: { food: 8 }, effects: { order: 12, tech: 5 },
+                triggers: ['crisis'], counters: ['order']
             }
         ],
         [ACTION_TYPES.CONVERT]: [
@@ -96,6 +116,16 @@ const actionPool = {
                 key: 'balanced_exploitation', name: '平衡开发', desc: '在发展与保护间找到平衡',
                 costs: { population: 6, environment: 8 }, effects: { food: 12, tech: 10 },
                 converts: { from: 'environment', to: 'food', ratio: 1.5 }
+            },
+            {
+                key: 'social_organization', name: '社会组织', desc: '用技术知识建立部落组织秩序',
+                costs: { tech: 10, food: 8 }, effects: { order: 18, population: 5 },
+                converts: { from: 'tech', to: 'order', ratio: 1.8 }
+            },
+            {
+                key: 'order_to_efficiency', name: '秩序效率', desc: '有序的组织提高生产效率',
+                costs: { order: 8, population: 6 }, effects: { food: 15, tech: 8 },
+                converts: { from: 'order', to: 'food', ratio: 1.9 }
             }
         ],
         [ACTION_TYPES.INVEST]: [
@@ -123,13 +153,21 @@ const actionPool = {
         [ACTION_TYPES.SYNERGY]: [
             {
                 key: 'seasonal_cycle', name: '季节循环', desc: '遵循自然规律，平衡发展各方面',
-                costs: { population: 10, food: 8 }, effects: { population: 8, food: 12, environment: 10, tech: 6 },
-                synergy: { all: 0.1 }
+                costs: { population: 10, food: 8, order: 5 }, 
+                effects: { population: 8, food: 12, environment: 10, tech: 6, order: 8 },
+                synergy: { population: 0.1, food: 0.12, environment: 0.08 }
             },
             {
                 key: 'tribal_festival', name: '部落节庆', desc: '举办传统庆典，增强凝聚力',
-                costs: { food: 15 }, effects: { population: 12, tech: 8, environment: 5 },
-                synergy: { population: 0.15, tech: 0.1 }
+                costs: { food: 15, order: 8 }, 
+                effects: { population: 12, tech: 8, environment: 5, order: 15 },
+                synergy: { population: 0.15, order: 0.18 }
+            },
+            {
+                key: 'harmony_council', name: '和谐议会', desc: '建立部落议事制度，实现全面和谐发展',
+                costs: { population: 12, food: 10, tech: 8, order: 6 }, 
+                effects: { population: 15, food: 12, tech: 10, order: 20, environment: 8 },
+                synergy: { order: 0.25, population: 0.12, tech: 0.1 }
             }
         ]
     },
@@ -161,6 +199,16 @@ const actionPool = {
                 key: 'military_expansion', name: '军事扩张', desc: '趁势加强武装力量',
                 costs: { population: 15, food: 18 }, effects: { military: 25, tech: 8 },
                 triggers: ['opportunity'], amplifies: ['military']
+            },
+            {
+                key: 'institutional_development', name: '制度建设', desc: '趁势建立完善的村庄管理制度',
+                costs: { food: 20, tech: 12 }, effects: { order: 25, culture: 15, population: 8 },
+                triggers: ['opportunity'], amplifies: ['order', 'culture']
+            },
+            {
+                key: 'social_hierarchy', name: '社会分层', desc: '建立基于农业财富的社会等级',
+                costs: { food: 18, population: 10 }, effects: { order: 22, military: 12, culture: 10 },
+                triggers: ['opportunity'], amplifies: ['order', 'military']
             }
         ],
         [ACTION_TYPES.COUNTER]: [
@@ -193,6 +241,21 @@ const actionPool = {
                 key: 'militia_training', name: '民兵训练', desc: '紧急训练民兵应对威胁',
                 costs: { population: 10, food: 12 }, effects: { military: 18, population: -5 },
                 triggers: ['crisis'], counters: ['military']
+            },
+            {
+                key: 'village_council', name: '村庄议会', desc: '建立村庄议事会解决纠纷',
+                costs: { food: 15, population: 8 }, effects: { order: 20, culture: 12 },
+                triggers: ['crisis'], counters: ['order']
+            },
+            {
+                key: 'law_enforcement', name: '执法队伍', desc: '组建维护秩序的执法队伍',
+                costs: { military: 8, food: 10 }, effects: { order: 18, military: 5 },
+                triggers: ['crisis'], counters: ['order', 'military']
+            },
+            {
+                key: 'conflict_mediation', name: '冲突调解', desc: '建立解决土地和财产纠纷的机制',
+                costs: { culture: 10, food: 8 }, effects: { order: 15, population: 8 },
+                triggers: ['crisis'], counters: ['order', 'population']
             }
         ],
         [ACTION_TYPES.CONVERT]: [
@@ -225,6 +288,21 @@ const actionPool = {
                 key: 'tech_to_population', name: '医疗技术', desc: '运用技术改善健康和生育',
                 costs: { tech: 15, food: 10 }, effects: { population: 20, environment: -3 },
                 converts: { from: 'tech', to: 'population', ratio: 1.33 }
+            },
+            {
+                key: 'culture_to_order', name: '礼仪制度', desc: '用文化传统建立社会秩序',
+                costs: { culture: 15, food: 8 }, effects: { order: 22, population: 6 },
+                converts: { from: 'culture', to: 'order', ratio: 1.47 }
+            },
+            {
+                key: 'order_to_productivity', name: '有序生产', desc: '良好秩序提升生产效率',
+                costs: { order: 12, population: 10 }, effects: { food: 20, tech: 8 },
+                converts: { from: 'order', to: 'food', ratio: 1.67 }
+            },
+            {
+                key: 'military_to_order', name: '武力维序', desc: '用军事力量维护社会秩序',
+                costs: { military: 10, food: 8 }, effects: { order: 18, population: -3 },
+                converts: { from: 'military', to: 'order', ratio: 1.8 }
             }
         ],
         [ACTION_TYPES.INVEST]: [
@@ -252,18 +330,27 @@ const actionPool = {
         [ACTION_TYPES.SYNERGY]: [
             {
                 key: 'agricultural_revolution', name: '农业革命', desc: '全面革新农业生产方式',
-                costs: { population: 20, tech: 15, food: 25 }, effects: { food: 30, tech: 15, military: 10, environment: -5 },
-                synergy: { food: 0.2, tech: 0.15 }
+                costs: { population: 20, tech: 15, food: 25, order: 12 }, 
+                effects: { food: 30, tech: 15, military: 10, environment: -5, order: 18 },
+                synergy: { food: 0.2, tech: 0.15, order: 0.18 }
             },
             {
                 key: 'village_confederation', name: '村落联盟', desc: '建立村落间的合作网络',
-                costs: { population: 15, food: 18, military: 10 }, effects: { population: 20, military: 15, tech: 10 },
-                synergy: { population: 0.1, military: 0.12 }
+                costs: { population: 15, food: 18, military: 10, order: 15 }, 
+                effects: { population: 20, military: 15, tech: 10, order: 22 },
+                synergy: { population: 0.1, military: 0.12, order: 0.2 }
             },
             {
                 key: 'harvest_festival', name: '丰收庆典', desc: '庆祝丰收，加强社会凝聚力',
-                costs: { food: 20 }, effects: { population: 15, tech: 8, military: 8, environment: 5 },
-                synergy: { all: 0.08 }
+                costs: { food: 20, order: 10 }, 
+                effects: { population: 15, tech: 8, military: 8, environment: 5, order: 18 },
+                synergy: { population: 0.12, order: 0.15 }
+            },
+            {
+                key: 'early_civilization', name: '早期文明', desc: '农业社会向城市文明的全面过渡',
+                costs: { food: 30, tech: 20, military: 15, order: 20, culture: 12 }, 
+                effects: { food: 25, tech: 25, military: 18, order: 30, culture: 20, population: 15 },
+                synergy: { order: 0.25, tech: 0.18, culture: 0.15 }
             }
         ]
     },
@@ -273,107 +360,127 @@ const actionPool = {
         [ACTION_TYPES.AMPLIFY]: [
             {
                 key: 'trade_expansion', name: '贸易扩张', desc: '大力发展对外贸易',
-                costs: { military: 8, culture: 12 }, effects: { culture: 25, food: 20, tech: 10 },
+                costs: { military: 8, culture: 12, order: 6 }, effects: { culture: 25, food: 20, tech: 10, order: 8 },
                 triggers: ['opportunity'], amplifies: ['culture', 'tech']
             },
             {
                 key: 'cultural_festival', name: '文化庆典', desc: '举办盛大的文化活动',
-                costs: { food: 15, culture: 10 }, effects: { culture: 30, population: 12 },
+                costs: { food: 15, culture: 10, order: 5 }, effects: { culture: 30, population: 12, order: 10 },
                 triggers: ['opportunity'], amplifies: ['culture']
             },
             {
                 key: 'technological_breakthrough', name: '技术突破', desc: '推动科学技术飞跃发展',
-                costs: { culture: 15, population: 12 }, effects: { tech: 35, military: 10, food: 8 },
+                costs: { culture: 15, population: 12, order: 8 }, effects: { tech: 35, military: 10, food: 8, order: 12 },
                 triggers: ['opportunity'], amplifies: ['tech']
             },
             {
                 key: 'military_conquest', name: '军事征服', desc: '发动对外征服获取资源',
-                costs: { military: 15, population: 10, food: 12 }, effects: { military: 20, population: 18, culture: 8 },
+                costs: { military: 15, population: 10, food: 12, order: 10 }, effects: { military: 20, population: 18, culture: 8, order: -5 },
                 triggers: ['opportunity'], amplifies: ['military', 'population']
             },
             {
                 key: 'urban_prosperity', name: '城市繁荣', desc: '推动城市全面发展',
-                costs: { food: 18, tech: 10 }, effects: { population: 25, culture: 15, military: 8 },
+                costs: { food: 18, tech: 10, order: 8 }, effects: { population: 25, culture: 15, military: 8, order: 15 },
                 triggers: ['opportunity'], amplifies: ['population']
             },
             {
                 key: 'artisan_guild', name: '工匠行会', desc: '建立专业工匠组织',
-                costs: { population: 12, culture: 10 }, effects: { tech: 20, culture: 15, food: 10 },
+                costs: { population: 12, culture: 10, order: 6 }, effects: { tech: 20, culture: 15, food: 10, order: 12 },
                 triggers: ['opportunity'], amplifies: ['tech', 'culture']
+            },
+            {
+                key: 'bureaucratic_expansion', name: '官僚扩张', desc: '扩大行政管理体系',
+                costs: { population: 15, tech: 12, culture: 10 }, effects: { order: 30, tech: 10, culture: 8 },
+                triggers: ['opportunity'], amplifies: ['order']
             }
         ],
         [ACTION_TYPES.COUNTER]: [
             {
                 key: 'fortify_city', name: '加固城防', desc: '强化城市防御设施',
-                costs: { population: 15, food: 12, tech: 8 }, effects: { military: 25, culture: 5 },
+                costs: { population: 15, food: 12, tech: 8, order: 10 }, effects: { military: 25, culture: 5, order: 8 },
                 triggers: ['crisis'], counters: ['military']
             },
             {
                 key: 'diplomatic_mission', name: '外交使团', desc: '派遣使者缓解外部压力',
-                costs: { culture: 15, food: 10 }, effects: { military: 8, culture: 12 },
+                costs: { culture: 15, food: 10, order: 8 }, effects: { military: 8, culture: 12, order: 12 },
                 triggers: ['crisis'], counters: ['military']
             },
             {
                 key: 'cultural_preservation', name: '文化保护', desc: '保护传统文化免受冲击',
-                costs: { population: 10, tech: 8 }, effects: { culture: 20, population: 8 },
+                costs: { population: 10, tech: 8, order: 6 }, effects: { culture: 20, population: 8, order: 10 },
                 triggers: ['crisis'], counters: ['culture']
             },
             {
                 key: 'emergency_mobilization', name: '紧急动员', desc: '动员全城应对危机',
-                costs: { culture: 12, food: 15 }, effects: { population: 20, military: 15 },
+                costs: { culture: 12, food: 15, order: 12 }, effects: { population: 20, military: 15, order: -8 },
                 triggers: ['crisis'], counters: ['population', 'military']
             },
             {
                 key: 'knowledge_preservation', name: '知识保护', desc: '保护重要技术和知识',
-                costs: { culture: 10, population: 8 }, effects: { tech: 18, culture: 10 },
+                costs: { culture: 10, population: 8, order: 5 }, effects: { tech: 18, culture: 10, order: 8 },
                 triggers: ['crisis'], counters: ['tech']
             },
             {
                 key: 'resource_rationing', name: '资源配给', desc: '实施严格的资源分配制度',
-                costs: { culture: 8, military: 5 }, effects: { food: 15, population: 10, environment: 5 },
+                costs: { culture: 8, military: 5, order: 15 }, effects: { food: 15, population: 10, environment: 5, order: 10 },
                 triggers: ['crisis'], counters: ['food', 'population']
             },
             {
                 key: 'plague_quarantine', name: '瘟疫隔离', desc: '建立隔离制度控制疫病传播',
-                costs: { tech: 10, military: 8 }, effects: { population: 15, culture: -5 },
+                costs: { tech: 10, military: 8, order: 12 }, effects: { population: 15, culture: -5, order: 15 },
                 triggers: ['crisis'], counters: ['population']
+            },
+            {
+                key: 'judicial_reform', name: '司法改革', desc: '完善法律制度维护秩序',
+                costs: { tech: 12, culture: 10 }, effects: { order: 25, culture: 8, population: 5 },
+                triggers: ['crisis'], counters: ['order']
             }
         ],
         [ACTION_TYPES.CONVERT]: [
             {
                 key: 'culture_to_tech', name: '学术研究', desc: '将文化资源投入技术研究',
-                costs: { culture: 15, food: 8 }, effects: { tech: 25, population: 3 },
+                costs: { culture: 15, food: 8, order: 5 }, effects: { tech: 25, population: 3, order: 8 },
                 converts: { from: 'culture', to: 'tech', ratio: 1.67 }
             },
             {
                 key: 'military_to_culture', name: '和平发展', desc: '削减军费发展文化',
-                costs: { military: 12 }, effects: { culture: 20, tech: 8 },
+                costs: { military: 12, order: 6 }, effects: { culture: 20, tech: 8, order: 10 },
                 converts: { from: 'military', to: 'culture', ratio: 1.67 }
             },
             {
                 key: 'tech_to_military', name: '军事革新', desc: '用技术优势强化军力',
-                costs: { tech: 12, food: 10 }, effects: { military: 18, culture: 5 },
+                costs: { tech: 12, food: 10, order: 8 }, effects: { military: 18, culture: 5, order: 5 },
                 converts: { from: 'tech', to: 'military', ratio: 1.5 }
             },
             {
                 key: 'population_to_culture', name: '文化教育', desc: '投入人力发展文化教育',
-                costs: { population: 15, food: 12 }, effects: { culture: 25, tech: 8 },
+                costs: { population: 15, food: 12, order: 8 }, effects: { culture: 25, tech: 8, order: 12 },
                 converts: { from: 'population', to: 'culture', ratio: 1.67 }
             },
             {
                 key: 'food_to_population', name: '人口增长', desc: '用充足粮食支持人口增长',
-                costs: { food: 20, culture: 8 }, effects: { population: 25, military: 5 },
+                costs: { food: 20, culture: 8, order: 5 }, effects: { population: 25, military: 5, order: 8 },
                 converts: { from: 'food', to: 'population', ratio: 1.25 }
             },
             {
                 key: 'culture_to_military', name: '文化动员', desc: '用文化凝聚力增强军事力量',
-                costs: { culture: 18, population: 10 }, effects: { military: 22, tech: 5 },
+                costs: { culture: 18, population: 10, order: 8 }, effects: { military: 22, tech: 5, order: -5 },
                 converts: { from: 'culture', to: 'military', ratio: 1.22 }
             },
             {
                 key: 'tech_to_food', name: '技术农业', desc: '运用技术大幅提升农业产量',
-                costs: { tech: 15, population: 12 }, effects: { food: 30, environment: -8 },
+                costs: { tech: 15, population: 12, order: 6 }, effects: { food: 30, environment: -8, order: 5 },
                 converts: { from: 'tech', to: 'food', ratio: 2 }
+            },
+            {
+                key: 'order_to_military', name: '秩序动员', desc: '运用社会秩序组织军事力量',
+                costs: { order: 20, population: 10 }, effects: { military: 28, order: 5 },
+                converts: { from: 'order', to: 'military', ratio: 1.4 }
+            },
+            {
+                key: 'culture_to_order', name: '文化规范', desc: '通过文化传统强化社会秩序',
+                costs: { culture: 18, population: 8 }, effects: { order: 25, culture: 8 },
+                converts: { from: 'culture', to: 'order', ratio: 1.39 }
             }
         ],
         [ACTION_TYPES.INVEST]: [
@@ -406,18 +513,27 @@ const actionPool = {
         [ACTION_TYPES.SYNERGY]: [
             {
                 key: 'golden_age', name: '黄金时代', desc: '推动文明全面繁荣发展',
-                costs: { population: 25, culture: 20, tech: 15, food: 20 }, effects: { population: 20, culture: 25, tech: 20, military: 15, food: 15 },
-                synergy: { all: 0.15 }
+                costs: { population: 25, culture: 20, tech: 15, food: 20, order: 18 }, 
+                effects: { population: 20, culture: 25, tech: 20, military: 15, food: 15, order: 25 },
+                synergy: { all: 0.15, order: 0.2 }
             },
             {
                 key: 'city_state_alliance', name: '城邦联盟', desc: '与其他城邦建立同盟关系',
-                costs: { military: 15, culture: 18, food: 12 }, effects: { military: 20, culture: 15, tech: 12, population: 10 },
-                synergy: { military: 0.12, culture: 0.1 }
+                costs: { military: 15, culture: 18, food: 12, order: 15 }, 
+                effects: { military: 20, culture: 15, tech: 12, population: 10, order: 20 },
+                synergy: { military: 0.12, culture: 0.1, order: 0.15 }
             },
             {
                 key: 'cultural_synthesis', name: '文化融合', desc: '融合不同文化创造新文明',
-                costs: { culture: 22, population: 15 }, effects: { culture: 30, tech: 15, military: 10, food: 8 },
-                synergy: { culture: 0.18, tech: 0.1 }
+                costs: { culture: 22, population: 15, order: 12 }, 
+                effects: { culture: 30, tech: 15, military: 10, food: 8, order: 18 },
+                synergy: { culture: 0.18, tech: 0.1, order: 0.12 }
+            },
+            {
+                key: 'civic_constitution', name: '公民宪法', desc: '制定完善的城邦法律体系',
+                costs: { culture: 20, tech: 15, order: 25 }, 
+                effects: { order: 40, culture: 15, tech: 12, population: 10 },
+                synergy: { order: 0.25, culture: 0.1 }
             }
         ]
     },
@@ -427,102 +543,129 @@ const actionPool = {
         [ACTION_TYPES.AMPLIFY]: [
             {
                 key: 'imperial_expansion', name: '帝国扩张', desc: '大规模军事征服行动',
-                costs: { military: 20, population: 15, food: 20 }, effects: { military: 30, population: 25, culture: 15 },
+                costs: { military: 20, population: 15, food: 20, order: 15 }, 
+                effects: { military: 30, population: 25, culture: 15, order: -10 },
                 triggers: ['opportunity'], amplifies: ['military', 'population']
             },
             {
                 key: 'cultural_hegemony', name: '文化霸权', desc: '推广帝国文化和价值观',
-                costs: { culture: 25, food: 15 }, effects: { culture: 40, tech: 15, military: 10 },
+                costs: { culture: 25, food: 15, order: 12 }, 
+                effects: { culture: 40, tech: 15, military: 10, order: 18 },
                 triggers: ['opportunity'], amplifies: ['culture']
             },
             {
                 key: 'technological_empire', name: '技术帝国', desc: '推动帝国范围内的技术革新',
-                costs: { tech: 20, culture: 18, population: 15 }, effects: { tech: 45, military: 15, food: 20 },
+                costs: { tech: 20, culture: 18, population: 15, order: 20 }, 
+                effects: { tech: 45, military: 15, food: 20, order: 25 },
                 triggers: ['opportunity'], amplifies: ['tech']
             },
             {
+                key: 'imperial_bureaucracy', name: '帝国官僚', desc: '建立庞大的行政管理体系',
+                costs: { population: 25, tech: 18, culture: 15 }, 
+                effects: { order: 40, tech: 15, culture: 12, population: 10 },
+                triggers: ['opportunity'], amplifies: ['order']
+            },
+            {
+                key: 'provincial_system', name: '行省制度', desc: '建立统一的地方管理制度',
+                costs: { military: 15, culture: 20, order: 18 }, 
+                effects: { order: 35, military: 12, culture: 15, tech: 10 },
+                triggers: ['opportunity'], amplifies: ['order', 'military']
+            },
+            {
                 key: 'imperial_census', name: '帝国人口普查', desc: '大规模人口登记和管理',
-                costs: { culture: 15, tech: 12, food: 18 }, effects: { population: 35, military: 12, culture: 10 },
+                costs: { culture: 15, tech: 12, food: 18, order: 10 }, 
+                effects: { population: 35, military: 12, culture: 10, order: 20 },
                 triggers: ['opportunity'], amplifies: ['population']
             },
             {
                 key: 'tribute_expansion', name: '贡赋扩张', desc: '扩大贡赋制度获取更多资源',
-                costs: { military: 18, culture: 12 }, effects: { food: 40, tech: 12, culture: 15 },
+                costs: { military: 18, culture: 12, order: 8 }, 
+                effects: { food: 40, tech: 12, culture: 15, order: 5 },
                 triggers: ['opportunity'], amplifies: ['food']
             }
         ],
         [ACTION_TYPES.COUNTER]: [
             {
                 key: 'legion_defense', name: '军团防御', desc: '调动精锐军团抵御外敌',
-                costs: { food: 25, military: 15 }, effects: { military: 35, population: 10 },
+                costs: { food: 25, military: 15, order: 12 }, effects: { military: 35, population: 10, order: 8 },
                 triggers: ['crisis'], counters: ['military']
             },
             {
                 key: 'imperial_decree', name: '帝国法令', desc: '颁布紧急法令稳定局势',
-                costs: { culture: 20, military: 10 }, effects: { culture: 25, population: 15, military: 5 },
+                costs: { culture: 20, military: 10, order: 15 }, effects: { culture: 25, population: 15, military: 5, order: 20 },
                 triggers: ['crisis'], counters: ['population', 'culture']
             },
             {
                 key: 'border_fortification', name: '边境要塞', desc: '在边境建立防御工事',
-                costs: { population: 20, tech: 15, food: 18 }, effects: { military: 30, culture: 8 },
+                costs: { population: 20, tech: 15, food: 18, order: 10 }, effects: { military: 30, culture: 8, order: 12 },
                 triggers: ['crisis'], counters: ['military']
             },
             {
                 key: 'imperial_propaganda', name: '帝国宣传', desc: '加强意识形态控制',
-                costs: { culture: 18, tech: 10 }, effects: { culture: 25, population: 12, military: 8 },
+                costs: { culture: 18, tech: 10, order: 12 }, effects: { culture: 25, population: 12, military: 8, order: 18 },
                 triggers: ['crisis'], counters: ['culture', 'population']
             },
             {
                 key: 'strategic_reserves', name: '战略储备', desc: '建立大规模资源储备',
-                costs: { food: 30, tech: 12, military: 10 }, effects: { food: 20, population: 15, military: 12 },
+                costs: { food: 30, tech: 12, military: 10, order: 15 }, effects: { food: 20, population: 15, military: 12, order: 10 },
                 triggers: ['crisis'], counters: ['food', 'population']
             },
             {
                 key: 'imperial_academy', name: '帝国学院', desc: '建立帝国级别的知识机构',
-                costs: { culture: 22, population: 15 }, effects: { tech: 30, culture: 15, military: 8 },
+                costs: { culture: 22, population: 15, order: 10 }, effects: { tech: 30, culture: 15, military: 8, order: 15 },
                 triggers: ['crisis'], counters: ['tech']
             },
             {
                 key: 'provincial_autonomy', name: '行省自治', desc: '给予地方更多自主权',
-                costs: { military: 12, culture: 15 }, effects: { population: 20, culture: 18, food: 10 },
+                costs: { military: 12, culture: 15, order: 20 }, effects: { population: 20, culture: 18, food: 10, order: -8 },
                 triggers: ['crisis'], counters: ['population', 'culture']
+            },
+            {
+                key: 'imperial_justice', name: '帝国司法', desc: '建立统一的司法体系',
+                costs: { tech: 18, culture: 15 }, effects: { order: 30, culture: 12, population: 8 },
+                triggers: ['crisis'], counters: ['order']
             }
         ],
         [ACTION_TYPES.CONVERT]: [
             {
                 key: 'tribute_system', name: '贡赋制度', desc: '建立贡赋体系获取资源',
-                costs: { military: 15, culture: 10 }, effects: { food: 30, tech: 10 },
+                costs: { military: 15, culture: 10, order: 8 }, effects: { food: 30, tech: 10, order: 12 },
                 converts: { from: 'military', to: 'food', ratio: 2 }
             },
             {
                 key: 'imperial_bureaucracy', name: '帝国官僚', desc: '完善行政体系提升效率',
-                costs: { culture: 20, food: 15 }, effects: { tech: 25, military: 8 },
+                costs: { culture: 20, food: 15, order: 10 }, effects: { tech: 25, military: 8, order: 18 },
                 converts: { from: 'culture', to: 'tech', ratio: 1.25 }
             },
             {
                 key: 'military_colonization', name: '军事殖民', desc: '派遣军队开拓新领土',
-                costs: { military: 18, food: 20 }, effects: { population: 30, culture: 10, environment: -8 },
+                costs: { military: 18, food: 20, order: 12 }, effects: { population: 30, culture: 10, environment: -8, order: -5 },
                 converts: { from: 'military', to: 'population', ratio: 1.67 }
             },
             {
                 key: 'imperial_taxation', name: '帝国税收', desc: '建立完善的税收体系',
-                costs: { culture: 18, population: 12 }, effects: { food: 25, tech: 15, military: 10 },
+                costs: { culture: 18, population: 12, order: 15 }, effects: { food: 25, tech: 15, military: 10, order: 8 },
                 converts: { from: 'culture', to: 'food', ratio: 1.39 }
             },
             {
                 key: 'tech_dissemination', name: '技术传播', desc: '在帝国内推广先进技术',
-                costs: { tech: 20, culture: 15 }, effects: { population: 25, food: 20, military: 12 },
+                costs: { tech: 20, culture: 15, order: 10 }, effects: { population: 25, food: 20, military: 12, order: 15 },
                 converts: { from: 'tech', to: 'population', ratio: 1.25 }
             },
             {
                 key: 'cultural_assimilation', name: '文化同化', desc: '将征服地区纳入帝国文化',
-                costs: { population: 18, military: 15 }, effects: { culture: 30, tech: 12 },
+                costs: { population: 18, military: 15, order: 12 }, effects: { culture: 30, tech: 12, order: 20 },
                 converts: { from: 'population', to: 'culture', ratio: 1.67 }
             },
             {
-                key: 'imperial_infrastructure', name: '帝国基建', desc: '大规模基础设施建设',
-                costs: { tech: 25, population: 20, food: 15 }, effects: { culture: 20, military: 18, food: 12 },
-                converts: { from: 'tech', to: 'culture', ratio: 0.8 }
+                key: 'order_to_military', name: '帝国征召', desc: '利用社会秩序大规模征兵',
+                costs: { order: 25, population: 15 }, effects: { military: 35, order: 8 },
+                converts: { from: 'order', to: 'military', ratio: 1.4 }
+            },
+            {
+                key: 'military_to_order', name: '军事管制', desc: '用军事力量维护帝国秩序',
+                costs: { military: 20, culture: 10 }, effects: { order: 30, military: 5 },
+                converts: { from: 'military', to: 'order', ratio: 1.5 }
             }
         ],
         [ACTION_TYPES.INVEST]: [
@@ -550,21 +693,27 @@ const actionPool = {
         [ACTION_TYPES.SYNERGY]: [
             {
                 key: 'imperial_golden_age', name: '帝国盛世', desc: '帝国达到全面繁荣的巅峰',
-                costs: { population: 35, culture: 30, tech: 25, military: 25, food: 30 }, 
-                effects: { population: 40, culture: 35, tech: 30, military: 30, food: 25, environment: 10 },
-                synergy: { all: 0.2 }
+                costs: { population: 35, culture: 30, tech: 25, military: 25, food: 30, order: 25 }, 
+                effects: { population: 40, culture: 35, tech: 30, military: 30, food: 25, environment: 10, order: 35 },
+                synergy: { all: 0.2, order: 0.25 }
             },
             {
                 key: 'pax_imperia', name: '帝国和平', desc: '建立长久的帝国和平秩序',
-                costs: { military: 25, culture: 25, food: 20 }, 
-                effects: { population: 30, culture: 25, tech: 20, food: 18, environment: 8 },
-                synergy: { population: 0.15, culture: 0.12, tech: 0.1 }
+                costs: { military: 25, culture: 25, food: 20, order: 30 }, 
+                effects: { population: 30, culture: 25, tech: 20, food: 18, environment: 8, order: 40 },
+                synergy: { population: 0.15, culture: 0.12, tech: 0.1, order: 0.3 }
             },
             {
                 key: 'imperial_synthesis', name: '帝国融合', desc: '融合各民族文化创造新文明',
-                costs: { culture: 28, population: 22, tech: 18 }, 
-                effects: { culture: 35, tech: 25, military: 20, population: 15 },
-                synergy: { culture: 0.18, tech: 0.15 }
+                costs: { culture: 28, population: 22, tech: 18, order: 20 }, 
+                effects: { culture: 35, tech: 25, military: 20, population: 15, order: 25 },
+                synergy: { culture: 0.18, tech: 0.15, order: 0.18 }
+            },
+            {
+                key: 'imperial_codex', name: '帝国法典', desc: '制定统一的帝国法律体系',
+                costs: { tech: 25, culture: 30, order: 35 }, 
+                effects: { order: 50, culture: 20, tech: 15, population: 12 },
+                synergy: { order: 0.35, culture: 0.15 }
             }
         ]
     },
