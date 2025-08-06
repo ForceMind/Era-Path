@@ -259,6 +259,9 @@ function getResourcesForStage(stageIdx) {
     return baseResources;
 }
 
+// Export getResourcesForStage to window for use in actions.js
+window.getResourcesForStage = getResourcesForStage;
+
 // --- UI Functions ---
 function updateUI() {
     // If game hasn't started, don't show resources
@@ -378,7 +381,7 @@ function showStartLocation() {
         <div id='start-options'></div>
         <div class="legacy-display">
             <h3>文明遗产加成</h3>
-            <div>科技遗产: +${legacy.techBonus} | 农业遗产: +${legacy.foodBonus} | 文化遗产: +${legacy.cultureBonus}</div>
+            <div>科技遗产: ${legacy.techBonus >= 0 ? '+' + legacy.techBonus : legacy.techBonus} | 农业遗产: ${legacy.foodBonus >= 0 ? '+' + legacy.foodBonus : legacy.foodBonus} | 文化遗产: ${legacy.cultureBonus >= 0 ? '+' + legacy.cultureBonus : legacy.cultureBonus}</div>
         </div>
     `;
     
@@ -450,10 +453,10 @@ function startGame(startIdx) {
     if (!gameState.resources.military) gameState.resources.military = 0;
     if (!gameState.resources.culture) gameState.resources.culture = 0;
     
-    // Apply legacy bonuses
-    gameState.resources.tech += legacy.techBonus;
-    gameState.resources.food += legacy.foodBonus;
-    gameState.resources.culture += legacy.cultureBonus;
+    // Apply legacy bonuses (ensure non-negative values)
+    gameState.resources.tech += Math.max(0, legacy.techBonus);
+    gameState.resources.food += Math.max(0, legacy.foodBonus);
+    gameState.resources.culture += Math.max(0, legacy.cultureBonus);
     
     gameState.started = true;
     gameState.turn = 1;
@@ -902,7 +905,9 @@ function showTurnSummary(action) {
     
     if (action.effects) {
         for (let resource in action.effects) {
-            changesHTML += `<li class="resource-gain">+${action.effects[resource]} ${getResourceDisplayName(resource)}</li>`;
+            const value = action.effects[resource];
+            const sign = value >= 0 ? '+' : '';
+            changesHTML += `<li class="resource-gain">${sign}${value} ${getResourceDisplayName(resource)}</li>`;
             hasResourceChanges = true;
         }
     }
@@ -999,11 +1004,11 @@ function showGameOver(win) {
     let score = gameState.turn * 10 + gameState.resources.tech + gameState.resources.culture + gameState.resources.population;
     if (win) score *= 2;
     
-    // Update legacy upgrades
+    // Update legacy upgrades (ensure they remain non-negative)
     if (!win) {
-        legacy.techBonus += Math.floor(gameState.resources.tech / 10);
-        legacy.foodBonus += Math.floor(gameState.resources.food / 20);
-        legacy.cultureBonus += Math.floor(gameState.resources.culture / 15);
+        legacy.techBonus = Math.max(0, legacy.techBonus + Math.floor(gameState.resources.tech / 10));
+        legacy.foodBonus = Math.max(0, legacy.foodBonus + Math.floor(gameState.resources.food / 20));
+        legacy.cultureBonus = Math.max(0, legacy.cultureBonus + Math.floor(gameState.resources.culture / 15));
         saveLegacy(); // Save updated legacy
     }
     
@@ -1025,9 +1030,9 @@ function showGameOver(win) {
             </div>
             <div class="legacy-info">
                 <h3>文明遗产</h3>
-                <div class="legacy-item">科技遗产: +${legacy.techBonus}</div>
-                <div class="legacy-item">农业遗产: +${legacy.foodBonus}</div>
-                <div class="legacy-item">文化遗产: +${legacy.cultureBonus}</div>
+                <div class="legacy-item">科技遗产: ${legacy.techBonus >= 0 ? '+' + legacy.techBonus : legacy.techBonus}</div>
+                <div class="legacy-item">农业遗产: ${legacy.foodBonus >= 0 ? '+' + legacy.foodBonus : legacy.foodBonus}</div>
+                <div class="legacy-item">文化遗产: ${legacy.cultureBonus >= 0 ? '+' + legacy.cultureBonus : legacy.cultureBonus}</div>
                 <p>这些遗产将在下次游戏中为你提供起始加成！</p>
             </div>
             <button id="restart-btn" class="restart-button">重新开始新的文明</button>

@@ -189,266 +189,458 @@ const actionPool = {
                 investment: { turns: 4, returns: { culture: 10, food: 8 } }
             }
         ]
-    }
-};
-    // === 部落文明阶段 (0) ===
-    { 
-        key: 'hunt', name: '狩猎采集', desc: '派遣部落成员狩猎野兽和采集食物', 
-        costs: { population: 5 }, effects: { food: 15, tech: 2, environment: -2 }, stage: 0
-    },
-    { 
-        key: 'craft_tools', name: '制作工具', desc: '用石头和木材制作简单工具，提升效率', 
-        costs: { population: 3 }, effects: { tech: 10, food: 2 }, stage: 0
-    },
-    { 
-        key: 'explore_territory', name: '探索领地', desc: '派遣勇士探索未知区域，寻找资源', 
-        costs: { population: 4, food: 2 }, effects: { food: 8, tech: 3, environment: -3 }, stage: 0
-    },
-    { 
-        key: 'tribal_gathering', name: '部落集会', desc: '举行仪式增强部落凝聚力和传承知识', 
-        costs: { food: 5 }, effects: { tech: 5, population: 4 }, stage: 0
-    },
-    { 
-        key: 'build_shelter', name: '建造庇护所', desc: '修建简单的居住场所，保护部落安全', 
-        costs: { population: 4, food: 3 }, effects: { tech: 3, environment: 5, population: 3 }, stage: 0
-    },
-    { 
-        key: 'preserve_food', name: '储存食物', desc: '学习保存和储存食物的方法', 
-        costs: { tech: 2, population: 2 }, effects: { food: 12, tech: 1 }, stage: 0
-    },
-    { 
-        key: 'fire_mastery', name: '掌握火种', desc: '学会生火和控制火焰的技术', 
-        costs: { population: 2, food: 1 }, effects: { tech: 6, food: 3, environment: -1 }, stage: 0
-    },
-    { 
-        key: 'water_source', name: '寻找水源', desc: '寻找稳定可靠的水源', 
-        costs: { population: 3 }, effects: { food: 6, environment: 8, population: 2 }, stage: 0
-    },
-
-    // === 农业文明阶段 (1) ===
-    { 
-        key: 'farm_develop', name: '发展农业', desc: '开垦土地，种植作物，建立稳定粮食来源', 
-        costs: { population: 8, tech: 3 }, effects: { food: 25, population: 5, environment: -5 }, stage: 1
-    },
-    { 
-        key: 'domesticate', name: '驯养牲畜', desc: '驯化野生动物，获得持续的食物和劳力', 
-        costs: { food: 8, military: 3 }, effects: { food: 18, military: 4, tech: 2 }, stage: 1
-    },
-    { 
-        key: 'settle_village', name: '建立村庄', desc: '建设永久性定居点，发展定居文明', 
-        costs: { food: 12, population: 6 }, effects: { population: 15, tech: 8, environment: -3 }, stage: 1
-    },
-    { 
-        key: 'pottery_craft', name: '陶器制作', desc: '制作陶器用于储存和烹饪', 
-        costs: { population: 5, tech: 3 }, effects: { tech: 12, food: 8 }, stage: 1
-    },
-    { 
-        key: 'irrigation', name: '灌溉系统', desc: '修建水渠，改善农业生产条件', 
-        costs: { population: 10, tech: 5 }, effects: { food: 20, tech: 8, environment: -8 }, stage: 1
-    },
-    { 
-        key: 'weaving', name: '纺织技艺', desc: '发展纺织技术，制作衣物和工具', 
-        costs: { population: 3, tech: 4 }, effects: { tech: 8, population: 5, food: 3 }, stage: 1
-    },
-
-    // === 城邦文明阶段 (2) ===
-    { 
-        key: 'establish_trade', name: '建立贸易', desc: '与邻近城邦建立贸易往来', 
-        costs: { military: 5, culture: 8 }, effects: { culture: 15, tech: 8, food: 12 }, stage: 2
-    },
-    { 
-        key: 'build_walls', name: '修建城墙', desc: '建设坚固的防御工事保护城市', 
-        costs: { food: 15, population: 10, tech: 5 }, effects: { military: 20, tech: 3 }, stage: 2
-    },
-    { 
-        key: 'education_system', name: '建立学校', desc: '创办学校，培养有知识的人才', 
-        costs: { food: 12, culture: 10 }, effects: { tech: 15, culture: 12 }, stage: 2
-    },
-    { 
-        key: 'artisan_guilds', name: '工匠行会', desc: '组织手工业者，发展专业技能', 
-        costs: { food: 10, culture: 6 }, effects: { culture: 12, tech: 10, population: 4 }, stage: 2
-    },
-    { 
-        key: 'road_network', name: '道路建设', desc: '修建道路连接各个城邦', 
-        costs: { population: 12, food: 8 }, effects: { culture: 10, military: 5, tech: 8 }, stage: 2
-    },
-    { 
-        key: 'market_square', name: '建设市场', desc: '建立集中交易的市场广场', 
-        costs: { food: 8, tech: 4 }, effects: { culture: 8, food: 15, population: 6 }, stage: 2
     },
 
     // === 帝国时代阶段 (3) ===
-    { 
-        key: 'military_campaign', name: '军事征战', desc: '发动战争扩张帝国版图', 
-        costs: { food: 20, military: 15, population: 8 }, effects: { military: 25, population: 20, environment: -10 }, stage: 3
-    },
-    { 
-        key: 'infrastructure', name: '基础建设', desc: '大规模修建道路、桥梁、水利工程', 
-        costs: { food: 18, population: 15, tech: 8 }, effects: { culture: 15, tech: 12, population: 8 }, stage: 3
-    },
-    { 
-        key: 'bureaucracy', name: '行政体系', desc: '建立完善的官僚和法律体系', 
-        costs: { culture: 15, food: 10 }, effects: { culture: 20, tech: 10, military: 8 }, stage: 3
-    },
-    { 
-        key: 'cultural_patronage', name: '文化资助', desc: '资助艺术家和学者，繁荣文化', 
-        costs: { food: 15, culture: 10 }, effects: { culture: 25, tech: 8, environment: 3 }, stage: 3
-    },
-    { 
-        key: 'imperial_roads', name: '帝国道路', desc: '建设覆盖帝国的道路网络', 
-        costs: { population: 20, tech: 15, food: 18 }, effects: { military: 18, culture: 25, tech: 12 }, stage: 3
-    },
-    { 
-        key: 'grand_monuments', name: '宏伟建筑', desc: '建造彰显帝国威严的纪念建筑', 
-        costs: { culture: 25, tech: 20, population: 18 }, effects: { culture: 40, tech: 15, military: 12 }, stage: 3
-    },
-    { 
-        key: 'imperial_navy', name: '帝国海军', desc: '建立强大的海上力量', 
-        costs: { tech: 18, military: 15, food: 20 }, effects: { military: 30, culture: 15, tech: 12 }, stage: 3
-    },
-    { 
-        key: 'scholarly_academy', name: '学术研究院', desc: '建立帝国学术研究机构', 
-        costs: { culture: 22, tech: 15, food: 12 }, effects: { tech: 35, culture: 20 }, stage: 3
-    },
-    { 
-        key: 'naval_exploration', name: '海上探索', desc: '建造船队探索远洋，寻找新大陆', 
-        costs: { tech: 10, military: 8, food: 12 }, effects: { food: 20, tech: 15, culture: 10, environment: -5 }, stage: 3
-    },
-    { 
-        key: 'taxation_system', name: '税收制度', desc: '建立有效的税收体系支持国家发展', 
-        costs: { culture: 12, military: 5 }, effects: { food: 18, military: 10, tech: 5 }, stage: 3
+    3: {
+        [ACTION_TYPES.AMPLIFY]: [
+            {
+                key: 'imperial_expansion', name: '帝国扩张', desc: '大规模军事征服行动',
+                costs: { military: 20, population: 15, food: 20 }, effects: { military: 30, population: 25, culture: 15 },
+                triggers: ['opportunity'], amplifies: ['military', 'population']
+            },
+            {
+                key: 'cultural_hegemony', name: '文化霸权', desc: '推广帝国文化和价值观',
+                costs: { culture: 25, food: 15 }, effects: { culture: 40, tech: 15, military: 10 },
+                triggers: ['opportunity'], amplifies: ['culture']
+            }
+        ],
+        [ACTION_TYPES.COUNTER]: [
+            {
+                key: 'legion_defense', name: '军团防御', desc: '调动精锐军团抵御外敌',
+                costs: { food: 25, military: 15 }, effects: { military: 35, population: 10 },
+                triggers: ['crisis'], counters: ['military']
+            },
+            {
+                key: 'imperial_decree', name: '帝国法令', desc: '颁布紧急法令稳定局势',
+                costs: { culture: 20, military: 10 }, effects: { culture: 25, population: 15, military: 5 },
+                triggers: ['crisis'], counters: ['population', 'culture']
+            }
+        ],
+        [ACTION_TYPES.CONVERT]: [
+            {
+                key: 'tribute_system', name: '贡赋制度', desc: '建立贡赋体系获取资源',
+                costs: { military: 15, culture: 10 }, effects: { food: 30, tech: 10 },
+                converts: { from: 'military', to: 'food', ratio: 2 }
+            },
+            {
+                key: 'imperial_bureaucracy', name: '帝国官僚', desc: '完善行政体系提升效率',
+                costs: { culture: 20, food: 15 }, effects: { tech: 25, military: 8 },
+                converts: { from: 'culture', to: 'tech', ratio: 1.25 }
+            }
+        ],
+        [ACTION_TYPES.INVEST]: [
+            {
+                key: 'imperial_roads', name: '帝国道路', desc: '建设横跨帝国的道路网',
+                costs: { population: 25, tech: 15, food: 20 }, effects: { military: 10 },
+                investment: { turns: 6, returns: { culture: 15, military: 10, food: 10 } }
+            }
+        ]
     },
 
     // === 工业文明阶段 (4) ===
-    { 
-        key: 'factory_production', name: '工厂生产', desc: '建设工厂进行大规模机械化生产', 
-        costs: { population: 20, tech: 15, food: 12 }, effects: { tech: 25, population: 25, environment: -20 }, stage: 4
-    },
-    { 
-        key: 'railway_construction', name: '铁路建设', desc: '修建铁路网络革新运输方式', 
-        costs: { food: 25, population: 18, tech: 12 }, effects: { culture: 15, tech: 18, food: 10 }, stage: 4
-    },
-    { 
-        key: 'scientific_research', name: '科学研究', desc: '建立研究机构推进科技发展', 
-        costs: { culture: 20, food: 18 }, effects: { tech: 35, culture: 10 }, stage: 4
-    },
-    { 
-        key: 'urban_planning', name: '城市规划', desc: '重新规划城市布局，改善居住环境', 
-        costs: { food: 15, tech: 10, population: 8 }, effects: { culture: 12, population: 15, environment: 8 }, stage: 4
-    },
-    { 
-        key: 'mass_education', name: '普及教育', desc: '建立义务教育制度，提高民众素质', 
-        costs: { food: 20, culture: 15 }, effects: { culture: 25, tech: 15, population: 8 }, stage: 4
-    },
-    { 
-        key: 'steam_power', name: '蒸汽动力', desc: '开发和应用蒸汽机技术', 
-        costs: { tech: 15, population: 12, food: 10 }, effects: { tech: 30, culture: 15, military: 10 }, stage: 4
-    },
-    { 
-        key: 'electrical_systems', name: '电力系统', desc: '建设发电厂和电力输配网络', 
-        costs: { tech: 25, population: 15, food: 12 }, effects: { tech: 35, culture: 20, population: 18 }, stage: 4
-    },
-    { 
-        key: 'chemical_industry', name: '化学工业', desc: '发展大规模化学工业生产', 
-        costs: { tech: 20, population: 12, environment: 10 }, effects: { tech: 28, military: 20, culture: 8, environment: -15 }, stage: 4
+    4: {
+        [ACTION_TYPES.AMPLIFY]: [
+            {
+                key: 'industrial_revolution', name: '工业革命', desc: '全面推进机械化生产',
+                costs: { tech: 25, population: 20, food: 15 }, effects: { tech: 40, population: 30, environment: -15 },
+                triggers: ['opportunity'], amplifies: ['tech']
+            },
+            {
+                key: 'mass_production', name: '大规模生产', desc: '建立现代工厂体系',
+                costs: { population: 25, tech: 20 }, effects: { tech: 35, food: 20, environment: -10 },
+                triggers: ['opportunity'], amplifies: ['tech', 'food']
+            }
+        ],
+        [ACTION_TYPES.COUNTER]: [
+            {
+                key: 'labor_organization', name: '劳工组织', desc: '建立工会应对社会问题',
+                costs: { culture: 20, food: 15 }, effects: { population: 25, culture: 15 },
+                triggers: ['crisis'], counters: ['population']
+            },
+            {
+                key: 'environmental_regulation', name: '环境法规', desc: '制定法律保护环境',
+                costs: { tech: 15, culture: 12 }, effects: { environment: 25, tech: 8 },
+                triggers: ['crisis'], counters: ['environment']
+            }
+        ],
+        [ACTION_TYPES.CONVERT]: [
+            {
+                key: 'mechanization', name: '机械化改造', desc: '用机器替代人力劳动',
+                costs: { tech: 20, food: 15 }, effects: { population: 20, tech: 10, environment: -8 },
+                converts: { from: 'tech', to: 'population', ratio: 1 }
+            },
+            {
+                key: 'urbanization', name: '城市化进程', desc: '农村人口向城市迁移',
+                costs: { food: 25, environment: 10 }, effects: { population: 30, tech: 15, culture: 10 },
+                converts: { from: 'food', to: 'population', ratio: 1.2 }
+            }
+        ],
+        [ACTION_TYPES.INVEST]: [
+            {
+                key: 'railway_network', name: '铁路网络', desc: '建设全国铁路运输系统',
+                costs: { tech: 25, population: 20, food: 18 }, effects: { culture: 10 },
+                investment: { turns: 5, returns: { tech: 15, food: 12, culture: 8 } }
+            }
+        ]
     },
 
     // === 信息文明阶段 (5) ===
-    { 
-        key: 'digital_revolution', name: '数字革命', desc: '全面推进计算机和网络技术', 
-        costs: { culture: 25, tech: 20, food: 15 }, effects: { tech: 40, culture: 20, environment: 5 }, stage: 5
-    },
-    { 
-        key: 'internet_infrastructure', name: '互联网基础设施', desc: '建设全球互联网络系统', 
-        costs: { tech: 30, culture: 20, population: 10 }, effects: { tech: 35, culture: 35, population: 20 }, stage: 5
-    },
-    { 
-        key: 'artificial_intelligence', name: '人工智能', desc: '开发人工智能和机器学习技术', 
-        costs: { tech: 35, culture: 20, food: 15 }, effects: { tech: 50, culture: 25, military: 20, environment: 5 }, stage: 5
-    },
-    { 
-        key: 'genetic_engineering', name: '基因工程', desc: '掌握基因编辑和生物技术', 
-        costs: { tech: 28, culture: 15, food: 18 }, effects: { tech: 35, population: 25, environment: 15 }, stage: 5
-    },
-    { 
-        key: 'quantum_computing', name: '量子计算', desc: '突破量子计算技术瓶颈', 
-        costs: { tech: 40, culture: 25, food: 20 }, effects: { tech: 60, culture: 30, military: 25 }, stage: 5
-    },
-    { 
-        key: 'space_program', name: '航天计划', desc: '发展航天技术探索太空', 
-        costs: { tech: 25, culture: 20, food: 20 }, effects: { tech: 35, culture: 15, military: 5 }, stage: 5
-    },
-    { 
-        key: 'biotechnology', name: '生物技术', desc: '发展基因工程和生物医学', 
-        costs: { tech: 18, culture: 12, food: 15 }, effects: { tech: 30, population: 15, environment: 8 }, stage: 5
-    },
-    { 
-        key: 'renewable_energy', name: '可再生能源', desc: '大规模开发太阳能风能等清洁能源', 
-        costs: { tech: 15, population: 10, food: 10 }, effects: { environment: 20, tech: 12, population: 5 }, stage: 5
-    },
-    { 
-        key: 'global_cooperation', name: '国际合作', desc: '参与全球治理和国际组织', 
-        costs: { military: 10, culture: 15 }, effects: { culture: 25, environment: 10, tech: 15 }, stage: 5
-    },
-    { 
-        key: 'green_technology', name: '绿色科技', desc: '发展清洁能源和环保技术', 
-        costs: { tech: 20, culture: 15, food: 12 }, effects: { environment: 25, tech: 18, food: 8 }, stage: 5
-    },
-    { 
-        key: 'space_program', name: '航天计划', desc: '发展航天技术探索太空', 
-        costs: { tech: 25, culture: 20, food: 20 }, effects: { tech: 35, culture: 15, military: 5 }, stage: 5
-    },
-    { 
-        key: 'biotechnology', name: '生物技术', desc: '发展基因工程和生物医学', 
-        costs: { tech: 18, culture: 12, food: 15 }, effects: { tech: 30, population: 15, environment: 8 }, stage: 5
-    },
-    { 
-        key: 'renewable_energy', name: '可再生能源', desc: '大规模开发太阳能风能等清洁能源', 
-        costs: { tech: 15, population: 10, food: 10 }, effects: { environment: 20, tech: 12, population: 5 }, stage: 5
+    5: {
+        [ACTION_TYPES.AMPLIFY]: [
+            {
+                key: 'digital_transformation', name: '数字化转型', desc: '全社会数字化改造',
+                costs: { tech: 30, culture: 25 }, effects: { tech: 50, culture: 30, population: 15 },
+                triggers: ['opportunity'], amplifies: ['tech', 'culture']
+            },
+            {
+                key: 'global_connectivity', name: '全球互联', desc: '建立全球信息网络',
+                costs: { tech: 35, food: 20 }, effects: { tech: 45, culture: 25, military: 15 },
+                triggers: ['opportunity'], amplifies: ['tech']
+            }
+        ],
+        [ACTION_TYPES.COUNTER]: [
+            {
+                key: 'cybersecurity', name: '网络安全', desc: '建立数字防御体系',
+                costs: { tech: 25, military: 15 }, effects: { military: 25, tech: 20 },
+                triggers: ['crisis'], counters: ['military', 'tech']
+            },
+            {
+                key: 'digital_divide', name: '数字鸿沟', desc: '解决技术不平等问题',
+                costs: { culture: 25, food: 18 }, effects: { population: 20, culture: 20 },
+                triggers: ['crisis'], counters: ['population']
+            }
+        ],
+        [ACTION_TYPES.CONVERT]: [
+            {
+                key: 'automation', name: '自动化系统', desc: '用AI系统优化生产',
+                costs: { tech: 30, culture: 15 }, effects: { food: 35, environment: 15, population: 10 },
+                converts: { from: 'tech', to: 'food', ratio: 1.17 }
+            },
+            {
+                key: 'virtual_society', name: '虚拟社会', desc: '发展虚拟现实社交平台',
+                costs: { tech: 25, food: 12 }, effects: { culture: 35, population: 15 },
+                converts: { from: 'tech', to: 'culture', ratio: 1.4 }
+            }
+        ],
+        [ACTION_TYPES.INVEST]: [
+            {
+                key: 'space_program', name: '太空计划', desc: '发展载人航天技术',
+                costs: { tech: 35, culture: 25, food: 20 }, effects: { military: 10 },
+                investment: { turns: 6, returns: { tech: 20, culture: 15, environment: 10 } }
+            }
+        ]
     },
 
     // === 星际文明阶段 (6) ===
-    { 
-        key: 'space_colonization', name: '太空殖民', desc: '建立太空站和行星殖民地', 
-        costs: { tech: 30, population: 20, food: 25, military: 10 }, effects: { population: 30, tech: 25, environment: 15 }, stage: 6
-    },
-    { 
-        key: 'interstellar_travel', name: '星际旅行', desc: '发展超光速引擎技术', 
-        costs: { tech: 35, culture: 25, food: 20 }, effects: { tech: 45, culture: 20, military: 8 }, stage: 6
-    },
-    { 
-        key: 'terraform_planets', name: '行星改造', desc: '改造外星球环境使其适宜居住', 
-        costs: { tech: 25, environment: 15, food: 18 }, effects: { environment: 30, population: 25, food: 20 }, stage: 6
-    },
-    { 
-        key: 'alien_diplomacy', name: '外星外交', desc: '与外星文明建立外交关系', 
-        costs: { culture: 30, military: 12 }, effects: { culture: 35, tech: 20, military: 15 }, stage: 6
-    },
-    { 
-        key: 'galactic_federation', name: '银河联盟', desc: '建立跨星系的政治联盟', 
-        costs: { culture: 35, military: 15, tech: 20 }, effects: { culture: 40, military: 20, tech: 15, environment: 10 }, stage: 6
-    },
-    { 
-        key: 'dimensional_research', name: '维度研究', desc: '研究多维空间和平行宇宙', 
-        costs: { tech: 40, culture: 30, food: 25 }, effects: { tech: 50, culture: 25, military: 12 }, stage: 6
+    6: {
+        [ACTION_TYPES.AMPLIFY]: [
+            {
+                key: 'galactic_expansion', name: '银河扩张', desc: '建立跨星系殖民地',
+                costs: { tech: 40, military: 25, population: 30 }, effects: { population: 50, tech: 35, environment: 20 },
+                triggers: ['opportunity'], amplifies: ['population', 'tech']
+            },
+            {
+                key: 'cosmic_research', name: '宇宙研究', desc: '探索宇宙深层奥秘',
+                costs: { tech: 45, culture: 30 }, effects: { tech: 60, culture: 40, military: 20 },
+                triggers: ['opportunity'], amplifies: ['tech']
+            }
+        ],
+        [ACTION_TYPES.COUNTER]: [
+            {
+                key: 'planetary_defense', name: '行星防御', desc: '建立星际防御系统',
+                costs: { tech: 35, military: 30 }, effects: { military: 45, tech: 25 },
+                triggers: ['crisis'], counters: ['military']
+            },
+            {
+                key: 'ecological_restoration', name: '生态重建', desc: '修复星球生态系统',
+                costs: { tech: 30, population: 20 }, effects: { environment: 40, population: 25 },
+                triggers: ['crisis'], counters: ['environment']
+            }
+        ],
+        [ACTION_TYPES.CONVERT]: [
+            {
+                key: 'terraforming', name: '行星改造', desc: '改造外星球环境',
+                costs: { tech: 35, environment: 15 }, effects: { population: 40, food: 30 },
+                converts: { from: 'tech', to: 'population', ratio: 1.14 }
+            },
+            {
+                key: 'energy_mastery', name: '能源掌控', desc: '掌握恒星级能源技术',
+                costs: { tech: 40, culture: 25 }, effects: { tech: 50, environment: 25, military: 15 },
+                converts: { from: 'culture', to: 'tech', ratio: 2 }
+            }
+        ],
+        [ACTION_TYPES.INVEST]: [
+            {
+                key: 'dimensional_gateway', name: '维度之门', desc: '建造跨维度传送门',
+                costs: { tech: 50, culture: 35, military: 25 }, effects: { population: 20 },
+                investment: { turns: 8, returns: { tech: 30, culture: 25, military: 20 } }
+            }
+        ]
     }
-];
+};
 
-// Function to get actions filtered by stage
-function getActionsForStage(stage) {
-    return actions.filter(action => action.stage === stage);
+// Emergency actions available at any stage when resources are critically low
+const emergencyActions = {
+    lowFood: [
+        {
+            key: 'emergency_hunt', name: '紧急狩猎', desc: '动员所有人手寻找食物',
+            costs: { population: 8 }, effects: { food: 12, environment: -8 },
+            requirement: { food: { below: 10 } }
+        },
+        {
+            key: 'food_rationing', name: '严格配给', desc: '实施严格的食物配给制度',
+            costs: { population: 3 }, effects: { food: 6, environment: 2 },
+            requirement: { food: { below: 15 } }
+        }
+    ],
+    lowPopulation: [
+        {
+            key: 'population_boost', name: '鼓励生育', desc: '采取措施增加人口',
+            costs: { food: 20, tech: 5 }, effects: { population: 15 },
+            requirement: { population: { below: 20 } }
+        }
+    ],
+    lowEnvironment: [
+        {
+            key: 'environmental_restoration', name: '环境修复', desc: '专注于恢复生态环境',
+            costs: { population: 10, food: 8 }, effects: { environment: 20, tech: 3 },
+            requirement: { environment: { below: 25 } }
+        }
+    ]
+};
+
+// Dynamic action selection based on last event and current state
+function getContextualActions(lastEvent, gameState, count = 4) {
+    const stage = gameState.stageIdx;
+    const eventType = lastEvent ? lastEvent.type : null;
+    const resources = gameState.resources;
+    
+    let availableActions = [];
+    const stageActions = actionPool[stage] || {};
+    
+    // 1. Add event-responsive actions
+    if (eventType && stageActions[ACTION_TYPES.AMPLIFY] && eventType === 'opportunity') {
+        // For opportunities, add amplifying actions
+        const amplifyActions = stageActions[ACTION_TYPES.AMPLIFY].filter(action => {
+            if (!action.amplifies || !lastEvent.effects) return false;
+            return action.amplifies.some(resource => lastEvent.effects[resource] > 0);
+        });
+        availableActions.push(...amplifyActions);
+    }
+    
+    if (eventType && stageActions[ACTION_TYPES.COUNTER] && eventType === 'crisis') {
+        // For crises, add countering actions
+        const counterActions = stageActions[ACTION_TYPES.COUNTER].filter(action => {
+            if (!action.counters || !lastEvent.effects) return false;
+            return action.counters.some(resource => lastEvent.effects[resource] < 0);
+        });
+        availableActions.push(...counterActions);
+    }
+    
+    // 2. Add conversion actions based on resource abundance/scarcity
+    if (stageActions[ACTION_TYPES.CONVERT]) {
+        const conversionActions = stageActions[ACTION_TYPES.CONVERT].filter(action => {
+            if (!action.converts) return true;
+            const fromResource = action.converts.from;
+            const toResource = action.converts.to;
+            
+            // Only show if we have enough of the source resource and need the target
+            const hasSource = resources[fromResource] >= (action.costs[fromResource] || 0);
+            const needsTarget = isResourceNeeded(toResource, resources, stage);
+            
+            return hasSource && needsTarget;
+        });
+        availableActions.push(...conversionActions);
+    }
+    
+    // 3. Add investment actions when resources are abundant
+    if (stageActions[ACTION_TYPES.INVEST] && isResourcesAbundant(resources, stage)) {
+        availableActions.push(...stageActions[ACTION_TYPES.INVEST]);
+    }
+    
+    // 4. Add emergency actions if resources are critically low
+    Object.keys(emergencyActions).forEach(emergencyType => {
+        const actions = emergencyActions[emergencyType];
+        actions.forEach(action => {
+            if (meetsRequirement(action.requirement, resources)) {
+                availableActions.push(action);
+            }
+        });
+    });
+    
+    // 5. If we don't have enough actions, add basic actions from all categories
+    if (availableActions.length < count) {
+        Object.keys(stageActions).forEach(actionType => {
+            const typeActions = stageActions[actionType] || [];
+            typeActions.forEach(action => {
+                if (!availableActions.find(a => a.key === action.key)) {
+                    availableActions.push(action);
+                }
+            });
+        });
+    }
+    
+    // 6. Remove duplicates and unaffordable actions
+    availableActions = removeDuplicates(availableActions);
+    availableActions = availableActions.filter(action => canAffordAction(action, resources, stage));
+    
+    // 7. If still not enough actions, ensure we have at least some basic actions
+    if (availableActions.length === 0 && stageActions) {
+        // Fallback: add the first affordable action from each type
+        Object.keys(stageActions).forEach(actionType => {
+            const typeActions = stageActions[actionType] || [];
+            const affordableAction = typeActions.find(action => canAffordAction(action, resources, stage));
+            if (affordableAction && availableActions.length < count) {
+                availableActions.push(affordableAction);
+            }
+        });
+    }
+    
+    // 8. Select final actions with priority weighting
+    return selectWeightedActions(availableActions, lastEvent, gameState, count);
 }
 
-// Function to get random actions for a stage
+// Helper functions
+function isResourceNeeded(resource, resources, stage) {
+    const getResourcesForStage = window.getResourcesForStage || (() => []);
+    const stageResources = getResourcesForStage(stage);
+    const resourceConfig = stageResources.find(r => r.key === resource);
+    
+    if (!resourceConfig) return false;
+    
+    const currentValue = resources[resource] || 0;
+    return currentValue <= resourceConfig.warning;
+}
+
+function isResourcesAbundant(resources, stage) {
+    const getResourcesForStage = window.getResourcesForStage || (() => []);
+    const stageResources = getResourcesForStage(stage);
+    
+    let abundantCount = 0;
+    stageResources.forEach(resourceConfig => {
+        const currentValue = resources[resourceConfig.key] || 0;
+        if (currentValue > resourceConfig.warning * 2) {
+            abundantCount++;
+        }
+    });
+    
+    return abundantCount >= 2; // At least 2 resources are abundant
+}
+
+function meetsRequirement(requirement, resources) {
+    if (!requirement) return true;
+    
+    for (let resource in requirement) {
+        const condition = requirement[resource];
+        const currentValue = resources[resource] || 0;
+        
+        if (condition.below && currentValue >= condition.below) return false;
+        if (condition.above && currentValue <= condition.above) return false;
+    }
+    
+    return true;
+}
+
+function canAffordAction(action, resources, stage) {
+    if (!action.costs) return true;
+    
+    const getResourcesForStage = window.getResourcesForStage || (() => []);
+    const availableResources = getResourcesForStage(stage);
+    const availableResourceKeys = availableResources.map(r => r.key);
+    
+    for (let resource in action.costs) {
+        if (!availableResourceKeys.includes(resource)) return false;
+        if ((resources[resource] || 0) < action.costs[resource]) return false;
+    }
+    
+    return true;
+}
+
+function removeDuplicates(actions) {
+    const seen = new Set();
+    return actions.filter(action => {
+        if (seen.has(action.key)) return false;
+        seen.add(action.key);
+        return true;
+    });
+}
+
+function selectWeightedActions(availableActions, lastEvent, gameState, count) {
+    if (availableActions.length <= count) return availableActions;
+    
+    // Weight actions based on context
+    const weightedActions = availableActions.map(action => ({
+        action,
+        weight: calculateActionWeight(action, lastEvent, gameState)
+    }));
+    
+    // Sort by weight and select top actions
+    weightedActions.sort((a, b) => b.weight - a.weight);
+    return weightedActions.slice(0, count).map(item => item.action);
+}
+
+function calculateActionWeight(action, lastEvent, gameState) {
+    let weight = 1;
+    
+    // Higher weight for event-responsive actions
+    if (lastEvent) {
+        if (action.triggers && action.triggers.includes(lastEvent.type)) {
+            weight += 2;
+        }
+        
+        if (action.amplifies && lastEvent.effects) {
+            const hasAmplifiable = action.amplifies.some(resource => 
+                lastEvent.effects[resource] > 0
+            );
+            if (hasAmplifiable) weight += 1.5;
+        }
+        
+        if (action.counters && lastEvent.effects) {
+            const hasCounterable = action.counters.some(resource => 
+                lastEvent.effects[resource] < 0
+            );
+            if (hasCounterable) weight += 1.5;
+        }
+    }
+    
+    // Higher weight for addressing resource shortages
+    const resources = gameState.resources;
+    if (action.effects) {
+        Object.keys(action.effects).forEach(resource => {
+            const currentValue = resources[resource] || 0;
+            if (currentValue < 20 && action.effects[resource] > 0) {
+                weight += 1;
+            }
+        });
+    }
+    
+    return weight;
+}
+
+// Compatibility functions for existing game code
+function getActionsForStage(stage) {
+    // Return a basic set of actions for compatibility
+    const stageActions = actionPool[stage] || {};
+    let actions = [];
+    
+    Object.keys(stageActions).forEach(actionType => {
+        actions.push(...stageActions[actionType]);
+    });
+    
+    return actions;
+}
+
 function getRandomActionsForStage(stage, count = 4) {
-    const available = getActionsForStage(stage);
+    // This function is replaced by getContextualActions but kept for compatibility
+    const actions = getActionsForStage(stage);
     let result = [];
     let used = new Set();
     
-    while (result.length < count && available.length > 0) {
-        let idx = Math.floor(Math.random() * available.length);
+    while (result.length < count && actions.length > 0) {
+        let idx = Math.floor(Math.random() * actions.length);
         if (!used.has(idx)) {
-            result.push(available[idx]);
+            result.push(actions[idx]);
             used.add(idx);
         }
     }
@@ -457,5 +649,18 @@ function getRandomActionsForStage(stage, count = 4) {
 
 // Export for use in main game
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { actions, getActionsForStage, getRandomActionsForStage };
+    module.exports = { 
+        actionPool, 
+        emergencyActions,
+        getContextualActions,
+        getActionsForStage, 
+        getRandomActionsForStage,
+        ACTION_TYPES
+    };
 }
+
+// Global export for compatibility with existing game.js
+window.getContextualActions = getContextualActions;
+window.getActionsForStage = getActionsForStage;
+window.getRandomActionsForStage = getRandomActionsForStage;
+window.ACTION_TYPES = ACTION_TYPES;
