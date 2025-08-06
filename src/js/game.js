@@ -20,27 +20,27 @@ const starts = [
     {
         key: 'plain', name: '肥沃平原', 
         desc: '资源均衡，适合新手',
-        resources: { population: 30, food: 25, environment: 60 } // Tribe stage: only basic survival resources
+        resources: { population: 30, food: 25, environment: 60, order: 25 } // 平衡的起始秩序
     },
     {
         key: 'mountain', name: '高原山地', 
         desc: '防御有利，但食物稀少',
-        resources: { population: 20, food: 15, environment: 70 }
+        resources: { population: 20, food: 15, environment: 70, order: 30 } // 地理隔离利于维持秩序
     },
     {
         key: 'valley', name: '河谷盆地', 
         desc: '农业潜力大，人口增长快',
-        resources: { population: 35, food: 30, environment: 55 }
+        resources: { population: 35, food: 30, environment: 55, order: 20 } // 人口密集导致秩序压力
     },
     {
         key: 'coast', name: '海滨港湾', 
         desc: '资源丰富，发展潜力好',
-        resources: { population: 25, food: 20, environment: 65 }
+        resources: { population: 25, food: 20, environment: 65, order: 28 } // 贸易有利于社会组织
     },
     {
         key: 'desert', name: '沙漠绿洲', 
         desc: '环境恶劣，生存困难',
-        resources: { population: 15, food: 10, environment: 45 }
+        resources: { population: 15, food: 10, environment: 45, order: 35 } // 恶劣环境促进团结
     }
 ];
 
@@ -94,15 +94,15 @@ function clone(obj) {
 // Progressive stage requirements - complexity increases with civilization development
 const stageRequirements = {
     // To Agriculture: Only basic survival resources needed
-    1: { population: 50, food: 30, tech: 15, environment: 50 },
+    1: { population: 50, food: 30, tech: 15, environment: 50, order: 35 },
     // To City: Add military as cities need defense
-    2: { population: 100, food: 60, tech: 40, military: 20, environment: 45 },
+    2: { population: 100, food: 60, tech: 40, military: 20, environment: 45, order: 50 },
     // To Empire: Add culture as empires need social cohesion
-    3: { population: 200, food: 100, tech: 80, military: 40, culture: 30, environment: 40 },
-    // Industrial and beyond: All resources matter
-    4: { population: 350, food: 150, tech: 150, military: 60, culture: 50, environment: 35 },
-    5: { population: 500, food: 220, tech: 250, military: 80, culture: 80, environment: 30 },
-    6: { population: 700, food: 300, tech: 400, military: 100, culture: 120, environment: 25 }
+    3: { population: 200, food: 100, tech: 80, military: 40, culture: 30, environment: 40, order: 70 },
+    // Industrial and beyond: All resources matter, 秩序需求快速增长
+    4: { population: 350, food: 150, tech: 150, military: 60, culture: 50, environment: 35, order: 100 },
+    5: { population: 500, food: 220, tech: 250, military: 80, culture: 80, environment: 30, order: 130 },
+    6: { population: 700, food: 300, tech: 400, military: 100, culture: 120, environment: 25, order: 150 }
 };
 
 // Check if stage advancement is possible with progressive requirements
@@ -163,6 +163,10 @@ function checkGameOver() {
     }
     if (gameState.resources.environment <= 10) {
         logEvent('环境崩溃，文明失去了生存的基础！');
+        return true;
+    }
+    if (gameState.resources.order <= 5) {
+        logEvent('社会秩序彻底崩溃，文明陷入混乱而灭亡！');
         return true;
     }
     
@@ -243,7 +247,8 @@ function getResourcesForStage(stageIdx) {
     const baseResources = [
         { key: 'population', name: '人口', critical: 15, warning: 25 },
         { key: 'food', name: '粮食', critical: 5, warning: 15 },
-        { key: 'environment', name: '环境', critical: 20, warning: 50, suffix: '%' }
+        { key: 'environment', name: '环境', critical: 20, warning: 50, suffix: '%' },
+        { key: 'order', name: '秩序', critical: 10, warning: 25 } // 社会稳定性和组织程度
     ];
     
     if (stageIdx >= 0) { // Tribe stage and above
@@ -452,6 +457,7 @@ function startGame(startIdx) {
     if (!gameState.resources.tech) gameState.resources.tech = 0;
     if (!gameState.resources.military) gameState.resources.military = 0;
     if (!gameState.resources.culture) gameState.resources.culture = 0;
+    if (!gameState.resources.order) gameState.resources.order = starts[startIdx].resources.order || 25; // 确保秩序属性存在
     
     // Apply legacy bonuses (ensure non-negative values)
     gameState.resources.tech += Math.max(0, legacy.techBonus);
@@ -540,39 +546,60 @@ function applyTurnConsumption() {
     const availableResources = getResourcesForStage(gameState.stageIdx);
     const availableResourceKeys = availableResources.map(r => r.key);
     
-    const baseConsumption = {
-        // Base consumption increases with civilization complexity and time pressure
-        food: Math.max(8, Math.floor(gameState.resources.population / 12) + gameState.stageIdx * 3 + Math.floor(gameState.turn / 10)),
-        environment: Math.max(2, gameState.stageIdx + 1 + Math.floor(gameState.turn / 15)), // Environmental degradation accelerates
+    // === 自然增长机制 ===
+    const naturalGrowth = {
+        // 人口自然增长（基于当前人口和环境）
+        population: Math.max(1, Math.floor(gameState.resources.population * 0.03) + Math.floor(gameState.resources.environment / 30)),
+        // 环境自然恢复（缓慢但持续）
+        environment: Math.max(1, 2 + Math.floor(gameState.resources.environment / 50)),
+        // 秩序自然稳定（基于文化和军力的维持）
+        order: Math.max(1, Math.floor((gameState.resources.culture || 0) / 20) + Math.floor((gameState.resources.military || 0) / 25))
     };
     
-    // Only add culture consumption if culture is available in current stage
-    if (availableResourceKeys.includes('culture')) {
-        baseConsumption.culture = Math.max(1, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 20)); // Cultural decay without maintenance
+    // === 年度消耗机制 ===
+    const baseConsumption = {
+        // 食物消耗：基于人口规模
+        food: Math.max(8, Math.floor(gameState.resources.population / 10) + gameState.stageIdx * 2 + Math.floor(gameState.turn / 12)),
+        // 环境退化：工业化程度和时间压力
+        environment: Math.max(1, gameState.stageIdx + Math.floor(gameState.turn / 20) + Math.floor((gameState.resources.tech || 0) / 100)),
+        // 秩序衰退：大型社会的管理难度
+        order: Math.max(1, Math.floor(gameState.resources.population / 20) + Math.floor(gameState.stageIdx / 2))
+    };
+    
+    // 文化维护消耗（高阶段才有）
+    if (availableResourceKeys.includes('culture') && gameState.stageIdx >= 2) {
+        baseConsumption.culture = Math.max(1, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 25));
     }
     
-    // Additional pressure for higher stages
+    // 军队维护消耗（需要持续投入）
     if (gameState.stageIdx >= 3 && availableResourceKeys.includes('military')) {
-        baseConsumption.military = Math.max(2, Math.floor(gameState.stageIdx / 2)); // Military maintenance costs
+        baseConsumption.military = Math.max(2, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.resources.military / 30));
     }
     
-    // Apply consumption only for available resources
-    for (let resource in baseConsumption) {
+    // === 应用自然增长 ===
+    let growthReport = [];
+    for (let resource in naturalGrowth) {
         if (availableResourceKeys.includes(resource)) {
-            gameState.resources[resource] -= baseConsumption[resource];
-            // Prevent negative values except for debugging
-            gameState.resources[resource] = Math.max(0, gameState.resources[resource]);
+            gameState.resources[resource] += naturalGrowth[resource];
+            growthReport.push(`${getResourceDisplayName(resource)}+${naturalGrowth[resource]}`);
         }
     }
     
-    // Create consumption report only for consumed resources
+    // === 应用年度消耗 ===
     let consumptionReport = [];
     for (let resource in baseConsumption) {
         if (availableResourceKeys.includes(resource)) {
+            gameState.resources[resource] -= baseConsumption[resource];
+            // 防止负值
+            gameState.resources[resource] = Math.max(0, gameState.resources[resource]);
             consumptionReport.push(`${getResourceDisplayName(resource)}-${baseConsumption[resource]}`);
         }
     }
     
+    // === 输出报告 ===
+    if (growthReport.length > 0) {
+        logEvent(`自然增长: ${growthReport.join(', ')}`);
+    }
     if (consumptionReport.length > 0) {
         logEvent(`年度消耗: ${consumptionReport.join(', ')}`);
     }
@@ -656,7 +683,8 @@ function getResourceDisplayName(key) {
         tech: '科技',
         military: '军力',
         culture: '文化',
-        environment: '环境'
+        environment: '环境',
+        order: '秩序'
     };
     return names[key] || key;
 }
