@@ -1142,28 +1142,122 @@ function setupMobilePanels() {
 function showHelp() {
     const helpHTML = `
         <div class="help-screen">
-            <h2>📚 游戏帮助</h2>
+            <h2>📚 时代之路 - 快速指南</h2>
+            
             <div class="help-section">
                 <h3>🎯 游戏目标</h3>
-                <p>引导你的文明从部落时代发展到星际文明，尽可能生存更多年数。</p>
+                <p>发展文明从部落到星际时代，生存尽可能多的年数</p>
+                <div class="help-expandable" onclick="toggleHelpSection('goal-details')">
+                    <span class="expand-text">详细说明 ▼</span>
+                </div>
+                <div id="goal-details" class="help-details" style="display: none;">
+                    <p><strong>胜利条件：</strong>进入星际文明阶段且科技达到600点</p>
+                    <p><strong>失败条件：</strong>人口≤10 或 粮食≤0 或 环境≤10</p>
+                </div>
             </div>
+            
             <div class="help-section">
                 <h3>🔄 游戏流程</h3>
-                <ol>
-                    <li>每年抽取3张事件卡，选择1张执行</li>
-                    <li>事件影响你的资源（人口、粮食、科技、军力、文化、环境）</li>
-                    <li>然后选择1个行动来进一步发展文明</li>
-                    <li>科技达到要求时自动进入下一文明阶段</li>
-                </ol>
+                <p>每年：选择事件 → 选择行动 → 自动消耗 → 检查升级</p>
+                <div class="help-expandable" onclick="toggleHelpSection('flow-details')">
+                    <span class="expand-text">详细流程 ▼</span>
+                </div>
+                <div id="flow-details" class="help-details" style="display: none;">
+                    <ol>
+                        <li><strong>事件阶段：</strong>从3张事件卡中选择1张执行</li>
+                        <li><strong>行动阶段：</strong>选择1个行动应对或发展</li>
+                        <li><strong>消耗阶段：</strong>自动扣除年度维持消耗</li>
+                        <li><strong>进化检查：</strong>满足条件时自动升级文明阶段</li>
+                    </ol>
+                </div>
             </div>
+            
             <div class="help-section">
-                <h3>⚠️ 生存条件</h3>
-                <p>人口、粮食或环境稳定度降至0时游戏结束。合理平衡各项资源是关键！</p>
+                <h3>📊 资源系统</h3>
+                <p>管理6种资源：人口、粮食、环境、科技、军力、文化</p>
+                <div class="help-expandable" onclick="toggleHelpSection('resource-details')">
+                    <span class="expand-text">资源详情 ▼</span>
+                </div>
+                <div id="resource-details" class="help-details" style="display: none;">
+                    <div class="resource-guide">
+                        <div><strong>人口：</strong>文明基础，≤10时游戏结束</div>
+                        <div><strong>粮食：</strong>维持生存，≤0时游戏结束</div>
+                        <div><strong>环境：</strong>生态稳定度(%)，≤10时游戏结束</div>
+                        <div><strong>科技：</strong>解锁新文明阶段的关键</div>
+                        <div><strong>军力：</strong>城邦阶段起解锁，用于防御扩张</div>
+                        <div><strong>文化：</strong>城邦阶段起解锁，影响社会稳定</div>
+                    </div>
+                </div>
             </div>
+            
+            <div class="help-section">
+                <h3>🏛️ 文明阶段</h3>
+                <p>7个阶段：部落→农业→城邦→帝国→工业→信息→星际</p>
+                <div class="help-expandable" onclick="toggleHelpSection('stage-details')">
+                    <span class="expand-text">阶段要求 ▼</span>
+                </div>
+                <div id="stage-details" class="help-details" style="display: none;">
+                    <div class="stage-guide">
+                        <div><strong>部落文明(0科技)：</strong>基础生存资源</div>
+                        <div><strong>农业文明(30科技)：</strong>添加科技、军力</div>
+                        <div><strong>城邦文明(80科技)：</strong>添加文化资源</div>
+                        <div><strong>帝国时代(150科技)：</strong>大规模发展</div>
+                        <div><strong>工业文明(250科技)：</strong>机械化生产</div>
+                        <div><strong>信息文明(400科技)：</strong>数字化社会</div>
+                        <div><strong>星际文明(600科技)：</strong>征服星海</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <h3>⚡ 智能行动</h3>
+                <p>行动会根据事件和资源情况智能推荐最合适的选择</p>
+                <div class="help-expandable" onclick="toggleHelpSection('action-details')">
+                    <span class="expand-text">行动类型 ▼</span>
+                </div>
+                <div id="action-details" class="help-details" style="display: none;">
+                    <div class="action-guide">
+                        <div><strong>强化：</strong>放大机遇事件的正面效果</div>
+                        <div><strong>抵消：</strong>减轻危机事件的负面影响</div>
+                        <div><strong>转化：</strong>将富余资源转换为稀缺资源</div>
+                        <div><strong>投资：</strong>长期项目，多年后获得回报</div>
+                        <div><strong>应急：</strong>资源危机时的紧急措施</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <h3>💡 生存技巧</h3>
+                <p>平衡发展，应对危机，合理规划，长期投资</p>
+                <div class="help-expandable" onclick="toggleHelpSection('strategy-details')">
+                    <span class="expand-text">策略详情 ▼</span>
+                </div>
+                <div id="strategy-details" class="help-details" style="display: none;">
+                    <div class="strategy-guide">
+                        <div>• <strong>平衡发展：</strong>避免某项资源过低导致灭亡</div>
+                        <div>• <strong>应对事件：</strong>选择与事件匹配的行动获得最佳效果</div>
+                        <div>• <strong>阶段规划：</strong>每个阶段重点发展相应资源</div>
+                        <div>• <strong>危机管理：</strong>预留资源应对突发危机</div>
+                        <div>• <strong>长期投资：</strong>资源充裕时进行建设项目</div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="help-section">
                 <h3>🏆 文明遗产</h3>
-                <p>游戏结束后会获得遗产加成，下次游戏开始时提供额外资源。</p>
+                <p>游戏结束后获得永久加成，下次游戏起始资源更多</p>
+                <div class="help-expandable" onclick="toggleHelpSection('legacy-details')">
+                    <span class="expand-text">遗产计算 ▼</span>
+                </div>
+                <div id="legacy-details" class="help-details" style="display: none;">
+                    <div class="legacy-guide">
+                        <div><strong>科技遗产：</strong>科技点数÷10，下次科技起始+X</div>
+                        <div><strong>农业遗产：</strong>粮食点数÷20，下次粮食起始+X</div>
+                        <div><strong>文化遗产：</strong>文化点数÷15，下次文化起始+X</div>
+                    </div>
+                </div>
             </div>
+            
             <button id="close-help" class="restart-button">返回游戏</button>
         </div>
     `;
@@ -1176,4 +1270,18 @@ function showHelp() {
             showStartLocation();
         }
     };
+}
+
+// Toggle help section details
+function toggleHelpSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const expandBtn = section.previousElementSibling.querySelector('.expand-text');
+    
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        expandBtn.textContent = expandBtn.textContent.replace('▼', '▲');
+    } else {
+        section.style.display = 'none';
+        expandBtn.textContent = expandBtn.textContent.replace('▲', '▼');
+    }
 }

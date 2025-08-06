@@ -407,12 +407,16 @@ button:disabled {
 .help-screen {
     text-align: left;
     padding: 20px;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 .help-screen h2 {
     text-align: center;
     margin-bottom: 20px;
+    color: #ffd700;
+    font-size: 1.5em;
 }
 .help-section {
     background: rgba(0,0,0,0.3);
@@ -421,8 +425,9 @@ button:disabled {
     margin: 12px 0;
 }
 .help-section h3 {
-    margin: 0 0 8px 0;
+    margin: 0 0 12px 0;
     color: #ffd700;
+    font-size: 1.2em;
 }
 .help-section p, .help-section ol {
     margin: 8px 0;
@@ -430,6 +435,109 @@ button:disabled {
 }
 .help-section ol {
     padding-left: 20px;
+}
+
+/* New detailed help styles */
+.help-expandable {
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+}
+
+.help-expandable:hover {
+    background: rgba(255, 215, 0, 0.2);
+}
+
+.expand-text {
+    color: #ffd700;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.help-details {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    border-left: 3px solid #ffd700;
+}
+
+.resource-guide, .stage-guide, .action-guide, .strategy-guide, .legacy-guide, .warning-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.resource-guide div, .stage-guide div, .action-guide div, .strategy-guide div, .legacy-guide div, .warning-guide div {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #4caf50;
+    font-size: 0.95em;
+}
+
+.resource-guide div {
+    border-left-color: #2196f3;
+}
+
+.stage-guide div {
+    border-left-color: #ff9800;
+}
+
+.action-guide div {
+    border-left-color: #9c27b0;
+}
+
+.strategy-guide div {
+    border-left-color: #f44336;
+}
+
+.legacy-guide div {
+    border-left-color: #ffd700;
+}
+
+.warning-guide div {
+    border-left-color: #f44336;
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.resource-guide div strong, .stage-guide div strong, .action-guide div strong, 
+.strategy-guide div strong, .legacy-guide div strong, .warning-guide div strong {
+    color: #ffd700;
+}
+
+/* Mobile responsive for help */
+@media (max-width: 900px) {
+    .help-screen {
+        padding: 15px;
+        max-width: 100%;
+    }
+    
+    .help-section {
+        padding: 12px;
+    }
+    
+    .help-expandable {
+        padding: 5px 10px;
+    }
+    
+    .expand-text {
+        font-size: 0.85em;
+    }
+    
+    .help-details {
+        padding: 8px;
+    }
+    
+    .resource-guide div, .stage-guide div, .action-guide div, .strategy-guide div, .legacy-guide div, .warning-guide div {
+        padding: 6px 10px;
+        font-size: 0.9em;
+    }
 }
 
 #event-log {
