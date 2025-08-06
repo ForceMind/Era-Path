@@ -81,6 +81,7 @@ let gameState = {
     stageIdx: 0,
     resources: {},
     eventLog: [],
+    events: [], // Store recent events for contextual action selection
     unlockedEvents: [],
     legacy: { ...legacy },
     gameOver: false
@@ -458,6 +459,7 @@ function startGame(startIdx) {
     gameState.turn = 1;
     gameState.stageIdx = getStageByTech(gameState.resources.tech);
     gameState.eventLog = [];
+    gameState.events = []; // Initialize event history for contextual actions
     gameState.unlockedEvents = [];
     gameState.gameOver = false;
     logEvent(`你选择了${starts[startIdx].name}作为起始位置。`);
@@ -535,32 +537,25 @@ function applyTurnConsumption() {
     const availableResources = getResourcesForStage(gameState.stageIdx);
     const availableResourceKeys = availableResources.map(r => r.key);
     
-    const baseConsumption = {};
+    const baseConsumption = {
+        // Base consumption increases with civilization complexity and time pressure
+        food: Math.max(8, Math.floor(gameState.resources.population / 12) + gameState.stageIdx * 3 + Math.floor(gameState.turn / 10)),
+        environment: Math.max(2, gameState.stageIdx + 1 + Math.floor(gameState.turn / 15)), // Environmental degradation accelerates
+    };
     
-    // Only consume resources that are available at current stage
-    // Food consumption - always available
-    if (availableResourceKeys.includes('food')) {
-        baseConsumption.food = Math.max(8, Math.floor(gameState.resources.population / 12) + gameState.stageIdx * 3 + Math.floor(gameState.turn / 10));
+    // Only add culture consumption if culture is available in current stage
+    if (availableResourceKeys.includes('culture')) {
+        baseConsumption.culture = Math.max(1, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 20)); // Cultural decay without maintenance
     }
     
-    // Environment consumption - always available  
-    if (availableResourceKeys.includes('environment')) {
-        baseConsumption.environment = Math.max(2, gameState.stageIdx + 1 + Math.floor(gameState.turn / 15));
+    // Additional pressure for higher stages
+    if (gameState.stageIdx >= 3 && availableResourceKeys.includes('military')) {
+        baseConsumption.military = Math.max(2, Math.floor(gameState.stageIdx / 2)); // Military maintenance costs
     }
     
-    // Culture consumption - only from city stage (2) onwards
-    if (availableResourceKeys.includes('culture') && gameState.stageIdx >= 2) {
-        baseConsumption.culture = Math.max(1, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 20));
-    }
-    
-    // Military consumption - only from city stage (2) onwards  
-    if (availableResourceKeys.includes('military') && gameState.stageIdx >= 2) {
-        baseConsumption.military = Math.max(2, Math.floor(gameState.stageIdx / 2));
-    }
-    
-    // Apply consumption only for resources we actually have
+    // Apply consumption only for available resources
     for (let resource in baseConsumption) {
-        if (gameState.resources[resource] !== undefined) {
+        if (availableResourceKeys.includes(resource)) {
             gameState.resources[resource] -= baseConsumption[resource];
             // Prevent negative values except for debugging
             gameState.resources[resource] = Math.max(0, gameState.resources[resource]);
@@ -570,7 +565,9 @@ function applyTurnConsumption() {
     // Create consumption report only for consumed resources
     let consumptionReport = [];
     for (let resource in baseConsumption) {
-        consumptionReport.push(`${getResourceDisplayName(resource)}-${baseConsumption[resource]}`);
+        if (availableResourceKeys.includes(resource)) {
+            consumptionReport.push(`${getResourceDisplayName(resource)}-${baseConsumption[resource]}`);
+        }
     }
     
     if (consumptionReport.length > 0) {
@@ -673,6 +670,22 @@ function chooseEvent(event) {
     // Apply event effects
     applyEffects(event.effects);
     logEvent(`事件：${event.name} - ${event.desc}`);
+    
+    // Add event to game state history for contextual action selection
+    if (!gameState.events) {
+        gameState.events = [];
+    }
+    gameState.events.push({
+        ...event,
+        turn: gameState.turn,
+        stage: gameState.stageIdx
+    });
+    
+    // Keep only recent events to avoid memory issues
+    if (gameState.events.length > 10) {
+        gameState.events = gameState.events.slice(-10);
+    }
+    
     updateUI();
     
     // Disable event selection to prevent re-selection
@@ -706,8 +719,17 @@ function showActionOptions() {
     opts.innerHTML = '';
     let selectedIdx = null;
     
-    // Use the new actions module to get stage-specific actions
-    let availableActions = getRandomActionsForStage(gameState.stageIdx, 4);
+    // Use the new contextual action system if available, otherwise fallback to random
+    let availableActions;
+    if (typeof getContextualActions === 'function') {
+        // Get the last event from current turn for context
+        const lastEvent = gameState.events && gameState.events.length > 0 
+            ? gameState.events[gameState.events.length - 1] 
+            : null;
+        availableActions = getContextualActions(lastEvent, gameState, 4);
+    } else {
+        availableActions = getRandomActionsForStage(gameState.stageIdx, 4);
+    }
     
     availableActions.forEach((a, idx) => {
         let btn = document.createElement('button');
