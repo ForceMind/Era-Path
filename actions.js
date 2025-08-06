@@ -49,11 +49,11 @@ const actions = [
     },
     { 
         key: 'settle_village', name: '建立村庄', desc: '建设永久性定居点，发展定居文明', 
-        costs: { food: 12, population: 6 }, effects: { culture: 12, population: 8, tech: 5, environment: -3 }, stage: 1
+        costs: { food: 12, population: 6 }, effects: { population: 15, tech: 8, environment: -3 }, stage: 1
     },
     { 
         key: 'pottery_craft', name: '陶器制作', desc: '制作陶器用于储存和烹饪', 
-        costs: { culture: 5, population: 3 }, effects: { tech: 10, culture: 8 }, stage: 1
+        costs: { population: 5, tech: 3 }, effects: { tech: 12, food: 8 }, stage: 1
     },
     { 
         key: 'irrigation', name: '灌溉系统', desc: '修建水渠，改善农业生产条件', 
@@ -61,7 +61,7 @@ const actions = [
     },
     { 
         key: 'weaving', name: '纺织技艺', desc: '发展纺织技术，制作衣物和工具', 
-        costs: { culture: 4, population: 3 }, effects: { culture: 8, tech: 6, population: 3 }, stage: 1
+        costs: { population: 3, tech: 4 }, effects: { tech: 8, population: 5, food: 3 }, stage: 1
     },
 
     // === 城邦文明阶段 (2) ===
