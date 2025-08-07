@@ -553,6 +553,65 @@ function loadGameState() {
     }
     return false;
 }
+
+// Restore game state without advancing turn
+function restoreGameState() {
+    // Show appropriate interface based on screen size
+    const isMobile = window.innerWidth <= 900;
+    if (isMobile) {
+        // Show mobile summary bars when game starts
+        document.getElementById('mobile-resource-bar').style.display = 'block';
+        document.getElementById('mobile-log-bar').style.display = 'block';
+        // Keep desktop panels hidden on mobile
+        document.getElementById('left-panel').style.display = 'none';
+        document.getElementById('right-panel').style.display = 'none';
+    } else {
+        // Ensure desktop panels are visible on PC
+        document.getElementById('left-panel').style.display = 'block';
+        document.getElementById('right-panel').style.display = 'block';
+        // Keep mobile bars hidden on desktop
+        document.getElementById('mobile-resource-bar').style.display = 'none';
+        document.getElementById('mobile-log-bar').style.display = 'none';
+    }
+    
+    // Show a "continue game" message in center panel
+    const centerPanel = document.getElementById('center-panel');
+    centerPanel.innerHTML = `
+        <div class="continue-game">
+            <h2>欢迎回来！</h2>
+            <div class="game-status">
+                <div class="status-item">文明阶段: ${stages[gameState.stageIdx].name}</div>
+                <div class="status-item">当前年份: 第${gameState.turn}年</div>
+                <div class="status-item">人口: ${gameState.resources.population || 0}</div>
+                <div class="status-item">粮食: ${gameState.resources.food || 0}</div>
+            </div>
+            <button id="continue-turn-btn" class="restart-button">继续游戏</button>
+            <button id="restart-game-btn" class="secondary-button">重新开始</button>
+        </div>
+    `;
+    
+    // Setup continue button
+    document.getElementById('continue-turn-btn').onclick = () => {
+        logEvent(`--- 继续第${gameState.turn}年 ---`);
+        
+        // Check if game over due to consumption
+        let over = checkGameOver();
+        if (over === true) {
+            showGameOver(false);
+            return;
+        } else if (over === 'win') {
+            showGameOver(true);
+            return;
+        }
+        
+        // Draw 3 event cards for player choice
+        let events = getRandomEvents(3);
+        showEventCards(events);
+    };
+    
+    // Setup restart button
+    document.getElementById('restart-game-btn').onclick = resetGame;
+}
 function nextTurn() {
     // Apply turn-based resource consumption (survival pressure)
     applyTurnConsumption();
@@ -1186,12 +1245,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Try to load saved game
     if (loadGameState()) {
-        // Continue saved game
+        // Continue saved game - just restore the UI, don't auto-advance turn
         updateUI();
         if (gameState.gameOver) {
             showStartLocation();
         } else {
-            nextTurn();
+            // Check if we're in the middle of a turn (waiting for event/action selection)
+            // If so, restore the appropriate state
+            restoreGameState();
         }
     } else {
         // Start new game selection
