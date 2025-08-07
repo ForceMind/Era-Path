@@ -1780,6 +1780,26 @@ const actionPool = {
                 triggers: ['opportunity'], amplifies: ['culture', 'tech']
             },
             {
+                key: 'mechanized_farming', name: '机械化农业', desc: '采用蒸汽动力和机械设备进行大规模农业生产',
+                costs: { tech: 35, population: 30, military: 15 }, effects: { food: 60, tech: 25, population: 20, environment: -15 },
+                triggers: ['opportunity'], amplifies: ['food', 'tech']
+            },
+            {
+                key: 'chemical_fertilizers', name: '化学肥料', desc: '使用工业化学肥料大幅提升农作物产量',
+                costs: { tech: 30, culture: 20, food: 25 }, effects: { food: 55, tech: 20, environment: -12 },
+                triggers: ['opportunity'], amplifies: ['food']
+            },
+            {
+                key: 'food_processing', name: '食品加工业', desc: '建立现代化食品加工和保存系统',
+                costs: { tech: 25, population: 25, culture: 15 }, effects: { food: 50, culture: 30, population: 15 },
+                triggers: ['opportunity'], amplifies: ['food', 'culture']
+            },
+            {
+                key: 'agricultural_research', name: '农业研究', desc: '建立农业科学研究机构',
+                costs: { tech: 28, culture: 25, food: 20 }, effects: { food: 45, tech: 35, culture: 20 },
+                triggers: ['opportunity'], amplifies: ['food', 'tech']
+            },
+            {
                 key: 'scientific_revolution', name: '科学革命', desc: '推动科学研究和技术创新',
                 costs: { tech: 40, culture: 30, population: 20 }, effects: { tech: 60, culture: 25, military: 20 },
                 triggers: ['opportunity'], amplifies: ['tech', 'culture']
@@ -2079,6 +2099,31 @@ const actionPool = {
                 key: 'industrial_parks', name: '工业园区', desc: '建设现代化工业园区',
                 costs: { tech: 35, population: 30, culture: 25, environment: 20 }, effects: { order: 15 },
                 investment: { turns: 6, returns: { tech: 40, population: 25, culture: 20, food: 20 } }
+            },
+            {
+                key: 'agricultural_mechanization', name: '农业机械化', desc: '建设大规模机械化农业设施',
+                costs: { tech: 40, population: 25, food: 30, environment: 15 }, effects: { military: 10 },
+                investment: { turns: 5, returns: { food: 60, tech: 30, population: 20, environment: -10 } }
+            },
+            {
+                key: 'irrigation_system', name: '灌溉系统', desc: '建设现代化大型灌溉网络',
+                costs: { tech: 30, population: 35, culture: 20, food: 25 }, effects: { environment: 10 },
+                investment: { turns: 6, returns: { food: 50, environment: 25, population: 15, tech: 15 } }
+            },
+            {
+                key: 'food_storage_network', name: '粮食储备网', desc: '建立全国性粮食储备和配送系统',
+                costs: { tech: 25, population: 30, culture: 25, food: 40 }, effects: { order: 15 },
+                investment: { turns: 4, returns: { food: 45, order: 30, culture: 20, population: 15 } }
+            },
+            {
+                key: 'fertilizer_factory', name: '化肥工厂', desc: '建设大型化学肥料生产基地',
+                costs: { tech: 35, population: 25, environment: 25, food: 20 }, effects: { military: 8 },
+                investment: { turns: 5, returns: { food: 55, tech: 25, environment: -15, population: 10 } }
+            },
+            {
+                key: 'agricultural_research_center', name: '农业研究中心', desc: '建立专业农业科学研究机构',
+                costs: { tech: 30, culture: 25, food: 25, population: 20 }, effects: { environment: 5 },
+                investment: { turns: 6, returns: { food: 40, tech: 35, culture: 25, environment: 15 } }
             }
         ],
         [ACTION_TYPES.EMERGENCY]: [
@@ -2131,6 +2176,21 @@ const actionPool = {
                 key: 'social_discipline', name: '社会纪律', desc: '实施严格的社会管制',
                 costs: { military: 25, order: 35 }, effects: { order: 30, tech: 25, population: 20, culture: -20 },
                 triggers: ['disaster'], urgency: 'high'
+            },
+            {
+                key: 'emergency_food_production', name: '紧急粮食生产', desc: '全面动员进行粮食生产',
+                costs: { population: 40, military: 25, order: 30 }, effects: { food: 60, population: -15, environment: -20 },
+                triggers: ['disaster'], urgency: 'critical'
+            },
+            {
+                key: 'industrial_farming', name: '工业化农场', desc: '紧急建设大型工业化农场',
+                costs: { tech: 35, population: 30, environment: 25 }, effects: { food: 55, tech: -10, environment: -15 },
+                triggers: ['disaster'], urgency: 'high'
+            },
+            {
+                key: 'food_import_emergency', name: '粮食紧急进口', desc: '动用所有资源紧急进口粮食',
+                costs: { culture: 30, military: 25, tech: 20 }, effects: { food: 50, culture: -15, military: -10 },
+                triggers: ['disaster'], urgency: 'critical'
             },
             {
                 key: 'international_aid', name: '国际援助', desc: '请求国际社会紧急援助',
@@ -2314,6 +2374,26 @@ const actionPool = {
                 key: 'global_communication', name: '全球通信', desc: '即时全球通信网络建立',
                 costs: { tech: 30, culture: 25, military: 15 }, effects: { culture: 40, tech: 25, military: 25, order: 20 },
                 triggers: ['opportunity'], amplifies: ['culture', 'military']
+            },
+            {
+                key: 'precision_agriculture', name: '精准农业', desc: '基于大数据和AI的精准农业系统',
+                costs: { tech: 35, culture: 20, food: 25 }, effects: { food: 55, tech: 30, environment: 20 },
+                triggers: ['opportunity'], amplifies: ['food', 'tech']
+            },
+            {
+                key: 'vertical_farming', name: '垂直农场', desc: '高科技室内垂直农业系统',
+                costs: { tech: 40, population: 25, environment: 15 }, effects: { food: 60, tech: 25, environment: 25 },
+                triggers: ['opportunity'], amplifies: ['food', 'environment']
+            },
+            {
+                key: 'bioengineered_crops', name: '基因改良作物', desc: '生物工程技术培育高产作物',
+                costs: { tech: 45, culture: 30, food: 20 }, effects: { food: 70, tech: 35, population: 20, environment: -10 },
+                triggers: ['opportunity'], amplifies: ['food', 'tech']
+            },
+            {
+                key: 'smart_irrigation', name: '智能灌溉', desc: 'IoT传感器控制的智能灌溉系统',
+                costs: { tech: 30, environment: 20, food: 15 }, effects: { food: 45, environment: 30, tech: 20 },
+                triggers: ['opportunity'], amplifies: ['food', 'environment']
             }
         ],
         [ACTION_TYPES.COUNTER]: [
@@ -2772,6 +2852,26 @@ const actionPool = {
                 key: 'intergalactic_network', name: '星系间网络', desc: '建立跨星系通信网络',
                 costs: { tech: 50, culture: 40, military: 30 }, effects: { tech: 65, culture: 50, military: 40, food: 25 },
                 triggers: ['opportunity'], amplifies: ['tech', 'culture']
+            },
+            {
+                key: 'molecular_gastronomy', name: '分子美食学', desc: '从分子层面设计营养完美的食物',
+                costs: { tech: 60, culture: 35, food: 30 }, effects: { food: 80, tech: 45, culture: 40, population: 25 },
+                triggers: ['opportunity'], amplifies: ['food', 'tech']
+            },
+            {
+                key: 'energy_to_matter', name: '能量转物质', desc: '直接将星际能量转化为营养物质',
+                costs: { tech: 70, environment: 40, military: 25 }, effects: { food: 90, tech: 50, environment: 35, population: 30 },
+                triggers: ['opportunity'], amplifies: ['food', 'tech']
+            },
+            {
+                key: 'quantum_agriculture', name: '量子农业', desc: '在量子层面操控生物生长',
+                costs: { tech: 65, population: 35, culture: 30 }, effects: { food: 85, tech: 40, population: 40, environment: 30 },
+                triggers: ['opportunity'], amplifies: ['food', 'population']
+            },
+            {
+                key: 'stellar_harvest', name: '恒星收获', desc: '从恒星核心提取纯能量营养',
+                costs: { tech: 75, military: 40, environment: 35 }, effects: { food: 100, tech: 60, military: 30, environment: 25 },
+                triggers: ['opportunity'], amplifies: ['food', 'tech']
             }
         ],
         [ACTION_TYPES.COUNTER]: [

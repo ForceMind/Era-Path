@@ -584,24 +584,63 @@ function applyTurnConsumption() {
         order: Math.max(1, Math.floor((gameState.resources.culture || 0) / 20) + Math.floor((gameState.resources.military || 0) / 25))
     };
     
-    // === 年度消耗机制 ===
-    const baseConsumption = {
-        // 食物消耗：基于人口规模
-        food: Math.max(8, Math.floor(gameState.resources.population / 10) + gameState.stageIdx * 2 + Math.floor(gameState.turn / 12)),
-        // 环境退化：工业化程度和时间压力
-        environment: Math.max(1, gameState.stageIdx + Math.floor(gameState.turn / 20) + Math.floor((gameState.resources.tech || 0) / 100)),
-        // 秩序衰退：大型社会的管理难度
-        order: Math.max(1, Math.floor(gameState.resources.population / 20) + Math.floor(gameState.stageIdx / 2))
-    };
+    // === 阶段性资源消耗机制 - 根据文明发展特点 ===
+    const baseConsumption = {};
     
-    // 文化维护消耗（高阶段才有）
-    if (availableResourceKeys.includes('culture') && gameState.stageIdx >= 2) {
-        baseConsumption.culture = Math.max(1, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 25));
-    }
+    // 基础生存消耗（所有阶段都有）
+    baseConsumption.population = Math.max(1, Math.floor(gameState.turn / 30)); // 人口自然死亡，缓慢增长
     
-    // 军队维护消耗（需要持续投入）
-    if (gameState.stageIdx >= 3 && availableResourceKeys.includes('military')) {
-        baseConsumption.military = Math.max(2, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.resources.military / 30));
+    // 根据文明阶段特定消耗
+    switch(gameState.stageIdx) {
+        case 0: // 部落文明 - 最缺粮食和科技
+            baseConsumption.food = Math.max(8, Math.floor(gameState.resources.population / 8) + Math.floor(gameState.turn / 15)); // 狩猎采集不稳定
+            baseConsumption.environment = Math.max(1, Math.floor(gameState.turn / 25)); // 环境压力较小
+            break;
+            
+        case 1: // 农业文明 - 粮食充足，但缺科技发展
+            baseConsumption.food = Math.max(4, Math.floor(gameState.resources.population / 15) + Math.floor(gameState.turn / 25)); // 农业提供稳定食物
+            baseConsumption.environment = Math.max(2, Math.floor(gameState.turn / 20) + Math.floor(gameState.resources.population / 30)); // 开始改造环境
+            baseConsumption.order = Math.max(1, Math.floor(gameState.resources.population / 25)); // 定居带来社会组织需求
+            break;
+            
+        case 2: // 城邦文明 - 缺少文化和军力
+            baseConsumption.food = Math.max(6, Math.floor(gameState.resources.population / 12) + Math.floor(gameState.turn / 20));
+            baseConsumption.environment = Math.max(2, Math.floor(gameState.turn / 18) + Math.floor(gameState.resources.population / 25));
+            baseConsumption.military = Math.max(3, Math.floor(gameState.resources.military / 20)); // 军队维护开始重要
+            baseConsumption.order = Math.max(2, Math.floor(gameState.resources.population / 20)); // 城市管理复杂
+            break;
+            
+        case 3: // 帝国时代 - 主要缺军力维持
+            baseConsumption.food = Math.max(8, Math.floor(gameState.resources.population / 10) + Math.floor(gameState.turn / 18));
+            baseConsumption.environment = Math.max(3, Math.floor(gameState.turn / 15) + Math.floor(gameState.resources.population / 20));
+            baseConsumption.military = Math.max(5, Math.floor(gameState.resources.military / 15) + Math.floor(gameState.resources.population / 30)); // 大帝国需要大军队
+            baseConsumption.culture = Math.max(2, Math.floor(gameState.stageIdx / 2) + Math.floor(gameState.turn / 25));
+            baseConsumption.order = Math.max(3, Math.floor(gameState.resources.population / 18)); // 帝国管理困难
+            break;
+            
+        case 4: // 工业文明 - 缺少能源(环境)和科技发展
+            baseConsumption.food = Math.max(6, Math.floor(gameState.resources.population / 12) + Math.floor(gameState.turn / 20)); // 工业化提高效率
+            baseConsumption.environment = Math.max(8, Math.floor(gameState.turn / 10) + Math.floor(gameState.resources.tech / 50)); // 工业污染严重
+            baseConsumption.military = Math.max(4, Math.floor(gameState.resources.military / 18));
+            baseConsumption.culture = Math.max(3, Math.floor(gameState.turn / 20));
+            baseConsumption.order = Math.max(4, Math.floor(gameState.resources.population / 15)); // 工业社会秩序挑战
+            break;
+            
+        case 5: // 信息文明 - 主要缺科技创新
+            baseConsumption.food = Math.max(5, Math.floor(gameState.resources.population / 15) + Math.floor(gameState.turn / 25)); // 效率更高
+            baseConsumption.environment = Math.max(6, Math.floor(gameState.turn / 15) + Math.floor(gameState.resources.tech / 80)); // 电子污染
+            baseConsumption.military = Math.max(3, Math.floor(gameState.resources.military / 20));
+            baseConsumption.culture = Math.max(4, Math.floor(gameState.turn / 18));
+            baseConsumption.order = Math.max(5, Math.floor(gameState.resources.population / 12)); // 信息社会管理复杂
+            break;
+            
+        case 6: // 星际文明 - 缺少能源、科技、文化、秩序
+            baseConsumption.food = Math.max(4, Math.floor(gameState.resources.population / 18) + Math.floor(gameState.turn / 30)); // 星际技术效率极高
+            baseConsumption.environment = Math.max(10, Math.floor(gameState.turn / 8) + Math.floor(gameState.resources.tech / 60)); // 星际开发环境代价巨大
+            baseConsumption.military = Math.max(6, Math.floor(gameState.resources.military / 15)); // 星际防务
+            baseConsumption.culture = Math.max(8, Math.floor(gameState.turn / 12)); // 星际文化认同困难
+            baseConsumption.order = Math.max(10, Math.floor(gameState.resources.population / 10)); // 跨星际管理极其复杂
+            break;
     }
     
     // === 应用自然增长 ===
@@ -1264,13 +1303,13 @@ function showHelp() {
                 </div>
                 <div id="stage-details" class="help-details" style="display: none;">
                     <div class="stage-guide">
-                        <div><strong>部落文明(0科技)：</strong>基础生存资源</div>
-                        <div><strong>农业文明(30科技)：</strong>添加科技、军力</div>
-                        <div><strong>城邦文明(80科技)：</strong>添加文化资源</div>
-                        <div><strong>帝国时代(150科技)：</strong>大规模发展</div>
-                        <div><strong>工业文明(250科技)：</strong>机械化生产</div>
-                        <div><strong>信息文明(400科技)：</strong>数字化社会</div>
-                        <div><strong>星际文明(600科技)：</strong>征服星海</div>
+                        <div><strong>部落文明(0科技)：</strong>最缺粮食和科技，狩猎采集不稳定</div>
+                        <div><strong>农业文明(30科技)：</strong>粮食充足，主要缺科技发展</div>
+                        <div><strong>城邦文明(80科技)：</strong>缺少文化认同和军事力量</div>
+                        <div><strong>帝国时代(150科技)：</strong>主要缺军力维持庞大疆域</div>
+                        <div><strong>工业文明(250科技)：</strong>缺少能源(环境)和技术创新</div>
+                        <div><strong>信息文明(400科技)：</strong>主要缺科技创新和社会管理</div>
+                        <div><strong>星际文明(600科技)：</strong>缺少能源、科技、文化、秩序</div>
                     </div>
                 </div>
             </div>
@@ -1300,11 +1339,13 @@ function showHelp() {
                 </div>
                 <div id="strategy-details" class="help-details" style="display: none;">
                     <div class="strategy-guide">
-                        <div>• <strong>平衡发展：</strong>避免某项资源过低导致灭亡</div>
-                        <div>• <strong>应对事件：</strong>选择与事件匹配的行动获得最佳效果</div>
-                        <div>• <strong>阶段规划：</strong>每个阶段重点发展相应资源</div>
-                        <div>• <strong>危机管理：</strong>预留资源应对突发危机</div>
-                        <div>• <strong>长期投资：</strong>资源充裕时进行建设项目</div>
+                        <div>• <strong>部落阶段：</strong>重点解决粮食短缺，发展基础科技</div>
+                        <div>• <strong>农业阶段：</strong>充分利用粮食优势，大力发展科技</div>
+                        <div>• <strong>城邦阶段：</strong>建设文化认同，发展军事力量</div>
+                        <div>• <strong>帝国阶段：</strong>维持强大军力，控制广阔疆域</div>
+                        <div>• <strong>工业阶段：</strong>平衡环境消耗，推进技术革新</div>
+                        <div>• <strong>信息阶段：</strong>持续科技创新，应对复杂社会管理</div>
+                        <div>• <strong>星际阶段：</strong>多重挑战并存，需要全方位发展</div>
                     </div>
                 </div>
             </div>
