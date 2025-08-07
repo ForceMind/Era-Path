@@ -501,7 +501,7 @@ function startGame(startIdx) {
     
     gameState.started = true;
     gameState.turn = 1;
-    gameState.stageIdx = getStageByTech(gameState.resources.tech);
+    gameState.stageIdx = 0; // Always start from tribe stage (0), regardless of tech level
     gameState.eventLog = [];
     gameState.events = []; // Initialize event history for contextual actions
     gameState.unlockedEvents = [];
