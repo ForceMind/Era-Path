@@ -170,9 +170,16 @@ function checkGameOver() {
         return true;
     }
     
-    // Win condition - reach the final stage with decent resources
-    if (gameState.stageIdx === stages.length - 1 && gameState.resources.tech >= 600) {
-        logEvent('恭喜！你的文明成功进入了星际时代！');
+    // Win condition - reach stellar mastery: stellar stage + high achievements
+    if (gameState.stageIdx === stages.length - 1 && 
+        gameState.resources.tech >= 800 && 
+        gameState.resources.culture >= 200 && 
+        gameState.resources.population >= 800 &&
+        gameState.resources.food >= 400 &&
+        gameState.resources.military >= 150 &&
+        gameState.resources.environment >= 40 &&
+        gameState.resources.order >= 200) {
+        logEvent('🎊 恭喜！你的文明已完全掌控星际时代，成为宇宙霸主！');
         return 'win';
     }
     
@@ -1038,11 +1045,33 @@ function showCivilizationAdvancement(stageIdx) {
     overlay.className = 'civilization-advancement';
     overlay.id = 'advancement-overlay';
     
+    // Special message for stellar stage
+    let specialMessage = '';
+    if (stageIdx === stages.length - 1) { // Stellar stage
+        specialMessage = `
+            <div class="stellar-challenge">
+                <h3>🌟 终极挑战</h3>
+                <p>成为真正的宇宙霸主需要达成以下目标：</p>
+                <div class="victory-requirements">
+                    <div>🔬 科技：800+</div>
+                    <div>🎭 文化：200+</div>
+                    <div>👥 人口：800+</div>
+                    <div>🌾 粮食：400+</div>
+                    <div>⚔️ 军力：150+</div>
+                    <div>🌍 环境：40+</div>
+                    <div>⚖️ 秩序：200+</div>
+                </div>
+                <p>星际时代的挑战才刚刚开始！</p>
+            </div>
+        `;
+    }
+    
     overlay.innerHTML = `
         <div class="advancement-content">
             <div class="advancement-title">🎉 文明进化！</div>
             <div class="advancement-stage">${stage.name}</div>
             <div class="advancement-description">${stage.description}</div>
+            ${specialMessage}
             <button class="advancement-button" onclick="closeCivilizationAdvancement()">
                 继续发展文明
             </button>
@@ -1256,8 +1285,9 @@ function showHelp() {
                     <span class="expand-text">详细说明 ▼</span>
                 </div>
                 <div id="goal-details" class="help-details" style="display: none;">
-                    <p><strong>胜利条件：</strong>进入星际文明阶段且科技达到600点</p>
-                    <p><strong>失败条件：</strong>人口≤10 或 粮食≤0 或 环境≤10</p>
+                    <p><strong>胜利条件：</strong>进入星际文明阶段并达到宇宙霸主成就</p>
+                    <p><strong>宇宙霸主要求：</strong>科技800+ 文化200+ 人口800+ 粮食400+ 军力150+ 环境40+ 秩序200+</p>
+                    <p><strong>失败条件：</strong>人口≤10 或 粮食≤0 或 环境≤10 或 秩序≤5</p>
                 </div>
             </div>
             
