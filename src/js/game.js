@@ -1331,7 +1331,8 @@ function showHelp() {
     document.getElementById('center-panel').innerHTML = helpHTML;
     document.getElementById('close-help').onclick = () => {
         if (gameState.started && !gameState.gameOver) {
-            nextTurn();
+            // 恢复到帮助前的游戏状态，不推进年数
+            continueAfterAdvancement();
         } else {
             showStartLocation();
         }
