@@ -307,9 +307,37 @@ function updateUI() {
             <span class="resource-name">${config.name}:</span> 
             <span class="resource-value">${displayValue}</span>
         </div>`;
-        
-        // Build mobile summary (shorter format)
-        if (config.key === 'population' || config.key === 'food' || config.key === 'tech') {
+    });
+    
+    // Build mobile summary - select most relevant resources based on stage
+    let priorityResources = [];
+    if (gameState.stageIdx >= 0) { // All stages
+        priorityResources.push('population', 'food', 'environment', 'order');
+    }
+    if (gameState.stageIdx >= 0) { // Tech becomes important from tribe stage
+        priorityResources.push('tech');
+    }
+    if (gameState.stageIdx >= 1) { // Military important from agriculture stage
+        priorityResources.push('military');
+    }
+    if (gameState.stageIdx >= 2) { // Culture important from city stage
+        priorityResources.push('culture');
+    }
+    
+    // For mobile, show top 4 resources based on current stage priorities
+    let mobileDisplayPriority = [];
+    if (gameState.stageIdx === 0) { // Tribe stage - focus on survival
+        mobileDisplayPriority = ['population', 'food', 'environment', 'order'];
+    } else if (gameState.stageIdx === 1) { // Agriculture stage - military becomes important
+        mobileDisplayPriority = ['population', 'food', 'tech', 'military'];
+    } else { // Advanced stages - include culture
+        mobileDisplayPriority = ['population', 'tech', 'culture', 'environment'];
+    }
+    
+    resourceConfig.forEach(config => {
+        if (mobileDisplayPriority.includes(config.key)) {
+            let value = res[config.key] || 0;
+            let displayValue = value + (config.suffix || '');
             mobileResourceSummary += `${config.name}:${displayValue} `;
         }
     });
@@ -1043,18 +1071,28 @@ function showGameOver(win) {
     // Clear saved game state
     localStorage.removeItem('civCardGameState');
     
+    // Get all resources for current stage to display complete stats
+    const resourceConfig = getResourcesForStage(gameState.stageIdx);
+    let finalStatsHTML = `
+                <div class="stat-item">存活年数: ${gameState.turn}</div>
+                <div class="stat-item">文明阶段: ${stages[gameState.stageIdx].name}</div>`;
+    
+    // Add all relevant resources for the current stage
+    resourceConfig.forEach(config => {
+        let value = gameState.resources[config.key] || 0;
+        let displayValue = value + (config.suffix || '');
+        finalStatsHTML += `<div class="stat-item">${config.name}: ${displayValue}</div>`;
+    });
+    
+    finalStatsHTML += `<div class="stat-item">总分: ${score}</div>`;
+    
     // Build game over screen
     let gameOverHTML = `
         <div class="game-over-screen">
             <h2>${win ? '🎉 胜利！' : '💀 游戏结束'}</h2>
             <div class="final-stats">
                 <h3>最终统计</h3>
-                <div class="stat-item">存活年数: ${gameState.turn}</div>
-                <div class="stat-item">文明阶段: ${stages[gameState.stageIdx].name}</div>
-                <div class="stat-item">最终人口: ${gameState.resources.population}</div>
-                <div class="stat-item">科技水平: ${gameState.resources.tech}</div>
-                <div class="stat-item">文化水平: ${gameState.resources.culture}</div>
-                <div class="stat-item">总分: ${score}</div>
+                ${finalStatsHTML}
             </div>
             <div class="legacy-info">
                 <h3>文明遗产</h3>
