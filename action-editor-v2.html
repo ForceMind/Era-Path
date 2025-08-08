@@ -4,13 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>行动数值编辑器 | Era Path Actions Editor</title>
-    <link rel="icon" type="image/svg+xml" href="src/assets/favicon.svg">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Microsoft YaHei', sans-serif;
@@ -47,16 +42,6 @@
             background: #f8f8f8;
         }
         
-        .file-loader h3 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-        
-        .file-loader p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
         .controls {
             display: flex;
             gap: 15px;
@@ -69,11 +54,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        
-        .control-group label {
-            font-weight: 600;
-            color: #555;
         }
         
         select, input, button {
@@ -91,34 +71,13 @@
             transition: background 0.3s;
         }
         
-        button:hover {
-            background: #45a049;
-        }
+        button:hover { background: #45a049; }
         
-        .load-btn {
-            background: #4CAF50;
-        }
+        .save-btn { background: #ff9800; }
+        .save-btn:hover { background: #f57c00; }
         
-        .load-btn:hover {
-            background: #45a049;
-        }
-        
-        .save-btn {
-            background: #ff9800;
-        }
-        
-        .save-btn:hover {
-            background: #f57c00;
-        }
-        
-        .reset-btn {
-            background: #f44336;
-        }
-        
-        .reset-btn:hover {
-            background: #da190b;
-        }
-        
+        .reset-btn { background: #f44336; }
+        .reset-btn:hover { background: #da190b; }
         
         .actions-grid {
             display: grid;
@@ -131,12 +90,6 @@
             border-radius: 10px;
             padding: 20px;
             background: #fafafa;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .action-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
         .action-header {
@@ -155,7 +108,6 @@
         .action-desc {
             color: #666;
             font-size: 14px;
-            line-height: 1.4;
         }
         
         .action-type {
@@ -233,10 +185,6 @@
             font-weight: 600;
         }
         
-        .search-box {
-            width: 300px;
-        }
-        
         .status-bar {
             position: fixed;
             bottom: 20px;
@@ -255,17 +203,9 @@
             opacity: 1;
         }
         
-        .hidden {
-            display: none;
-        }
-        
-        .editor-content {
-            display: none;
-        }
-        
-        .editor-content.show {
-            display: block;
-        }
+        .hidden { display: none; }
+        .editor-content { display: none; }
+        .editor-content.show { display: block; }
     </style>
 </head>
 <body>
@@ -282,14 +222,14 @@
             <h3>📁 加载 actions.js 文件</h3>
             <p>请选择你的 actions.js 文件来开始编辑</p>
             <input type="file" id="file-input" accept=".js" style="display: none;">
-            <button class="load-btn" onclick="document.getElementById('file-input').click()">选择 actions.js 文件</button>
+            <button onclick="document.getElementById('file-input').click()">选择 actions.js 文件</button>
         </div>
         
         <!-- 编辑器内容 -->
         <div id="editor-content" class="editor-content">
             <div class="controls">
                 <div class="control-group">
-                    <label for="stage-filter">文明阶段:</label>
+                    <label>文明阶段:</label>
                     <select id="stage-filter">
                         <option value="all">全部阶段</option>
                         <option value="0">部落文明</option>
@@ -303,24 +243,24 @@
                 </div>
                 
                 <div class="control-group">
-                    <label for="type-filter">行动类型:</label>
+                    <label>行动类型:</label>
                     <select id="type-filter">
                         <option value="all">全部类型</option>
-                        <option value="amplify">强化(amplify)</option>
-                        <option value="counter">抵消(counter)</option>
-                        <option value="convert">转化(convert)</option>
-                        <option value="invest">投资(invest)</option>
-                        <option value="emergency">应急(emergency)</option>
-                        <option value="synergy">协同(synergy)</option>
+                        <option value="amplify">强化</option>
+                        <option value="counter">抵消</option>
+                        <option value="convert">转化</option>
+                        <option value="invest">投资</option>
+                        <option value="emergency">应急</option>
+                        <option value="synergy">协同</option>
                     </select>
                 </div>
                 
                 <div class="control-group">
-                    <label for="search-box">搜索行动:</label>
-                    <input type="text" id="search-box" class="search-box" placeholder="输入行动名称或描述...">
+                    <label>搜索:</label>
+                    <input type="text" id="search-box" placeholder="输入行动名称或描述...">
                 </div>
                 
-                <button id="save-btn" class="save-btn">💾 保存修改的文件</button>
+                <button id="save-btn" class="save-btn">💾 下载修改后的文件</button>
                 <button id="reset-btn" class="reset-btn">🔄 重置所有修改</button>
             </div>
             
@@ -328,15 +268,12 @@
         </div>
     </div>
     
-    <div id="status-bar" class="status-bar">
-        状态信息
-    </div>
+    <div id="status-bar" class="status-bar"></div>
     
     <script>
         // 全局状态
         let originalFileContent = '';
-        let currentFileContent = '';
-        let actionPool = null;
+        let editorActionPool = null;  // 改名避免冲突
         let originalActionPool = null;
         
         // 资源类型映射
@@ -389,7 +326,6 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 originalFileContent = e.target.result;
-                currentFileContent = originalFileContent;
                 
                 if (parseActionsFile()) {
                     document.getElementById('file-loader').style.display = 'none';
@@ -403,8 +339,54 @@
             reader.readAsText(file);
         }
         
+        // 解析 actions.js 文件
+        function parseActionsFile() {
+            try {
+                // 清理之前可能存在的 actionPool
+                if (typeof window.actionPool !== 'undefined') {
+                    delete window.actionPool;
+                }
+                
+                // 创建一个隔离的执行环境
+                const tempScript = document.createElement('script');
+                
+                // 修改文件内容，避免变量重复声明
+                let modifiedContent = originalFileContent;
+                
+                // 将 const actionPool 改为 window.actionPool，避免重复声明
+                modifiedContent = modifiedContent.replace(/const actionPool\s*=/, 'window.actionPool =');
+                modifiedContent = modifiedContent.replace(/let actionPool\s*=/, 'window.actionPool =');
+                modifiedContent = modifiedContent.replace(/var actionPool\s*=/, 'window.actionPool =');
+                
+                tempScript.textContent = modifiedContent;
+                document.head.appendChild(tempScript);
+                
+                // 检查是否成功解析
+                if (typeof window.actionPool !== 'undefined') {
+                    // 复制到本地变量
+                    editorActionPool = JSON.parse(JSON.stringify(window.actionPool));
+                    originalActionPool = JSON.parse(JSON.stringify(window.actionPool));
+                    
+                    // 清理
+                    document.head.removeChild(tempScript);
+                    delete window.actionPool;
+                    
+                    return true;
+                }
+                
+                document.head.removeChild(tempScript);
+                throw new Error('未找到 actionPool 定义');
+            } catch (error) {
+                console.error('解析文件失败:', error);
+                showStatus('❌ 解析失败: ' + error.message);
+                return false;
+            }
+        }
+        
         // 渲染行动列表
         function renderActions() {
+            if (!editorActionPool) return;
+            
             const container = document.getElementById('actions-container');
             const stageFilter = document.getElementById('stage-filter').value;
             const typeFilter = document.getElementById('type-filter').value;
@@ -412,14 +394,12 @@
             
             container.innerHTML = '';
             
-            // 按阶段组织行动
-            const stageKeys = stageFilter === 'all' ? Object.keys(editedActions) : [stageFilter];
+            const stageKeys = stageFilter === 'all' ? Object.keys(editorActionPool) : [stageFilter];
             
             stageKeys.forEach(stageKey => {
-                const stage = editedActions[stageKey];
+                const stage = editorActionPool[stageKey];
                 if (!stage) return;
                 
-                // 收集符合条件的行动
                 let stageActions = [];
                 
                 Object.keys(stage).forEach(actionType => {
@@ -440,7 +420,6 @@
                 
                 if (stageActions.length === 0) return;
                 
-                // 创建阶段标题
                 const stageSection = document.createElement('div');
                 stageSection.className = 'stage-section';
                 
@@ -451,7 +430,6 @@
                 `;
                 stageSection.appendChild(stageHeader);
                 
-                // 创建行动网格
                 const actionsGrid = document.createElement('div');
                 actionsGrid.className = 'actions-grid';
                 
@@ -479,14 +457,14 @@
                 
                 <div class="values-section costs">
                     <div class="values-title">消耗 (Costs)</div>
-                    <div class="values-grid" id="costs-${action.stageKey}-${action.actionType}-${action.actionIndex}">
+                    <div class="values-grid">
                         ${renderResourceInputs(action.costs || {}, 'costs', action)}
                     </div>
                 </div>
                 
                 <div class="values-section effects">
                     <div class="values-title">效果 (Effects)</div>
-                    <div class="values-grid" id="effects-${action.stageKey}-${action.actionType}-${action.actionIndex}">
+                    <div class="values-grid">
                         ${renderResourceInputs(action.effects || {}, 'effects', action)}
                     </div>
                 </div>
@@ -507,259 +485,121 @@
                         <input type="number" 
                                class="value-input" 
                                value="${value}"
-                               data-action-stage="${action.stageKey}"
-                               data-action-type="${action.actionType}"
-                               data-action-index="${action.actionIndex}"
-                               data-resource-type="${resource}"
-                               data-value-type="${type}"
-                               onchange="updateActionValue(this)">
+                               data-action-key="${action.key}"
+                               data-stage="${action.stageKey}"
+                               data-type="${action.actionType}"
+                               data-index="${action.actionIndex}"
+                               data-resource="${resource}"
+                               data-section="${type}"
+                               onchange="updateValue(this)">
                     </div>
                 `;
             }).join('');
         }
         
-        // 更新行动数值
-        function updateActionValue(input) {
-            const stageKey = input.dataset.actionStage;
-            const actionType = input.dataset.actionType;
-            const actionIndex = parseInt(input.dataset.actionIndex);
-            const resourceType = input.dataset.resourceType;
-            const valueType = input.dataset.valueType;
+        // 更新数值
+        function updateValue(input) {
+            const stage = input.dataset.stage;
+            const type = input.dataset.type;
+            const index = parseInt(input.dataset.index);
+            const resource = input.dataset.resource;
+            const section = input.dataset.section;
             const newValue = parseInt(input.value) || 0;
             
-            // 更新数据
-            const action = editedActions[stageKey][actionType][actionIndex];
-            if (!action[valueType]) action[valueType] = {};
-            
-            if (newValue === 0) {
-                delete action[valueType][resourceType];
-            } else {
-                action[valueType][resourceType] = newValue;
+            // 更新 actionPool
+            if (!editorActionPool[stage][type][index][section]) {
+                editorActionPool[stage][type][index][section] = {};
             }
             
-            // 添加变化指示器
-            input.classList.add('change-indicator');
-            setTimeout(() => input.classList.remove('change-indicator'), 1000);
+            if (newValue === 0) {
+                delete editorActionPool[stage][type][index][section][resource];
+            } else {
+                editorActionPool[stage][type][index][section][resource] = newValue;
+            }
             
-            // 自动保存
-            saveConfig();
+            // 视觉反馈
+            input.style.background = '#ffeb3b';
+            setTimeout(() => {
+                input.style.background = '';
+            }, 1000);
         }
         
-        // 显示文件上传界面
-        function showFileUploader() {
-            document.getElementById('file-uploader').classList.remove('hidden');
-            document.getElementById('actions-container').style.display = 'none';
-        }
-        
-        // 隐藏文件上传界面
-        function hideFileUploader() {
-            document.getElementById('file-uploader').classList.add('hidden');
-            document.getElementById('actions-container').style.display = 'block';
-        }
-        
-        // 处理文件上传
-        function uploadActionsFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                actionsFileContent = e.target.result;
-                if (parseActionPool()) {
-                    hideFileUploader();
-                    renderActions();
-                    showStatus('Actions.js 文件上传成功');
-                }
-            };
-            reader.readAsText(file);
-        }
-        
-        // 保存到文件
-        function saveToFile() {
+        // 保存文件
+        function saveFile() {
             try {
-                // 使用智能替换，只修改数值部分
-                const newFileContent = replaceValuesInFile();
+                // 替换文件中的数值
+                let newContent = originalFileContent;
                 
-                // 下载修改后的文件
-                const blob = new Blob([newFileContent], { type: 'text/javascript' });
+                // 遍历所有修改，替换对应的数值
+                Object.keys(editorActionPool).forEach(stageKey => {
+                    Object.keys(editorActionPool[stageKey]).forEach(actionType => {
+                        editorActionPool[stageKey][actionType].forEach((action, index) => {
+                            const originalAction = originalActionPool[stageKey][actionType][index];
+                            
+                            // 比较并替换 costs
+                            if (action.costs && originalAction.costs) {
+                                Object.keys(originalAction.costs).forEach(resource => {
+                                    const oldValue = originalAction.costs[resource];
+                                    const newValue = action.costs[resource] || 0;
+                                    if (oldValue !== newValue) {
+                                        newContent = replaceValueInFile(newContent, action.key, 'costs', resource, oldValue, newValue);
+                                    }
+                                });
+                            }
+                            
+                            // 比较并替换 effects
+                            if (action.effects && originalAction.effects) {
+                                Object.keys(originalAction.effects).forEach(resource => {
+                                    const oldValue = originalAction.effects[resource];
+                                    const newValue = action.effects[resource] || 0;
+                                    if (oldValue !== newValue) {
+                                        newContent = replaceValueInFile(newContent, action.key, 'effects', resource, oldValue, newValue);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+                
+                // 下载文件
+                const blob = new Blob([newContent], { type: 'text/javascript' });
                 const url = URL.createObjectURL(blob);
-                
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = 'actions.js';
                 link.click();
-                
                 URL.revokeObjectURL(url);
-                showStatus('修改后的 actions.js 文件已下载');
                 
+                showStatus('✅ 修改后的文件已下载！');
             } catch (error) {
-                console.error('保存文件失败:', error);
-                showStatus('保存文件失败: ' + error.message);
+                console.error('保存失败:', error);
+                showStatus('❌ 保存失败: ' + error.message);
             }
         }
         
-        // 智能替换文件中的数值，保持原有代码结构
-        function replaceValuesInFile() {
-            let newContent = actionsFileContent;
-            
-            // 遍历所有修改过的行动
-            Object.keys(editedActions).forEach(stageKey => {
-                Object.keys(editedActions[stageKey]).forEach(actionType => {
-                    editedActions[stageKey][actionType].forEach((action, index) => {
-                        const original = originalActions[stageKey][actionType][index];
-                        
-                        // 处理costs
-                        if (action.costs) {
-                            // 替换现有的值
-                            if (original.costs) {
-                                Object.keys(original.costs).forEach(resource => {
-                                    const oldValue = original.costs[resource];
-                                    const newValue = action.costs[resource] || 0;
-                                    
-                                    if (oldValue !== newValue) {
-                                        newContent = replaceResourceValue(newContent, action.key, 'costs', resource, oldValue, newValue);
-                                    }
-                                });
-                            }
-                            
-                            // 添加新的资源（如果原来没有）
-                            Object.keys(action.costs).forEach(resource => {
-                                if (action.costs[resource] > 0 && (!original.costs || !original.costs[resource])) {
-                                    newContent = addResourceValue(newContent, action.key, 'costs', resource, action.costs[resource]);
-                                }
-                            });
-                        }
-                        
-                        // 处理effects
-                        if (action.effects) {
-                            // 替换现有的值
-                            if (original.effects) {
-                                Object.keys(original.effects).forEach(resource => {
-                                    const oldValue = original.effects[resource];
-                                    const newValue = action.effects[resource] || 0;
-                                    
-                                    if (oldValue !== newValue) {
-                                        newContent = replaceResourceValue(newContent, action.key, 'effects', resource, oldValue, newValue);
-                                    }
-                                });
-                            }
-                            
-                            // 添加新的资源（如果原来没有）
-                            Object.keys(action.effects).forEach(resource => {
-                                if (action.effects[resource] !== 0 && (!original.effects || original.effects[resource] === undefined)) {
-                                    newContent = addResourceValue(newContent, action.key, 'effects', resource, action.effects[resource]);
-                                }
-                            });
-                        }
-                    });
-                });
-            });
-            
-            return newContent;
-        }
-        
-        // 替换特定行动的特定资源数值
-        function replaceResourceValue(content, actionKey, section, resource, oldValue, newValue) {
-            if (newValue === 0) {
-                // 如果新值为0，删除该资源行
-                const deletePattern = new RegExp(
-                    `(key:\\s*['"]${actionKey}['"][\\s\\S]*?${section}:\\s*{[^}]*?)\\s*,?\\s*${resource}:\\s*${oldValue}\\s*,?([^}]*})`,
-                    'g'
-                );
-                return content.replace(deletePattern, '$1$2');
-            } else {
-                // 替换数值
-                const pattern = new RegExp(
-                    `(key:\\s*['"]${actionKey}['"][\\s\\S]*?${section}:\\s*{[^}]*?${resource}:\\s*)${oldValue}(\\s*[,}])`,
-                    'g'
-                );
-                return content.replace(pattern, `$1${newValue}$2`);
-            }
-        }
-        
-        // 为行动添加新的资源
-        function addResourceValue(content, actionKey, section, resource, value) {
-            if (value === 0) return content;
-            
-            // 查找costs或effects对象的结束位置，在前面添加新资源
+        // 在文件中替换特定数值
+        function replaceValueInFile(content, actionKey, section, resource, oldValue, newValue) {
+            // 构建精确的正则表达式来匹配特定行动的特定资源
             const pattern = new RegExp(
-                `(key:\\s*['"]${actionKey}['"][\\s\\S]*?${section}:\\s*{[^}]*?)(\\s*})`,
+                `(key:\\s*['"]${actionKey}['"][\\s\\S]*?${section}:\\s*{[^}]*?${resource}:\\s*)${oldValue}(\\s*[,}])`,
                 'g'
             );
             
-            return content.replace(pattern, (match, prefix, suffix) => {
-                // 检查是否已经有其他资源，决定是否需要逗号
-                const needsComma = prefix.trim().endsWith(',') || prefix.includes(':');
-                const comma = needsComma ? ', ' : '';
-                return `${prefix}${comma}${resource}: ${value}${suffix}`;
-            });
+            return content.replace(pattern, `$1${newValue}$2`);
         }
         
-        // 加载保存的配置
-        function saveConfig() {
-            localStorage.setItem('actionEditorConfig', JSON.stringify(editedActions));
-            showStatus('配置已自动保存');
-        }
-        
-        // 加载保存的配置
-        function loadSavedConfig() {
-            const saved = localStorage.getItem('actionEditorConfig');
-            if (saved) {
-                try {
-                    editedActions = JSON.parse(saved);
-                } catch (e) {
-                    console.error('加载配置失败:', e);
-                }
-            }
-        }
-        
-        // 导出配置
-        function exportConfig() {
-            const dataStr = JSON.stringify(editedActions, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `era-path-actions-${new Date().toISOString().slice(0, 10)}.json`;
-            link.click();
-            
-            showStatus('配置已导出');
-        }
-        
-        // 导入配置
-        function importConfig(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    editedActions = imported;
-                    saveConfig();
+        // 重置所有修改
+        function resetChanges() {
+            if (confirm('确定要重置所有修改吗？这将恢复到文件的原始状态。')) {
+                if (originalActionPool) {
+                    editorActionPool = JSON.parse(JSON.stringify(originalActionPool));
                     renderActions();
-                    showStatus('配置已导入');
-                } catch (error) {
-                    alert('导入失败：文件格式错误');
+                    showStatus('✅ 已重置所有修改');
                 }
-            };
-            reader.readAsText(file);
-            
-            // 清空文件输入
-            event.target.value = '';
-        }
-        
-        // 重置所有配置
-        function resetAll() {
-            if (confirm('确定要重置所有行动数值到初始状态吗？此操作不可撤销。')) {
-                editedActions = JSON.parse(JSON.stringify(originalActions));
-                localStorage.removeItem('actionEditorConfig');
-                renderActions();
-                showStatus('已重置所有配置');
             }
         }
         
-        // 显示状态消息
+        // 显示状态信息
         function showStatus(message) {
             const statusBar = document.getElementById('status-bar');
             statusBar.textContent = message;
@@ -767,14 +607,14 @@
             
             setTimeout(() => {
                 statusBar.classList.remove('show');
-            }, 2000);
+            }, 3000);
         }
         
-        // 页面加载时初始化
-        document.addEventListener('DOMContentLoaded', init);
+        // 全局函数
+        window.updateValue = updateValue;
         
-        // 全局函数，供HTML中的onchange使用
-        window.updateActionValue = updateActionValue;
+        // 初始化
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
