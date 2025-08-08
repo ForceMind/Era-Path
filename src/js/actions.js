@@ -950,8 +950,8 @@ const actionPool = {
         [ACTION_TYPES.CONVERT]: [
             {
                 key: 'culture_to_tech', name: '学术研究', desc: '将文化资源投入技术研究',
-                costs: { culture: 15, food: 8, order: 5 }, effects: { tech: 25, population: 3, order: 8 },
-                converts: { from: 'culture', to: 'tech', ratio: 1.67 }
+                costs: { culture: 20, food: 15, population: 12 }, effects: { tech: 25 },
+                converts: { from: 'culture', to: 'tech', ratio: 1.25 }
             },
             {
                 key: 'military_to_culture', name: '和平发展', desc: '削减军费发展文化',
@@ -960,13 +960,13 @@ const actionPool = {
             },
             {
                 key: 'tech_to_military', name: '军事革新', desc: '用技术优势强化军力',
-                costs: { tech: 12, food: 10, order: 8 }, effects: { military: 18, culture: 5, order: 5 },
-                converts: { from: 'tech', to: 'military', ratio: 1.5 }
+                costs: { tech: 15, food: 20, population: 15 }, effects: { military: 18 },
+                converts: { from: 'tech', to: 'military', ratio: 1.2 }
             },
             {
                 key: 'population_to_culture', name: '文化教育', desc: '投入人力发展文化教育',
-                costs: { population: 15, food: 12, order: 8 }, effects: { culture: 25, tech: 8, order: 12 },
-                converts: { from: 'population', to: 'culture', ratio: 1.67 }
+                costs: { population: 20, food: 18 }, effects: { culture: 25 },
+                converts: { from: 'population', to: 'culture', ratio: 1.25 }
             },
             {
                 key: 'food_to_population', name: '人口增长', desc: '用充足粮食支持人口增长',
@@ -980,8 +980,8 @@ const actionPool = {
             },
             {
                 key: 'tech_to_food', name: '技术农业', desc: '运用技术大幅提升农业产量',
-                costs: { tech: 15, population: 12, order: 6 }, effects: { food: 30, environment: -8, order: 5 },
-                converts: { from: 'tech', to: 'food', ratio: 2 }
+                costs: { tech: 10, population: 8 }, effects: { food: 60, environment: -5 },
+                converts: { from: 'tech', to: 'food', ratio: 6 }
             },
             {
                 key: 'order_to_military', name: '秩序动员', desc: '运用社会秩序组织军事力量',
@@ -1005,8 +1005,8 @@ const actionPool = {
             },
             {
                 key: 'agricultural_innovation', name: '农业创新', desc: '技术改进农业生产',
-                costs: { tech: 20, culture: 18 }, effects: { food: 40, environment: 15, tech: -12, population: 12 },
-                converts: { from: 'tech', to: 'food', ratio: 2.0 }
+                costs: { tech: 12, population: 10 }, effects: { food: 70, environment: 20 },
+                converts: { from: 'tech', to: 'food', ratio: 5.8 }
             },
             {
                 key: 'population_mobilization', name: '人口动员', desc: '动员人口投入文化建设',
@@ -1025,8 +1025,8 @@ const actionPool = {
             },
             {
                 key: 'military_agriculture', name: '军事农业', desc: '军事组织转向农业生产',
-                costs: { military: 25, order: 15 }, effects: { food: 35, environment: 20, military: -15, population: 18 },
-                converts: { from: 'military', to: 'food', ratio: 1.4 }
+                costs: { military: 15, population: 10 }, effects: { food: 50, environment: 15 },
+                converts: { from: 'military', to: 'food', ratio: 3.3 }
             },
             {
                 key: 'institutional_culture', name: '制度文化', desc: '秩序制度促进文化发展',
@@ -1470,13 +1470,13 @@ const actionPool = {
         [ACTION_TYPES.CONVERT]: [
             {
                 key: 'tribute_system', name: '贡赋制度', desc: '建立贡赋体系获取资源',
-                costs: { military: 15, culture: 10, order: 8 }, effects: { food: 30, tech: 10, order: 12 },
-                converts: { from: 'military', to: 'food', ratio: 2 }
+                costs: { military: 10, population: 8 }, effects: { food: 50 },
+                converts: { from: 'military', to: 'food', ratio: 5 }
             },
             {
                 key: 'imperial_bureaucracy', name: '帝国官僚', desc: '完善行政体系提升效率',
-                costs: { culture: 20, food: 15, order: 10 }, effects: { tech: 25, military: 8, order: 18 },
-                converts: { from: 'culture', to: 'tech', ratio: 1.25 }
+                costs: { culture: 25, food: 20, population: 15 }, effects: { tech: 25 },
+                converts: { from: 'culture', to: 'tech', ratio: 1.0 }
             },
             {
                 key: 'military_colonization', name: '军事殖民', desc: '派遣军队开拓新领土',
@@ -1495,8 +1495,8 @@ const actionPool = {
             },
             {
                 key: 'cultural_assimilation', name: '文化同化', desc: '将征服地区纳入帝国文化',
-                costs: { population: 18, military: 15, order: 12 }, effects: { culture: 30, tech: 12, order: 20 },
-                converts: { from: 'population', to: 'culture', ratio: 1.67 }
+                costs: { population: 25, food: 20 }, effects: { culture: 30 },
+                converts: { from: 'population', to: 'culture', ratio: 1.2 }
             },
             {
                 key: 'order_to_military', name: '帝国征召', desc: '利用社会秩序大规模征兵',
@@ -1510,13 +1510,13 @@ const actionPool = {
             },
             {
                 key: 'imperial_workshops', name: '帝国工坊', desc: '技术转化为生产力',
-                costs: { tech: 25, population: 20, order: 15 }, effects: { food: 40, military: 15, tech: -10 },
-                converts: { from: 'tech', to: 'food', ratio: 1.6 }
+                costs: { tech: 15, population: 12 }, effects: { food: 80 },
+                converts: { from: 'tech', to: 'food', ratio: 5.3 }
             },
             {
                 key: 'agricultural_slaves', name: '农业奴隶', desc: '人口转为农业劳动力',
-                costs: { population: 30, military: 15, order: 20 }, effects: { food: 45, population: -15, order: 10 },
-                converts: { from: 'population', to: 'food', ratio: 1.5 }
+                costs: { population: 20, military: 10 }, effects: { food: 70 },
+                converts: { from: 'population', to: 'food', ratio: 3.5 }
             },
             {
                 key: 'imperial_scholars', name: '帝国学者', desc: '文化精英转为技术研究',
@@ -1950,18 +1950,18 @@ const actionPool = {
             },
             {
                 key: 'cultural_industry', name: '文化产业', desc: '将文化转化为工业生产力',
-                costs: { culture: 20, tech: 15 }, effects: { tech: 25, population: 20, food: 10 },
-                converts: { from: 'culture', to: 'tech', ratio: 1.25 }
+                costs: { culture: 25, food: 20, population: 15 }, effects: { tech: 25 },
+                converts: { from: 'culture', to: 'tech', ratio: 1.0 }
             },
             {
                 key: 'population_mobilization', name: '人口动员', desc: '动员人口投入工业生产',
-                costs: { population: 25, culture: 15 }, effects: { tech: 30, food: 20, environment: -8 },
-                converts: { from: 'population', to: 'tech', ratio: 1.2 }
+                costs: { population: 30, food: 25 }, effects: { tech: 30 },
+                converts: { from: 'population', to: 'tech', ratio: 1.0 }
             },
             {
                 key: 'resource_processing', name: '资源加工', desc: '深度加工自然资源',
-                costs: { environment: 15, tech: 12 }, effects: { food: 25, tech: 15, military: 10 },
-                converts: { from: 'environment', to: 'food', ratio: 1.67 }
+                costs: { environment: 10, population: 8 }, effects: { food: 80 },
+                converts: { from: 'environment', to: 'food', ratio: 8 }
             },
             {
                 key: 'resource_industrialization', name: '资源工业化', desc: '将自然资源转化为工业原料',
@@ -1990,8 +1990,8 @@ const actionPool = {
             },
             {
                 key: 'military_infrastructure', name: '军事基础设施', desc: '军事建设促进基础设施发展',
-                costs: { military: 25, tech: 20, order: 15 }, effects: { food: 35, culture: 20, military: -15 },
-                converts: { from: 'military', to: 'food', ratio: 1.4 }
+                costs: { military: 15, population: 10 }, effects: { food: 90 },
+                converts: { from: 'military', to: 'food', ratio: 6 }
             },
             {
                 key: 'order_efficiency', name: '秩序效率', desc: '社会秩序转化为生产效率',
@@ -2015,8 +2015,8 @@ const actionPool = {
             },
             {
                 key: 'environmental_agriculture', name: '生态农业', desc: '环境保护转化为可持续农业',
-                costs: { environment: 25, tech: 30, culture: 20 }, effects: { food: 45, population: 20, environment: -10 },
-                converts: { from: 'environment', to: 'food', ratio: 1.8 }
+                costs: { environment: 15, population: 8 }, effects: { food: 120 },
+                converts: { from: 'environment', to: 'food', ratio: 8 }
             }
         ],
         [ACTION_TYPES.INVEST]: [
@@ -2481,8 +2481,8 @@ const actionPool = {
         [ACTION_TYPES.CONVERT]: [
             {
                 key: 'automation', name: '自动化系统', desc: '用AI系统优化生产',
-                costs: { tech: 30, culture: 15 }, effects: { food: 35, environment: 15, population: 10 },
-                converts: { from: 'tech', to: 'food', ratio: 1.17 }
+                costs: { tech: 15, population: 8 }, effects: { food: 150 },
+                converts: { from: 'tech', to: 'food', ratio: 10 }
             },
             {
                 key: 'virtual_society', name: '虚拟社会', desc: '发展虚拟现实社交平台',
@@ -2496,8 +2496,8 @@ const actionPool = {
             },
             {
                 key: 'smart_agriculture', name: '智慧农业', desc: '用信息技术改造农业',
-                costs: { tech: 28, population: 15 }, effects: { food: 40, environment: 20, tech: 8 },
-                converts: { from: 'tech', to: 'food', ratio: 1.43 }
+                costs: { tech: 12, population: 8 }, effects: { food: 180 },
+                converts: { from: 'tech', to: 'food', ratio: 15 }
             },
             {
                 key: 'population_optimization', name: '人口优化', desc: '用技术手段优化人口结构',
@@ -2506,8 +2506,8 @@ const actionPool = {
             },
             {
                 key: 'culture_digitization', name: '文化数字化', desc: '将传统文化数字化保存传播',
-                costs: { culture: 25, tech: 20 }, effects: { tech: 30, culture: 20, population: 12 },
-                converts: { from: 'culture', to: 'tech', ratio: 1.2 }
+                costs: { culture: 30, food: 25, population: 20 }, effects: { tech: 30 },
+                converts: { from: 'culture', to: 'tech', ratio: 1.0 }
             },
             {
                 key: 'green_technology', name: '绿色科技', desc: '发展环境友好型技术',
@@ -2516,8 +2516,8 @@ const actionPool = {
             },
             {
                 key: 'bioeconomy', name: '生物经济', desc: '生物技术转化为经济资源',
-                costs: { tech: 30, population: 25, culture: 15 }, effects: { food: 40, environment: 20, tech: -10 },
-                converts: { from: 'tech', to: 'food', ratio: 1.33 }
+                costs: { tech: 18, population: 12 }, effects: { food: 200 },
+                converts: { from: 'tech', to: 'food', ratio: 11.1 }
             },
             {
                 key: 'cultural_ai', name: '文化AI', desc: '人工智能创造文化内容',
@@ -2526,8 +2526,8 @@ const actionPool = {
             },
             {
                 key: 'social_networks', name: '社交网络', desc: '网络平台增强社会联系',
-                costs: { tech: 25, culture: 30, food: 15 }, effects: { population: 35, order: 25, tech: -10 },
-                converts: { from: 'culture', to: 'population', ratio: 1.17 }
+                costs: { tech: 30, culture: 25, food: 20, population: 15 }, effects: { population: 35 },
+                converts: { from: 'tech', to: 'population', ratio: 1.17 }
             },
             {
                 key: 'digital_governance_system', name: '数字治理系统', desc: '技术手段提升政府效率',
@@ -2954,13 +2954,13 @@ const actionPool = {
         [ACTION_TYPES.CONVERT]: [
             {
                 key: 'star_harvesting', name: '恒星收割', desc: '从恒星中提取能量和物质',
-                costs: { tech: 45, military: 30, population: 25 }, effects: { food: 50, environment: 35, tech: 20, population: -10 },
-                converts: { from: 'tech', to: 'food', ratio: 1.11 }
+                costs: { tech: 20, population: 15 }, effects: { food: 400 },
+                converts: { from: 'tech', to: 'food', ratio: 20 }
             },
             {
                 key: 'consciousness_synthesis', name: '意识合成', desc: '合成人工智慧生命',
-                costs: { tech: 50, culture: 35, food: 25 }, effects: { population: 45, culture: 30, tech: 20 },
-                converts: { from: 'tech', to: 'population', ratio: 0.9 }
+                costs: { tech: 60, culture: 40, food: 35, population: 25 }, effects: { population: 45 },
+                converts: { from: 'tech', to: 'population', ratio: 0.75 }
             },
             {
                 key: 'reality_engineering', name: '现实工程', desc: '重构物理法则和现实规则',
@@ -2974,13 +2974,13 @@ const actionPool = {
             },
             {
                 key: 'galactic_culture', name: '银河文化', desc: '传播跨星系文明价值观',
-                costs: { culture: 40, tech: 30, population: 20 }, effects: { tech: 35, culture: 35, population: 25 },
-                converts: { from: 'culture', to: 'tech', ratio: 0.88 }
+                costs: { culture: 50, food: 40, population: 30 }, effects: { tech: 35 },
+                converts: { from: 'culture', to: 'tech', ratio: 0.7 }
             },
             {
                 key: 'universe_gardening', name: '宇宙园艺', desc: '培育和改造整个星系生态',
-                costs: { environment: 35, tech: 40, culture: 25 }, effects: { food: 45, environment: 30, population: 20 },
-                converts: { from: 'environment', to: 'food', ratio: 1.29 }
+                costs: { environment: 20, population: 15 }, effects: { food: 500 },
+                converts: { from: 'environment', to: 'food', ratio: 25 }
             },
             {
                 key: 'transcendence_protocol', name: '超越协议', desc: '将文明提升到更高维度',
@@ -2999,13 +2999,13 @@ const actionPool = {
             },
             {
                 key: 'dimensional_mining', name: '维度采矿', desc: '从高维空间开采资源',
-                costs: { tech: 50, military: 40, environment: 25 }, effects: { food: 50, population: 35, tech: -25 },
-                converts: { from: 'tech', to: 'food', ratio: 1.0 }
+                costs: { tech: 25, population: 18 }, effects: { food: 600 },
+                converts: { from: 'tech', to: 'food', ratio: 24 }
             },
             {
                 key: 'cosmic_soul_forge', name: '宇宙灵魂熔炉', desc: '锻造和升华生命灵魂',
-                costs: { culture: 45, tech: 40, population: 35 }, effects: { population: 60, culture: -20, tech: 25 },
-                converts: { from: 'culture', to: 'population', ratio: 1.33 }
+                costs: { culture: 55, food: 45, population: 35 }, effects: { population: 60 },
+                converts: { from: 'culture', to: 'population', ratio: 1.09 }
             },
             {
                 key: 'galactic_metamorphosis', name: '银河变形', desc: '改造整个银河系结构',
