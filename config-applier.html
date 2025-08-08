@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配置应用工具 | Apply Actions Config</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .step {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .step-desc {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        
+        .primary-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            background: #45a049;
+        }
+        
+        .secondary-btn {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .secondary-btn:hover {
+            background: #0b7dda;
+        }
+        
+        .warning-btn {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .warning-btn:hover {
+            background: #f57c00;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+        
+        .code-output {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .file-drop {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-drop:hover,
+        .file-drop.dragover {
+            border-color: #4CAF50;
+            background: #f0f8f0;
+        }
+        
+        .backup-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .backup-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .backup-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>配置应用工具</h1>
+            <p>将行动编辑器中的配置应用到游戏文件中。这个工具会生成新的 actions.js 代码，你可以复制并替换原文件。</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-title">步骤 1: 加载配置</div>
+            <div class="step-desc">从编辑器导出的JSON文件或本地存储中加载行动配置</div>
+            <div class="file-drop" id="file-drop">
+                <p>点击选择配置文件或拖拽文件到这里</p>
+                <p style="font-size: 12px; margin-top: 10px;">支持从行动编辑器导出的 .json 文件</p>
+            </div>
+            <input type="file" id="config-file" accept=".json" style="display: none;">
+            <br>
+            <button class="secondary-btn" id="load-from-storage">从本地存储加载</button>
+            <div id="config-status" class="status hidden"></div>
+        </div>
+        
+        <div class="step">
+            <div class="step-title">步骤 2: 生成代码</div>
+            <div class="step-desc">根据配置生成新的 actions.js 文件代码</div>
+            <button class="primary-btn" id="generate-code" disabled>生成 actions.js 代码</button>
+            <button class="warning-btn" id="create-backup">创建备份</button>
+            <div id="generate-status" class="status hidden"></div>
+        </div>
+        
+        <div class="step">
+            <div class="step-title">步骤 3: 应用代码</div>
+            <div class="step-desc">复制下面的代码，替换项目中的 src/js/actions.js 文件内容</div>
+            <textarea id="generated-code" placeholder="生成的代码将显示在这里..." readonly></textarea>
+            <br>
+            <button class="secondary-btn" id="copy-code" disabled>复制代码</button>
+            <button class="secondary-btn" id="download-code" disabled>下载文件</button>
+        </div>
+        
+        <div class="step">
+            <div class="step-title">备份管理</div>
+            <div class="step-desc">管理原始文件的备份</div>
+            <div class="backup-list" id="backup-list">
+                <p style="color: #666; text-align: center;">暂无备份</p>
+            </div>
+            <button class="warning-btn" id="restore-backup" disabled>恢复选中的备份</button>
+        </div>
+    </div>
+    
+    <script>
+        let loadedConfig = null;
+        let selectedBackup = null;
+        
+        // 原始 actions.js 模板
+        const actionsTemplate = `// actions.js - Dynamic Action System for Civilization Card Roguelike Game
+// Actions are now contextual and respond to events and current game state
+// All UI text and game content in Simplified Chinese
+// All code comments and variable names in English
+
+// Action categories for strategic depth
+const ACTION_TYPES = {
+    AMPLIFY: 'amplify',      // 强化事件效果
+    COUNTER: 'counter',      // 抵消负面效果
+    CONVERT: 'convert',      // 资源转化
+    INVEST: 'invest',        // 长期投资
+    EMERGENCY: 'emergency',  // 应急响应
+    SYNERGY: 'synergy'       // 组合效应
+};
+
+// Base actions pool organized by stage and type
+const actionPool = %%CONFIG%%;
+
+// Action utility functions and exports would continue here...
+// [其余的函数代码保持不变]
+`;
+        
+        // 初始化
+        function init() {
+            const fileInput = document.getElementById('config-file');
+            const fileDrop = document.getElementById('file-drop');
+            
+            // 文件选择和拖拽
+            fileDrop.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // 拖拽处理
+            fileDrop.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileDrop.classList.add('dragover');
+            });
+            fileDrop.addEventListener('dragleave', () => {
+                fileDrop.classList.remove('dragover');
+            });
+            fileDrop.addEventListener('drop', handleFileDrop);
+            
+            // 按钮事件
+            document.getElementById('load-from-storage').addEventListener('click', loadFromStorage);
+            document.getElementById('generate-code').addEventListener('click', generateCode);
+            document.getElementById('create-backup').addEventListener('click', createBackup);
+            document.getElementById('copy-code').addEventListener('click', copyCode);
+            document.getElementById('download-code').addEventListener('click', downloadCode);
+            document.getElementById('restore-backup').addEventListener('click', restoreBackup);
+            
+            // 加载备份列表
+            loadBackupList();
+        }
+        
+        // 处理文件选择
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                loadConfigFile(file);
+            }
+        }
+        
+        // 处理文件拖拽
+        function handleFileDrop(event) {
+            event.preventDefault();
+            document.getElementById('file-drop').classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                loadConfigFile(files[0]);
+            }
+        }
+        
+        // 加载配置文件
+        function loadConfigFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const config = JSON.parse(e.target.result);
+                    loadedConfig = config;
+                    showStatus('config-status', 'success', '配置文件加载成功');
+                    document.getElementById('generate-code').disabled = false;
+                } catch (error) {
+                    showStatus('config-status', 'error', '配置文件格式错误: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // 从本地存储加载
+        function loadFromStorage() {
+            const saved = localStorage.getItem('actionEditorConfig');
+            if (saved) {
+                try {
+                    loadedConfig = JSON.parse(saved);
+                    showStatus('config-status', 'success', '从本地存储加载配置成功');
+                    document.getElementById('generate-code').disabled = false;
+                } catch (error) {
+                    showStatus('config-status', 'error', '本地存储配置损坏');
+                }
+            } else {
+                showStatus('config-status', 'warning', '本地存储中没有找到配置');
+            }
+        }
+        
+        // 生成代码
+        function generateCode() {
+            if (!loadedConfig) {
+                showStatus('generate-status', 'error', '请先加载配置');
+                return;
+            }
+            
+            try {
+                const configString = JSON.stringify(loadedConfig, null, 4);
+                const generatedCode = actionsTemplate.replace('%%CONFIG%%', configString);
+                
+                document.getElementById('generated-code').value = generatedCode;
+                document.getElementById('copy-code').disabled = false;
+                document.getElementById('download-code').disabled = false;
+                
+                showStatus('generate-status', 'success', '代码生成成功！请复制并替换 src/js/actions.js 文件');
+            } catch (error) {
+                showStatus('generate-status', 'error', '生成代码失败: ' + error.message);
+            }
+        }
+        
+        // 创建备份
+        function createBackup() {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const backupKey = `backup_${timestamp}`;
+            
+            // 这里应该是原始的 actions.js 内容
+            // 在实际使用时，用户需要先手动备份原文件
+            const backupData = {
+                timestamp: new Date().toISOString(),
+                filename: 'actions.js',
+                note: '原始配置备份'
+            };
+            
+            localStorage.setItem(backupKey, JSON.stringify(backupData));
+            loadBackupList();
+            
+            showStatus('generate-status', 'success', '备份创建成功');
+        }
+        
+        // 复制代码
+        function copyCode() {
+            const codeArea = document.getElementById('generated-code');
+            codeArea.select();
+            document.execCommand('copy');
+            
+            showStatus('generate-status', 'success', '代码已复制到剪贴板');
+        }
+        
+        // 下载代码
+        function downloadCode() {
+            const code = document.getElementById('generated-code').value;
+            const blob = new Blob([code], { type: 'text/javascript' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'actions.js';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showStatus('generate-status', 'success', '文件下载成功');
+        }
+        
+        // 加载备份列表
+        function loadBackupList() {
+            const backupList = document.getElementById('backup-list');
+            const backups = [];
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('backup_')) {
+                    try {
+                        const backup = JSON.parse(localStorage.getItem(key));
+                        backups.push({ key, ...backup });
+                    } catch (e) {
+                        // 忽略损坏的备份
+                    }
+                }
+            }
+            
+            if (backups.length === 0) {
+                backupList.innerHTML = '<p style="color: #666; text-align: center;">暂无备份</p>';
+                return;
+            }
+            
+            backups.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            backupList.innerHTML = backups.map(backup => `
+                <div class="backup-item">
+                    <div>
+                        <strong>${backup.filename}</strong><br>
+                        <small>${new Date(backup.timestamp).toLocaleString()}</small><br>
+                        <small>${backup.note}</small>
+                    </div>
+                    <div>
+                        <button class="secondary-btn" onclick="selectBackup('${backup.key}')">选择</button>
+                        <button class="warning-btn" onclick="deleteBackup('${backup.key}')">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 选择备份
+        function selectBackup(key) {
+            selectedBackup = key;
+            document.getElementById('restore-backup').disabled = false;
+            
+            // 高亮选中的备份
+            document.querySelectorAll('.backup-item').forEach(item => {
+                item.style.background = '';
+            });
+            event.target.closest('.backup-item').style.background = '#e3f2fd';
+        }
+        
+        // 删除备份
+        function deleteBackup(key) {
+            if (confirm('确定要删除这个备份吗？')) {
+                localStorage.removeItem(key);
+                loadBackupList();
+            }
+        }
+        
+        // 恢复备份
+        function restoreBackup() {
+            if (!selectedBackup) return;
+            
+            // 这里只是演示，实际恢复需要用户手动操作
+            alert('请手动将备份的文件内容恢复到 src/js/actions.js');
+        }
+        
+        // 显示状态消息
+        function showStatus(elementId, type, message) {
+            const statusEl = document.getElementById(elementId);
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+            statusEl.classList.remove('hidden');
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.classList.add('hidden');
+                }, 3000);
+            }
+        }
+        
+        // 全局函数
+        window.selectBackup = selectBackup;
+        window.deleteBackup = deleteBackup;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行动数值编辑器 | Era Path Actions Editor</title>
+    <link rel="icon" type="image/svg+xml" href="src/assets/favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-group label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        select, input, button {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        .export-btn {
+            background: #2196F3;
+        }
+        
+        .export-btn:hover {
+            background: #0b7dda;
+        }
+        
+        .reset-btn {
+            background: #f44336;
+        }
+        
+        .reset-btn:hover {
+            background: #da190b;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+        }
+        
+        .action-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fafafa;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-header {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .action-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .action-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .action-type {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .values-section {
+            margin: 15px 0;
+        }
+        
+        .values-title {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .value-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .value-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .value-input {
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: center;
+        }
+        
+        .costs .value-input {
+            background: #ffebee;
+            border-color: #e57373;
+        }
+        
+        .effects .value-input {
+            background: #e8f5e8;
+            border-color: #81c784;
+        }
+        
+        .stage-section {
+            margin-bottom: 40px;
+        }
+        
+        .stage-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .stage-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .search-box {
+            width: 300px;
+        }
+        
+        .resource-types {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .change-indicator {
+            animation: highlight 1s ease-out;
+        }
+        
+        @keyframes highlight {
+            0% { background-color: #ffeb3b; }
+            100% { background-color: transparent; }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .status-bar.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>时代之路 - 行动数值编辑器</h1>
+            <div class="resource-types">
+                资源类型：人口(population)、食物(food)、科技(tech)、环境(environment)、秩序(order)、军事(military)、文化(culture)
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="stage-filter">文明阶段:</label>
+                <select id="stage-filter">
+                    <option value="all">全部阶段</option>
+                    <option value="0">部落文明</option>
+                    <option value="1">农业文明</option>
+                    <option value="2">城邦文明</option>
+                    <option value="3">帝国时代</option>
+                    <option value="4">工业文明</option>
+                    <option value="5">信息文明</option>
+                    <option value="6">星际文明</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="type-filter">行动类型:</label>
+                <select id="type-filter">
+                    <option value="all">全部类型</option>
+                    <option value="amplify">强化(amplify)</option>
+                    <option value="counter">抵消(counter)</option>
+                    <option value="convert">转化(convert)</option>
+                    <option value="invest">投资(invest)</option>
+                    <option value="emergency">应急(emergency)</option>
+                    <option value="synergy">协同(synergy)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="search-box">搜索行动:</label>
+                <input type="text" id="search-box" class="search-box" placeholder="输入行动名称或描述...">
+            </div>
+            
+            <button id="export-btn" class="export-btn">导出配置</button>
+            <button id="import-btn">导入配置</button>
+            <button id="reset-btn" class="reset-btn">重置所有</button>
+        </div>
+        
+        <input type="file" id="import-file" style="display: none;" accept=".json">
+        
+        <div id="actions-container"></div>
+    </div>
+    
+    <div id="status-bar" class="status-bar">
+        配置已保存
+    </div>
+    
+    <script src="src/js/actions.js"></script>
+    <script>
+        // 编辑器状态
+        let editedActions = {};
+        let originalActions = {};
+        
+        // 资源类型映射
+        const resourceNames = {
+            population: '人口',
+            food: '食物',
+            tech: '科技',
+            environment: '环境',
+            order: '秩序',
+            military: '军事',
+            culture: '文化'
+        };
+        
+        // 行动类型映射
+        const actionTypeNames = {
+            amplify: '强化',
+            counter: '抵消',
+            convert: '转化',
+            invest: '投资',
+            emergency: '应急',
+            synergy: '协同'
+        };
+        
+        // 文明阶段名称
+        const stageNames = {
+            0: '部落文明',
+            1: '农业文明',
+            2: '城邦文明',
+            3: '帝国时代',
+            4: '工业文明',
+            5: '信息文明',
+            6: '星际文明'
+        };
+        
+        // 初始化
+        function init() {
+            // 深拷贝原始数据
+            originalActions = JSON.parse(JSON.stringify(actionPool));
+            editedActions = JSON.parse(JSON.stringify(actionPool));
+            
+            // 加载保存的配置
+            loadSavedConfig();
+            
+            // 绑定事件
+            document.getElementById('stage-filter').addEventListener('change', renderActions);
+            document.getElementById('type-filter').addEventListener('change', renderActions);
+            document.getElementById('search-box').addEventListener('input', renderActions);
+            document.getElementById('export-btn').addEventListener('click', exportConfig);
+            document.getElementById('import-btn').addEventListener('click', () => {
+                document.getElementById('import-file').click();
+            });
+            document.getElementById('import-file').addEventListener('change', importConfig);
+            document.getElementById('reset-btn').addEventListener('click', resetAll);
+            
+            // 渲染界面
+            renderActions();
+        }
+        
+        // 渲染行动列表
+        function renderActions() {
+            const container = document.getElementById('actions-container');
+            const stageFilter = document.getElementById('stage-filter').value;
+            const typeFilter = document.getElementById('type-filter').value;
+            const searchText = document.getElementById('search-box').value.toLowerCase();
+            
+            container.innerHTML = '';
+            
+            // 按阶段组织行动
+            const stageKeys = stageFilter === 'all' ? Object.keys(editedActions) : [stageFilter];
+            
+            stageKeys.forEach(stageKey => {
+                const stage = editedActions[stageKey];
+                if (!stage) return;
+                
+                // 收集符合条件的行动
+                let stageActions = [];
+                
+                Object.keys(stage).forEach(actionType => {
+                    if (typeFilter !== 'all' && actionType !== typeFilter) return;
+                    
+                    stage[actionType].forEach((action, index) => {
+                        if (searchText && !action.name.toLowerCase().includes(searchText) && 
+                            !action.desc.toLowerCase().includes(searchText)) return;
+                        
+                        stageActions.push({
+                            ...action,
+                            stageKey,
+                            actionType,
+                            actionIndex: index
+                        });
+                    });
+                });
+                
+                if (stageActions.length === 0) return;
+                
+                // 创建阶段标题
+                const stageSection = document.createElement('div');
+                stageSection.className = 'stage-section';
+                
+                const stageHeader = document.createElement('div');
+                stageHeader.className = 'stage-header';
+                stageHeader.innerHTML = `
+                    <div class="stage-title">${stageNames[stageKey]} (${stageActions.length}个行动)</div>
+                `;
+                stageSection.appendChild(stageHeader);
+                
+                // 创建行动网格
+                const actionsGrid = document.createElement('div');
+                actionsGrid.className = 'actions-grid';
+                
+                stageActions.forEach(action => {
+                    const actionCard = createActionCard(action);
+                    actionsGrid.appendChild(actionCard);
+                });
+                
+                stageSection.appendChild(actionsGrid);
+                container.appendChild(stageSection);
+            });
+        }
+        
+        // 创建行动卡片
+        function createActionCard(action) {
+            const card = document.createElement('div');
+            card.className = 'action-card';
+            
+            card.innerHTML = `
+                <div class="action-header">
+                    <div class="action-name">${action.name}</div>
+                    <div class="action-desc">${action.desc}</div>
+                    <div class="action-type">${actionTypeNames[action.actionType]}</div>
+                </div>
+                
+                <div class="values-section costs">
+                    <div class="values-title">消耗 (Costs)</div>
+                    <div class="values-grid" id="costs-${action.stageKey}-${action.actionType}-${action.actionIndex}">
+                        ${renderResourceInputs(action.costs || {}, 'costs', action)}
+                    </div>
+                </div>
+                
+                <div class="values-section effects">
+                    <div class="values-title">效果 (Effects)</div>
+                    <div class="values-grid" id="effects-${action.stageKey}-${action.actionType}-${action.actionIndex}">
+                        ${renderResourceInputs(action.effects || {}, 'effects', action)}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // 渲染资源输入框
+        function renderResourceInputs(resources, type, action) {
+            const allResources = ['population', 'food', 'tech', 'environment', 'order', 'military', 'culture'];
+            
+            return allResources.map(resource => {
+                const value = resources[resource] || 0;
+                return `
+                    <div class="value-item">
+                        <label class="value-label">${resourceNames[resource]}</label>
+                        <input type="number" 
+                               class="value-input" 
+                               value="${value}"
+                               data-action-stage="${action.stageKey}"
+                               data-action-type="${action.actionType}"
+                               data-action-index="${action.actionIndex}"
+                               data-resource-type="${resource}"
+                               data-value-type="${type}"
+                               onchange="updateActionValue(this)">
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 更新行动数值
+        function updateActionValue(input) {
+            const stageKey = input.dataset.actionStage;
+            const actionType = input.dataset.actionType;
+            const actionIndex = parseInt(input.dataset.actionIndex);
+            const resourceType = input.dataset.resourceType;
+            const valueType = input.dataset.valueType;
+            const newValue = parseInt(input.value) || 0;
+            
+            // 更新数据
+            const action = editedActions[stageKey][actionType][actionIndex];
+            if (!action[valueType]) action[valueType] = {};
+            
+            if (newValue === 0) {
+                delete action[valueType][resourceType];
+            } else {
+                action[valueType][resourceType] = newValue;
+            }
+            
+            // 添加变化指示器
+            input.classList.add('change-indicator');
+            setTimeout(() => input.classList.remove('change-indicator'), 1000);
+            
+            // 自动保存
+            saveConfig();
+        }
+        
+        // 保存配置
+        function saveConfig() {
+            localStorage.setItem('actionEditorConfig', JSON.stringify(editedActions));
+            showStatus('配置已自动保存');
+        }
+        
+        // 加载保存的配置
+        function loadSavedConfig() {
+            const saved = localStorage.getItem('actionEditorConfig');
+            if (saved) {
+                try {
+                    editedActions = JSON.parse(saved);
+                } catch (e) {
+                    console.error('加载配置失败:', e);
+                }
+            }
+        }
+        
+        // 导出配置
+        function exportConfig() {
+            const dataStr = JSON.stringify(editedActions, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `era-path-actions-${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            
+            showStatus('配置已导出');
+        }
+        
+        // 导入配置
+        function importConfig(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    editedActions = imported;
+                    saveConfig();
+                    renderActions();
+                    showStatus('配置已导入');
+                } catch (error) {
+                    alert('导入失败：文件格式错误');
+                }
+            };
+            reader.readAsText(file);
+            
+            // 清空文件输入
+            event.target.value = '';
+        }
+        
+        // 重置所有配置
+        function resetAll() {
+            if (confirm('确定要重置所有行动数值到初始状态吗？此操作不可撤销。')) {
+                editedActions = JSON.parse(JSON.stringify(originalActions));
+                localStorage.removeItem('actionEditorConfig');
+                renderActions();
+                showStatus('已重置所有配置');
+            }
+        }
+        
+        // 显示状态消息
+        function showStatus(message) {
+            const statusBar = document.getElementById('status-bar');
+            statusBar.textContent = message;
+            statusBar.classList.add('show');
+            
+            setTimeout(() => {
+                statusBar.classList.remove('show');
+            }, 2000);
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // 全局函数，供HTML中的onchange使用
+        window.updateActionValue = updateActionValue;
+    </script>
+</body>
+</html>
