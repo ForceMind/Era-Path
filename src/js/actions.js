@@ -174,7 +174,7 @@ const actionPool = {
         [ACTION_TYPES.CONVERT]: [
             {
                 key: 'population_to_food', name: '全力觅食', desc: '派遣更多人手寻找食物',
-                costs: { population: 10 }, effects: { food: 20, tech: 3 },
+                costs: { population: 10 }, effects: { food: 30, tech: 3 },
                 converts: { from: 'population', to: 'food', ratio: 2 }
             },
             {
@@ -262,7 +262,7 @@ const actionPool = {
             {
                 key: 'seed_storage', name: '种子储备', desc: '收集各种植物种子，为农业做准备',
                 costs: { food: 10, population: 4 }, effects: { tech: 8 },
-                investment: { turns: 2, returns: { food: 20, tech: 6 } }
+                investment: { turns: 2, returns: { food: 30, tech: 6 } }
             },
             {
                 key: 'sacred_grove', name: '圣林培育', desc: '种植和保护神圣树林',
@@ -276,13 +276,13 @@ const actionPool = {
             },
             {
                 key: 'hunting_grounds', name: '狩猎场建设', desc: '开发专门的狩猎区域',
-                costs: { population: 10, environment: 8 }, effects: { food: 8 },
-                investment: { turns: 3, returns: { food: 35, population: 12, tech: 8 } }
+                costs: { population: 10, environment: 8 }, effects: { food: 12 },
+                investment: { turns: 3, returns: { food: 85, population: 12, tech: 8 } }
             },
             {
                 key: 'water_source', name: '水源开发', desc: '挖掘和保护稳定的水源',
                 costs: { population: 12, tech: 8 }, effects: { environment: 10 },
-                investment: { turns: 4, returns: { population: 25, environment: 20, food: 18, order: 12 } }
+                investment: { turns: 4, returns: { population: 25, environment: 200, food: 18, order: 12 } }
             },
             {
                 key: 'shelter_complex', name: '居住群落', desc: '建设永久性的居住建筑群',
@@ -292,22 +292,22 @@ const actionPool = {
             {
                 key: 'spiritual_center', name: '精神中心', desc: '建立部落的宗教和仪式中心',
                 costs: { food: 15, population: 8, order: 10 }, effects: { tech: 6 },
-                investment: { turns: 4, returns: { order: 35, population: 20, tech: 18, food: 10 } }
+                investment: { turns: 4, returns: { order: 65, population: 20, tech: 28, food: 0 } }
             },
             {
                 key: 'food_cache', name: '食物储备', desc: '建立大型食物储存设施',
                 costs: { population: 12, tech: 8, environment: 6 }, effects: { food: 10 },
-                investment: { turns: 3, returns: { food: 45, population: 15, order: 8 } }
+                investment: { turns: 3, returns: { food: 85, population: 0, order: 8 } }
             },
             {
                 key: 'tribal_paths', name: '部落道路', desc: '开辟连接各地的道路网络',
                 costs: { population: 18, food: 10 }, effects: { order: 6 },
-                investment: { turns: 4, returns: { food: 25, order: 20, tech: 15, population: 8 } }
+                investment: { turns: 4, returns: { food: 65, order: 20, tech: 15, population: 8 } }
             },
             {
                 key: 'knowledge_stones', name: '知识石碑', desc: '在石头上刻录重要知识',
                 costs: { tech: 15, population: 8, food: 10 }, effects: { order: 5 },
-                investment: { turns: 3, returns: { tech: 30, order: 20, population: 10 } }
+                investment: { turns: 3, returns: { tech: 60, order: 20, population: 10 } }
             },
             {
                 key: 'healing_garden', name: '草药园', desc: '培育各种药用植物',
@@ -318,27 +318,27 @@ const actionPool = {
         [ACTION_TYPES.EMERGENCY]: [
             {
                 key: 'last_resort_hunt', name: '绝地狩猎', desc: '动员所有战斗力进行危险但必要的狩猎',
-                costs: { population: 15, environment: 10 }, effects: { food: 35, tech: 8 },
+                costs: { population: 15, environment: 10 }, effects: { food: 55, tech: 8 },
                 emergency: true, triggers: ['food_critical']
             },
             {
                 key: 'population_sacrifice', name: '人员牺牲', desc: '让一部分人承担风险为其他人争取生存机会',
-                costs: { population: 20, order: 12 }, effects: { food: 25, environment: 15, tech: 10 },
+                costs: { population: 20, order: 12 }, effects: { food: 65, environment: 15, tech: 10 },
                 emergency: true, triggers: ['multiple_critical']
             },
             {
                 key: 'environmental_exodus', name: '环境迁徙', desc: '被迫迁移到新的环境以求生存',
-                costs: { population: 10, food: 15, order: 10 }, effects: { environment: 25, population: 5 },
+                costs: { population: 10, food: 15, order: 10 }, effects: { environment: 65, population: 5 },
                 emergency: true, triggers: ['environment_critical']
             },
             {
                 key: 'desperation_innovation', name: '绝望创新', desc: '在绝境中激发出前所未有的创新能力',
-                costs: { population: 12, food: 20, environment: 8 }, effects: { tech: 30, order: 8 },
+                costs: { population: 12, food: 20, environment: 8 }, effects: { tech: 50, order: 8 },
                 emergency: true, triggers: ['tech_needed']
             },
             {
                 key: 'survival_cannibalism', name: '极限求生', desc: '采用极端手段延续族群生存',
-                costs: { population: 18, order: 20 }, effects: { food: 30, environment: -5 },
+                costs: { population: 18, order: 20 }, effects: { food: 60, environment: -5 },
                 emergency: true, triggers: ['food_critical', 'population_critical']
             },
             {
@@ -644,8 +644,8 @@ const actionPool = {
         [ACTION_TYPES.INVEST]: [
             {
                 key: 'irrigation_project', name: '灌溉工程', desc: '大型水利建设项目',
-                costs: { population: 15, tech: 8, food: 12 }, effects: { tech: 5 },
-                investment: { turns: 4, returns: { food: 35, tech: 15, population: 12, environment: 8 } }
+                costs: { population: 15, tech: 18, food: 12 }, effects: { tech: 5 },
+                investment: { turns: 4, returns: { food: 120, tech: 25, population: 12, environment: 8 } }
             },
             {
                 key: 'pottery_industry', name: '陶器产业', desc: '发展陶器制作产业链',
@@ -655,12 +655,12 @@ const actionPool = {
             {
                 key: 'granary_system', name: '粮仓体系', desc: '建立大型粮食储存设施',
                 costs: { population: 18, tech: 10, food: 15 }, effects: { military: 5 },
-                investment: { turns: 3, returns: { food: 40, population: 20, order: 15 } }
+                investment: { turns: 3, returns: { food: 120, population: 20, order: 15 } }
             },
             {
                 key: 'breeding_program', name: '育种计划', desc: '长期改良作物和牲畜品种',
                 costs: { tech: 12, food: 20, population: 8 }, effects: { environment: 5 },
-                investment: { turns: 5, returns: { food: 50, tech: 20, environment: 15, population: 12 } }
+                investment: { turns: 5, returns: { food: 150, tech: 0, environment: 15, population: 12 } }
             },
             {
                 key: 'blacksmith_forge', name: '铁匠铺', desc: '建立专业的金属加工设施',
@@ -670,7 +670,7 @@ const actionPool = {
             {
                 key: 'road_network', name: '道路网络', desc: '连接各村落的交通网络',
                 costs: { population: 25, food: 20, military: 12 }, effects: { order: 10 },
-                investment: { turns: 5, returns: { food: 30, military: 20, order: 35, culture: 18, population: 12 } }
+                investment: { turns: 5, returns: { food: 300, military: 20, order: 35, culture: 18, population: 35 } }
             },
             {
                 key: 'temple_complex', name: '神庙建筑群', desc: '建立宗教和文化中心',
@@ -680,43 +680,43 @@ const actionPool = {
             {
                 key: 'market_establishment', name: '集市建设', desc: '建立定期贸易集市',
                 costs: { population: 15, food: 20, military: 8, order: 10 }, effects: { culture: 8 },
-                investment: { turns: 3, returns: { food: 40, culture: 30, tech: 20, order: 25, population: 10 } }
+                investment: { turns: 3, returns: { food: 120, culture: 30, tech: 20, order: 25, population: 10 } }
             },
             {
                 key: 'defensive_walls', name: '防御城墙', desc: '环绕聚落的石制防御墙',
                 costs: { population: 30, tech: 20, food: 25, military: 15 }, effects: { order: 12 },
-                investment: { turns: 6, returns: { military: 60, population: 35, order: 45, tech: 20 } }
+                investment: { turns: 6, returns: { military: 120, population: 12, order: 45, tech: 20 } }
             },
             {
                 key: 'school_system', name: '学校体系', desc: '建立正式的教育机构',
                 costs: { culture: 20, food: 25, population: 18 }, effects: { tech: 12 },
-                investment: { turns: 4, returns: { tech: 50, culture: 40, order: 30, population: 20, food: 15 } }
+                investment: { turns: 4, returns: { tech: 50, culture: 120, order: 30, population: 20, food: 0 } }
             }
         ],
         [ACTION_TYPES.EMERGENCY]: [
             {
                 key: 'scorched_earth', name: '焦土政策', desc: '破坏自己的资源防止敌人获得',
-                costs: { food: 30, environment: 20, population: 15 }, effects: { military: 35, order: 12 },
+                costs: { food: 30, environment: 20, population: 15 }, effects: { military: 85, order: 12 },
                 emergency: true, triggers: ['military_critical']
             },
             {
                 key: 'mass_conscription', name: '全民征兵', desc: '征召所有能战斗的人员',
-                costs: { population: 25, food: 20, order: 15 }, effects: { military: 40, culture: -10 },
+                costs: { population: 25, food: 20, order: 15 }, effects: { military: 60, culture: 0 },
                 emergency: true, triggers: ['population_critical', 'military_critical']
             },
             {
                 key: 'emergency_migration', name: '紧急迁徙', desc: '整个村落迁移到安全地区',
-                costs: { food: 25, order: 20, military: 15 }, effects: { environment: 30, population: 18 },
+                costs: { food: 25, order: 20, military: 15 }, effects: { environment: 60, population: 0 },
                 emergency: true, triggers: ['environment_critical']
             },
             {
                 key: 'resource_cannibalization', name: '资源拆解', desc: '拆解现有设施获得紧急资源',
-                costs: { tech: 20, culture: 15, order: 12 }, effects: { food: 35, population: 15, military: 20 },
+                costs: { tech: 20, culture: 15, order: 12 }, effects: { food: 35, population: 0, military: 20 },
                 emergency: true, triggers: ['food_critical']
             },
             {
                 key: 'revolutionary_government', name: '革命政府', desc: '推翻现有秩序建立新体制',
-                costs: { culture: 25, population: 20, military: 15 }, effects: { order: 45, tech: 20 },
+                costs: { culture: 25, population: 20, military: 15 }, effects: { order: 85, tech: 20 },
                 emergency: true, triggers: ['order_critical']
             },
             {
@@ -729,7 +729,7 @@ const actionPool = {
             {
                 key: 'agricultural_revolution', name: '农业革命', desc: '全面革新农业生产方式',
                 costs: { population: 20, tech: 15, food: 25, order: 12 }, 
-                effects: { food: 30, tech: 15, military: 10, environment: -5, order: 18 },
+                effects: { food: 60, tech: 20, military: 0, environment: 5, order: 18 },
                 synergy: { food: 0.2, tech: 0.15, order: 0.18 }
             },
             {
@@ -753,7 +753,7 @@ const actionPool = {
             {
                 key: 'prosperity_cycle', name: '繁荣循环', desc: '建立各资源相互促进的良性循环',
                 costs: { food: 25, tech: 18, military: 12, culture: 15, order: 20 }, 
-                effects: { food: 30, tech: 22, military: 15, culture: 20, order: 25, population: 18 },
+                effects: { food: 60, tech: 22, military: 15, culture: 20, order: 25, population: 18 },
                 synergy: { food: 0.15, tech: 0.12, culture: 0.18, order: 0.2 }
             },
             {
@@ -765,7 +765,7 @@ const actionPool = {
             {
                 key: 'social_harmony', name: '社会和谐', desc: '实现社会各阶层的和谐统一',
                 costs: { culture: 20, order: 25, population: 18, food: 22 }, 
-                effects: { culture: 28, order: 32, population: 25, food: 20, tech: 15, military: 12 },
+                effects: { culture: 0, order: 32, population: 25, food: 35, tech: 15, military: 12 },
                 synergy: { culture: 0.22, order: 0.25, population: 0.18 }
             }
         ]
@@ -893,7 +893,7 @@ const actionPool = {
             },
             {
                 key: 'resource_rationing', name: '资源配给', desc: '实施严格的资源分配制度',
-                costs: { culture: 8, military: 5, order: 15 }, effects: { food: 15, population: 10, environment: 5, order: 10 },
+                costs: { culture: 8, military: 5, order: 15 }, effects: { food: 35, population: 5, environment: 5, order: 10 },
                 triggers: ['crisis'], counters: ['food', 'population']
             },
             {
@@ -943,7 +943,7 @@ const actionPool = {
             },
             {
                 key: 'environmental_protection', name: '环境保护', desc: '实施环境保护措施',
-                costs: { tech: 25, culture: 20, food: 15 }, effects: { environment: 40, population: 15, culture: 18, tech: 12 },
+                costs: { tech: 25, culture: 20, food: 15 }, effects: { environment: 60, population: 15, culture: 0, tech: 12 },
                 triggers: ['crisis'], counters: ['environment', 'population']
             }
         ],
@@ -1053,37 +1053,37 @@ const actionPool = {
             {
                 key: 'academy_foundation', name: '学院建设', desc: '建立高等学府',
                 costs: { culture: 20, food: 15, tech: 10 }, effects: { population: 5 },
-                investment: { turns: 5, returns: { tech: 30, culture: 25, population: 15, order: 12 } }
+                investment: { turns: 5, returns: { tech: 30, culture: 65, population: 15, order: 12 } }
             },
             {
                 key: 'trade_routes', name: '贸易路线', desc: '建立长期贸易网络',
                 costs: { military: 10, culture: 15, food: 12 }, effects: { tech: 5 },
-                investment: { turns: 4, returns: { culture: 25, food: 20, tech: 15, military: 8 } }
+                investment: { turns: 4, returns: { culture: 25, food: 200, tech: 15, military: 8 } }
             },
             {
                 key: 'grand_library', name: '大图书馆', desc: '建立知识收集和保存中心',
                 costs: { culture: 25, tech: 15, population: 12 }, effects: { military: 5 },
-                investment: { turns: 6, returns: { tech: 45, culture: 35, population: 20, order: 15 } }
+                investment: { turns: 6, returns: { tech: 45, culture: 135, population: 20, order: 15 } }
             },
             {
                 key: 'amphitheater', name: '圆形剧场', desc: '建设大型文化娱乐设施',
                 costs: { culture: 18, population: 15, food: 10 }, effects: { tech: 8 },
-                investment: { turns: 4, returns: { culture: 40, population: 25, order: 20, tech: 12 } }
+                investment: { turns: 4, returns: { culture: 120, population: 25, order: 20, tech: 12 } }
             },
             {
                 key: 'merchant_quarter', name: '商业区', desc: '建立专门的商业贸易区域',
                 costs: { population: 20, food: 18, culture: 12 }, effects: { military: 8 },
-                investment: { turns: 5, returns: { food: 35, culture: 30, tech: 25, population: 15 } }
+                investment: { turns: 5, returns: { food: 350, culture: 30, tech: 25, population: 15 } }
             },
             {
                 key: 'defensive_walls', name: '城墙建设', desc: '建造坚固的城市防御工事',
                 costs: { military: 25, population: 30, tech: 20 }, effects: { order: 15 },
-                investment: { turns: 6, returns: { military: 65, order: 50, population: 30, tech: 20 } }
+                investment: { turns: 6, returns: { military: 165, order: 50, population: 30, tech: 20 } }
             },
             {
                 key: 'water_system', name: '供水系统', desc: '建设先进的城市供水网络',
-                costs: { tech: 25, population: 20, culture: 15 }, effects: { environment: 10 },
-                investment: { turns: 5, returns: { population: 55, environment: 35, food: 40, tech: 20 } }
+                costs: { tech: 25, population: 20, culture: 15 }, effects: { environment: 0 },
+                investment: { turns: 5, returns: { population: 55, environment: 35, food: 60, tech: 20 } }
             },
             {
                 key: 'cultural_district', name: '文化区', desc: '建立集中的文化艺术区域',
@@ -1093,12 +1093,12 @@ const actionPool = {
             {
                 key: 'military_academy', name: '军事学院', desc: '建立专业的军事训练机构',
                 costs: { military: 20, culture: 25, tech: 18 }, effects: { population: 10 },
-                investment: { turns: 5, returns: { military: 60, tech: 40, order: 35, culture: 20 } }
+                investment: { turns: 5, returns: { military: 120, tech: 40, order: 35, culture: 20 } }
             },
             {
                 key: 'agricultural_terraces', name: '农业梯田', desc: '开发山地农业种植系统',
-                costs: { population: 35, tech: 15, environment: 20 }, effects: { culture: 8 },
-                investment: { turns: 6, returns: { food: 40, environment: 25, population: 20 } }
+                costs: { population: 35, tech: 35, environment: 20 }, effects: { culture: 8 },
+                investment: { turns: 6, returns: { food: 240, environment: 0, population: 20 } }
             },
             {
                 key: 'artisan_workshops', name: '工匠作坊', desc: '建立专业手工艺生产中心',
@@ -1108,12 +1108,12 @@ const actionPool = {
             {
                 key: 'temple_complex', name: '神庙群', desc: '建设宏伟的宗教建筑群',
                 costs: { culture: 35, population: 25, food: 20 }, effects: { tech: 10 },
-                investment: { turns: 7, returns: { culture: 45, order: 30, population: 25 } }
+                investment: { turns: 7, returns: { culture: 60, order: 30, population: 25 } }
             },
             {
                 key: 'harbor_development', name: '港口发展', desc: '扩建和完善港口设施',
                 costs: { tech: 20, population: 30, military: 15 }, effects: { culture: 12 },
-                investment: { turns: 5, returns: { food: 30, culture: 25, tech: 20 } }
+                investment: { turns: 5, returns: { food: 300, culture: 25, tech: 20 } }
             },
             {
                 key: 'road_network', name: '道路网络', desc: '建设连接各地的道路系统',
@@ -1123,12 +1123,12 @@ const actionPool = {
             {
                 key: 'granary_system', name: '粮仓体系', desc: '建立大规模粮食储存系统',
                 costs: { tech: 22, population: 25, culture: 15 }, effects: { military: 8 },
-                investment: { turns: 4, returns: { food: 35, order: 20, population: 18 } }
+                investment: { turns: 4, returns: { food: 120, order: 20, population: 18 } }
             },
             {
                 key: 'observatory', name: '天文观测台', desc: '建设科学研究观测设施',
                 costs: { tech: 30, culture: 20, population: 15 }, effects: { food: 5 },
-                investment: { turns: 5, returns: { tech: 40, culture: 25, order: 15 } }
+                investment: { turns: 5, returns: { tech: 40, culture: 65, order: 15 } }
             }
         ],
         [ACTION_TYPES.EMERGENCY]: [
@@ -1144,12 +1144,12 @@ const actionPool = {
             },
             {
                 key: 'food_rationing', name: '粮食配给', desc: '实施严格的食物分配制度',
-                costs: { order: 15, culture: 10 }, effects: { food: 25, population: 10, culture: -5 },
+                costs: { order: 15, culture: 10 }, effects: { food: 60, population: 10, culture: -5 },
                 triggers: ['disaster'], urgency: 'high'
             },
             {
                 key: 'cultural_mobilization', name: '文化总动员', desc: '动员所有文化资源应对危机',
-                costs: { culture: 25, population: 20 }, effects: { order: 30, military: 20, culture: -10 },
+                costs: { culture: 35, population: 20 }, effects: { order: 30, military: 25, culture: 0 },
                 triggers: ['disaster'], urgency: 'high'
             },
             {
@@ -1164,12 +1164,12 @@ const actionPool = {
             },
             {
                 key: 'resource_requisition', name: '资源征收', desc: '强制征收所有可用物资',
-                costs: { order: 25, military: 15 }, effects: { food: 20, tech: 15, military: 10, culture: -8, order: -5 },
+                costs: { order: 25, military: 15 }, effects: { food: 60, tech: 15, military: 10, culture: 0, order: 0 },
                 triggers: ['disaster'], urgency: 'critical'
             },
             {
                 key: 'environmental_sanctuary', name: '环境避难所', desc: '建立紧急环境保护区',
-                costs: { tech: 20, population: 30 }, effects: { environment: 35, population: -10, food: 15 },
+                costs: { tech: 20, population: 30 }, effects: { environment: 35, population: 10, food: 15 },
                 triggers: ['disaster'], urgency: 'high'
             },
             {
@@ -1458,7 +1458,7 @@ const actionPool = {
             },
             {
                 key: 'environmental_protection', name: '环境保护', desc: '实施帝国环境保护政策',
-                costs: { tech: 30, culture: 20, order: 25 }, effects: { environment: 40, population: 15, food: 20 },
+                costs: { tech: 30, culture: 20, order: 25 }, effects: { environment: 60, population: 15, food: 20 },
                 triggers: ['crisis'], counters: ['environment', 'population']
             },
             {
@@ -1573,7 +1573,7 @@ const actionPool = {
             {
                 key: 'imperial_university', name: '帝国大学', desc: '建立帝国最高学府',
                 costs: { culture: 30, tech: 25, food: 20 }, effects: { military: 10 },
-                investment: { turns: 7, returns: { tech: 60, culture: 50, population: 35, order: 25, military: 15 } }
+                investment: { turns: 7, returns: { tech: 60, culture: 50, population: 12, order: 25, military: 15 } }
             },
             {
                 key: 'colosseum_project', name: '竞技场工程', desc: '建造大型娱乐竞技场',
@@ -1858,7 +1858,7 @@ const actionPool = {
             },
             {
                 key: 'worker_protection', name: '工人保护', desc: '保护工人权益和安全',
-                costs: { culture: 18, military: 10, food: 15 }, effects: { population: 25, culture: 18, tech: 8 },
+                costs: { culture: 18, military: 10, food: 15 }, effects: { population: 25, culture: 0, tech: 8 },
                 triggers: ['crisis'], counters: ['population']
             },
             {
@@ -1873,7 +1873,7 @@ const actionPool = {
             },
             {
                 key: 'industrial_safety', name: '工业安全', desc: '建立工业安全防护标准',
-                costs: { tech: 25, culture: 20, order: 15 }, effects: { population: 30, tech: 15, order: 20 },
+                costs: { tech: 25, culture: 20, order: 15 }, effects: { population: 30, tech: 20, order: 20 },
                 triggers: ['crisis'], counters: ['population', 'tech']
             },
             {
@@ -1898,7 +1898,7 @@ const actionPool = {
             },
             {
                 key: 'economic_regulation', name: '经济调节', desc: '政府干预调节经济危机',
-                costs: { culture: 25, order: 30, military: 15 }, effects: { food: 30, culture: 20, order: 25, population: 15 },
+                costs: { culture: 25, order: 30, military: 15 }, effects: { food: 60, culture: 20, order: 25, population: 15 },
                 triggers: ['crisis'], counters: ['food', 'culture']
             },
             {
@@ -2058,7 +2058,7 @@ const actionPool = {
             {
                 key: 'urban_expansion', name: '城市扩建', desc: '大规模城市建设和扩展',
                 costs: { population: 40, tech: 30, food: 35, culture: 20 }, effects: { environment: -10 },
-                investment: { turns: 7, returns: { population: 105, culture: 75, tech: 55, order: 50, military: 35, food: 30 } }
+                investment: { turns: 7, returns: { population: 105, culture: 75, tech: 55, order: 50, military: 35, food: 300 } }
             },
             {
                 key: 'mining_industry', name: '采矿工业', desc: '建立现代化采矿工业体系',
@@ -2072,7 +2072,7 @@ const actionPool = {
             },
             {
                 key: 'textile_industry', name: '纺织工业', desc: '建立大规模纺织生产体系',
-                costs: { population: 30, tech: 25, culture: 20, food: 25 }, effects: { environment: -5 },
+                costs: { population: 30, tech: 25, culture: 20, food: 25 }, effects: { environment: 5 },
                 investment: { turns: 4, returns: { culture: 65, population: 55, food: 45, tech: 35, order: 25 } }
             },
             {
@@ -2102,7 +2102,7 @@ const actionPool = {
             },
             {
                 key: 'agricultural_mechanization', name: '农业机械化', desc: '建设大规模机械化农业设施',
-                costs: { tech: 40, population: 25, food: 30, environment: 15 }, effects: { military: 10 },
+                costs: { tech: 40, population: 25, food: 30, environment: 15 }, effects: { military: 0 },
                 investment: { turns: 5, returns: { food: 120, tech: 65, population: 45, military: 25, order: 20, environment: -20 } }
             },
             {
@@ -2337,7 +2337,7 @@ const actionPool = {
             },
             {
                 key: 'space_technology', name: '太空技术', desc: '航天技术突飞猛进',
-                costs: { tech: 40, military: 25, food: 20 }, effects: { tech: 50, military: 35, culture: 20, environment: 15 },
+                costs: { tech: 40, military: 25, food: 20 }, effects: { tech: 50, military: 85, culture: 20, environment: 15 },
                 triggers: ['opportunity'], amplifies: ['tech', 'military']
             },
             {
@@ -2511,7 +2511,7 @@ const actionPool = {
             },
             {
                 key: 'green_technology', name: '绿色科技', desc: '发展环境友好型技术',
-                costs: { tech: 32, culture: 18, food: 15 }, effects: { environment: 30, tech: 15, population: 10 },
+                costs: { tech: 32, culture: 18, food: 15 }, effects: { environment: 30, tech: 15, population: 5 },
                 converts: { from: 'tech', to: 'environment', ratio: 0.94 }
             },
             {
@@ -2578,7 +2578,7 @@ const actionPool = {
             },
             {
                 key: 'global_brain', name: '全球大脑', desc: '建立人类集体智慧网络',
-                costs: { tech: 38, culture: 32, population: 25 }, effects: { food: 15 },
+                costs: { tech: 38, culture: 32, population: 25 }, effects: { food: 35 },
                 investment: { turns: 6, returns: { tech: 65, culture: 60, population: 45, order: 35, military: 25 } }
             },
             {
