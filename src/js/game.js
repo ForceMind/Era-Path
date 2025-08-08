@@ -1042,6 +1042,14 @@ function canAffordAction(action) {
 }
 
 function doAction(action) {
+    // Debug: Check gameState validity
+    if (!gameState) {
+        console.error('gameState is undefined in doAction!');
+        return;
+    }
+    
+    console.log('doAction called with action:', action.name, 'gameState:', gameState);
+    
     // Check if player can afford the action
     if (!canAffordAction(action)) {
         logEvent(`资源不足，无法执行${action.name}！`);
@@ -1073,18 +1081,38 @@ function doAction(action) {
     
     // Handle investment actions
     if (action.investment) {
-        // Ensure investments array exists
-        if (!gameState.investments) {
+        // Ensure investments array exists with additional debugging and robust initialization
+        if (!gameState.investments || !Array.isArray(gameState.investments)) {
+            console.log('Fixing investments array for gameState:', gameState);
             gameState.investments = [];
         }
         
-        const matureTurn = gameState.turn + action.investment.turns;
-        gameState.investments.push({
-            name: action.name,
-            matureTurn: matureTurn,
-            returns: action.investment.returns
-        });
-        logEvent(`💰 投资项目"${action.name}"将在第${matureTurn}年成熟`);
+        console.log('Processing investment action:', action.name, 'gameState.investments:', gameState.investments);
+        
+        try {
+            const matureTurn = gameState.turn + action.investment.turns;
+            gameState.investments.push({
+                name: action.name,
+                matureTurn: matureTurn,
+                returns: action.investment.returns
+            });
+            logEvent(`💰 投资项目"${action.name}"将在第${matureTurn}年成熟`);
+        } catch (error) {
+            console.error('Error pushing to investments array:', error);
+            console.log('gameState:', gameState);
+            console.log('gameState.investments:', gameState.investments);
+            console.log('typeof gameState.investments:', typeof gameState.investments);
+            
+            // Force re-initialize
+            gameState.investments = [];
+            const matureTurn = gameState.turn + action.investment.turns;
+            gameState.investments.push({
+                name: action.name,
+                matureTurn: matureTurn,
+                returns: action.investment.returns
+            });
+            logEvent(`💰 投资项目"${action.name}"将在第${matureTurn}年成熟`);
+        }
     }
     
     logEvent(`你选择了行动：${action.name} - ${action.desc}`);
