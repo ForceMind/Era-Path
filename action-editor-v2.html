@@ -168,6 +168,11 @@
             border-color: #81c784;
         }
         
+        .investment .value-input {
+            background: #fff3e0;
+            border-color: #ffb74d;
+        }
+        
         .stage-section {
             margin-bottom: 40px;
         }
@@ -448,6 +453,32 @@
             const card = document.createElement('div');
             card.className = 'action-card';
             
+            let investmentSection = '';
+            if (action.investment) {
+                investmentSection = `
+                    <div class="values-section investment">
+                        <div class="values-title">投资回报 (Investment Returns)</div>
+                        <div style="margin-bottom: 10px;">
+                            <label class="value-label">投资周期 (turns):</label>
+                            <input type="number" 
+                                   class="value-input" 
+                                   value="${action.investment.turns || 0}"
+                                   data-action-key="${action.key}"
+                                   data-stage="${action.stageKey}"
+                                   data-type="${action.actionType}"
+                                   data-index="${action.actionIndex}"
+                                   data-resource="turns"
+                                   data-section="investment"
+                                   onchange="updateValue(this)"
+                                   style="width: 80px;">
+                        </div>
+                        <div class="values-grid">
+                            ${renderResourceInputs(action.investment.returns || {}, 'investment-returns', action)}
+                        </div>
+                    </div>
+                `;
+            }
+            
             card.innerHTML = `
                 <div class="action-header">
                     <div class="action-name">${action.name}</div>
@@ -468,6 +499,8 @@
                         ${renderResourceInputs(action.effects || {}, 'effects', action)}
                     </div>
                 </div>
+                
+                ${investmentSection}
             `;
             
             return card;
@@ -506,15 +539,32 @@
             const section = input.dataset.section;
             const newValue = parseInt(input.value) || 0;
             
-            // 更新 actionPool
-            if (!editorActionPool[stage][type][index][section]) {
-                editorActionPool[stage][type][index][section] = {};
-            }
-            
-            if (newValue === 0) {
-                delete editorActionPool[stage][type][index][section][resource];
+            // 处理投资相关的更新
+            if (section === 'investment') {
+                if (!editorActionPool[stage][type][index].investment) {
+                    editorActionPool[stage][type][index].investment = { turns: 0, returns: {} };
+                }
+                editorActionPool[stage][type][index].investment.turns = newValue;
+            } else if (section === 'investment-returns') {
+                if (!editorActionPool[stage][type][index].investment) {
+                    editorActionPool[stage][type][index].investment = { turns: 0, returns: {} };
+                }
+                if (newValue === 0) {
+                    delete editorActionPool[stage][type][index].investment.returns[resource];
+                } else {
+                    editorActionPool[stage][type][index].investment.returns[resource] = newValue;
+                }
             } else {
-                editorActionPool[stage][type][index][section][resource] = newValue;
+                // 处理常规的 costs 和 effects
+                if (!editorActionPool[stage][type][index][section]) {
+                    editorActionPool[stage][type][index][section] = {};
+                }
+                
+                if (newValue === 0) {
+                    delete editorActionPool[stage][type][index][section][resource];
+                } else {
+                    editorActionPool[stage][type][index][section][resource] = newValue;
+                }
             }
             
             // 视觉反馈
@@ -557,6 +607,25 @@
                                     }
                                 });
                             }
+                            
+                            // 比较并替换投资数据
+                            if (action.investment && originalAction.investment) {
+                                // 替换投资周期
+                                if (action.investment.turns !== originalAction.investment.turns) {
+                                    newContent = replaceInvestmentValue(newContent, action.key, 'turns', originalAction.investment.turns, action.investment.turns);
+                                }
+                                
+                                // 替换投资回报
+                                if (action.investment.returns && originalAction.investment.returns) {
+                                    Object.keys(originalAction.investment.returns).forEach(resource => {
+                                        const oldValue = originalAction.investment.returns[resource];
+                                        const newValue = action.investment.returns[resource] || 0;
+                                        if (oldValue !== newValue) {
+                                            newContent = replaceInvestmentReturnValue(newContent, action.key, resource, oldValue, newValue);
+                                        }
+                                    });
+                                }
+                            }
                         });
                     });
                 });
@@ -582,6 +651,26 @@
             // 构建精确的正则表达式来匹配特定行动的特定资源
             const pattern = new RegExp(
                 `(key:\\s*['"]${actionKey}['"][\\s\\S]*?${section}:\\s*{[^}]*?${resource}:\\s*)${oldValue}(\\s*[,}])`,
+                'g'
+            );
+            
+            return content.replace(pattern, `$1${newValue}$2`);
+        }
+        
+        // 替换投资周期
+        function replaceInvestmentValue(content, actionKey, property, oldValue, newValue) {
+            const pattern = new RegExp(
+                `(key:\\s*['"]${actionKey}['"][\\s\\S]*?investment:\\s*{[^}]*?${property}:\\s*)${oldValue}(\\s*[,}])`,
+                'g'
+            );
+            
+            return content.replace(pattern, `$1${newValue}$2`);
+        }
+        
+        // 替换投资回报数值
+        function replaceInvestmentReturnValue(content, actionKey, resource, oldValue, newValue) {
+            const pattern = new RegExp(
+                `(key:\\s*['"]${actionKey}['"][\\s\\S]*?investment:\\s*{[\\s\\S]*?returns:\\s*{[^}]*?${resource}:\\s*)${oldValue}(\\s*[,}])`,
                 'g'
             );
             
