@@ -83,6 +83,7 @@ let gameState = {
     eventLog: [],
     events: [], // Store recent events for contextual action selection
     unlockedEvents: [],
+    investments: [], // Track active investments: { name, matureTurn, returns }
     legacy: { ...legacy },
     gameOver: false
 };
@@ -242,6 +243,7 @@ function resetGame() {
         resources: {},
         eventLog: [],
         unlockedEvents: [],
+        investments: [], // Reset active investments
         legacy: clone(legacy),
         gameOver: false
     };
@@ -401,8 +403,35 @@ function updateUI() {
         `<div class="log-entry ${idx === 0 ? 'latest' : ''}">${e}</div>`
     ).join('');
     
-    document.getElementById('event-log').innerHTML = logHTML;
-    document.getElementById('mobile-event-log').innerHTML = logHTML;
+    // Build investments display
+    let investmentsHTML = '';
+    if (gameState.investments && gameState.investments.length > 0) {
+        investmentsHTML = `
+            <div class="investments-section">
+                <h3>🏗️ 活跃投资</h3>
+                <div class="investments-list">
+                    ${gameState.investments.map(inv => {
+                        const remainingTurns = inv.matureTurn - gameState.turn;
+                        const returnsText = Object.entries(inv.returns)
+                            .map(([resource, value]) => `${getResourceDisplayName(resource)}+${value}`)
+                            .join(', ');
+                        return `
+                            <div class="investment-item">
+                                <div class="investment-name">${inv.name}</div>
+                                <div class="investment-details">
+                                    <div class="investment-time">还需${remainingTurns}年成熟</div>
+                                    <div class="investment-returns">回报: ${returnsText}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    document.getElementById('event-log').innerHTML = logHTML + investmentsHTML;
+    document.getElementById('mobile-event-log').innerHTML = logHTML + investmentsHTML;
     
     // Update mobile log summary
     const latestLog = gameState.eventLog[0] || '暂无事件';
@@ -504,6 +533,7 @@ function startGame(startIdx) {
     gameState.stageIdx = 0; // Always start from tribe stage (0), regardless of tech level
     gameState.eventLog = [];
     gameState.events = []; // Initialize event history for contextual actions
+    gameState.investments = []; // Initialize investment tracking
     gameState.unlockedEvents = [];
     gameState.gameOver = false;
     logEvent(`你选择了${starts[startIdx].name}作为起始位置。`);
@@ -936,6 +966,23 @@ function showActionOptions() {
             }
         }
         
+        // Build investment display
+        let investmentText = '';
+        if (a.investment) {
+            let returnsText = [];
+            for (let key in a.investment.returns) {
+                if (availableResourceKeys.includes(key)) {
+                    let value = a.investment.returns[key];
+                    let sign = value > 0 ? '+' : '';
+                    let resourceName = getResourceDisplayName(key);
+                    returnsText.push(`${resourceName}: ${sign}${value}`);
+                }
+            }
+            if (returnsText.length > 0) {
+                investmentText = `<div class="action-investment">📈 ${a.investment.turns}年后回报: ${returnsText.join(', ')}</div>`;
+            }
+        }
+        
         // Check if action is affordable
         let affordable = canAffordAction(a);
         if (!affordable) {
@@ -947,6 +994,7 @@ function showActionOptions() {
             <div class="action-desc">${a.desc}</div>
             ${costsText}
             ${effectsText}
+            ${investmentText}
         `;
         
         btn.onclick = () => {
@@ -1017,6 +1065,17 @@ function doAction(action) {
                 gameState.resources[resource] = (gameState.resources[resource] || 0) + action.effects[resource];
             }
         }
+    }
+    
+    // Handle investment actions
+    if (action.investment) {
+        const matureTurn = gameState.turn + action.investment.turns;
+        gameState.investments.push({
+            name: action.name,
+            matureTurn: matureTurn,
+            returns: action.investment.returns
+        });
+        logEvent(`💰 投资项目"${action.name}"将在第${matureTurn}年成熟`);
     }
     
     logEvent(`你选择了行动：${action.name} - ${action.desc}`);
@@ -1154,9 +1213,50 @@ function closeCivilizationAdvancement() {
     continueAfterAdvancement();
 }
 
+// Process investments that have matured this turn
+function processMatureInvestments() {
+    if (!gameState.investments || gameState.investments.length === 0) {
+        return;
+    }
+    
+    // Get available resources for current stage
+    const availableResources = getResourcesForStage(gameState.stageIdx);
+    const availableResourceKeys = availableResources.map(r => r.key);
+    
+    // Find investments that mature this turn
+    const matureInvestments = gameState.investments.filter(inv => inv.matureTurn === gameState.turn);
+    
+    // Process each mature investment
+    matureInvestments.forEach(investment => {
+        let returnsText = [];
+        
+        // Apply returns for available resources only
+        for (let resource in investment.returns) {
+            if (availableResourceKeys.includes(resource)) {
+                const returnValue = investment.returns[resource];
+                gameState.resources[resource] = (gameState.resources[resource] || 0) + returnValue;
+                
+                const sign = returnValue >= 0 ? '+' : '';
+                const resourceName = getResourceDisplayName(resource);
+                returnsText.push(`${resourceName}${sign}${returnValue}`);
+            }
+        }
+        
+        if (returnsText.length > 0) {
+            logEvent(`🎉 投资回报："${investment.name}"成熟，获得：${returnsText.join(', ')}`);
+        }
+    });
+    
+    // Remove mature investments from active list
+    gameState.investments = gameState.investments.filter(inv => inv.matureTurn !== gameState.turn);
+}
+
 function continueAfterAdvancement() {
     // Auto-save at turn start
     saveGameState();
+    
+    // Check for mature investments and apply returns
+    processMatureInvestments();
     
     updateUI();
     

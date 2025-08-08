@@ -205,6 +205,15 @@ body {
     color: #99ff99;
     margin: 2px 0;
 }
+.action-investment {
+    font-size: 0.8em;
+    color: #f39c12;
+    margin: 2px 0;
+    background: rgba(243, 156, 18, 0.1);
+    padding: 4px 6px;
+    border-radius: 4px;
+    border-left: 2px solid #f39c12;
+}
 button {
     background: #1e90ff;
     color: #fff;
@@ -1021,5 +1030,80 @@ body.stage-stellar { background: linear-gradient(120deg, #212121 60%, #00e676 10
     .status-item {
         padding: 10px;
         font-size: 1em;
+    }
+}
+
+/* Investment tracking styles */
+.investments-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.investments-section h3 {
+    margin: 0 0 15px 0;
+    color: #3498db;
+    font-size: 1.1em;
+}
+
+.investments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.investment-item {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid #f39c12;
+}
+
+.investment-name {
+    font-weight: bold;
+    color: #f39c12;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.investment-details {
+    font-size: 0.8em;
+    color: #bdc3c7;
+}
+
+.investment-time {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.investment-returns {
+    color: #27ae60;
+}
+
+/* Mobile responsive for investments */
+@media (max-width: 900px) {
+    .investments-section {
+        margin-top: 10px;
+        padding: 10px;
+    }
+    
+    .investments-section h3 {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+    
+    .investment-item {
+        padding: 8px;
+    }
+    
+    .investment-name {
+        font-size: 0.85em;
+    }
+    
+    .investment-details {
+        font-size: 0.75em;
     }
 }
