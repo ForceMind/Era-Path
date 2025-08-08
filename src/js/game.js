@@ -575,6 +575,10 @@ function loadGameState() {
             // Only load if game was not completed
             if (!loadedState.gameOver && loadedState.started) {
                 gameState = loadedState;
+                // Ensure investments array exists for backward compatibility
+                if (!gameState.investments) {
+                    gameState.investments = [];
+                }
                 return true;
             }
         } catch (e) {
@@ -1069,6 +1073,11 @@ function doAction(action) {
     
     // Handle investment actions
     if (action.investment) {
+        // Ensure investments array exists
+        if (!gameState.investments) {
+            gameState.investments = [];
+        }
+        
         const matureTurn = gameState.turn + action.investment.turns;
         gameState.investments.push({
             name: action.name,
